@@ -3,7 +3,9 @@ package com.oopsw.erp_project.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface StoreRepository extends JpaRepository<Store, String> {
-    Store findByName(String name);
+    List<Store> findByAddressContaining(String address);
 }

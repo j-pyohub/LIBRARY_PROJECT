@@ -13,4 +13,9 @@ public class StoreRepositoryTest {
     public void getStore(){
         System.out.println(storeRepository.findAll());
     }
+
+    @Test
+    public void getStoreByAddress(){
+        System.out.println(storeRepository.findByAddressContaining("송파구"));
+    }
 }
