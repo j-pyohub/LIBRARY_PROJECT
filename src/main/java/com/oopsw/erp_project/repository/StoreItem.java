@@ -1,4 +1,3 @@
-
 package com.oopsw.erp_project.repository;
 
 import jakarta.persistence.*;
