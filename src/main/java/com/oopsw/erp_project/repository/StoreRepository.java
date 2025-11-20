@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StoreRepository extends JpaRepository<Store, String> {
+public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByAddressContaining(String address);
     List<Store> findByStoreNameContaining(String storeName);
     List<Store> findByManager_ManagerNameContaining(String managerName);

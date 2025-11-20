@@ -41,10 +41,10 @@ public class StoreRepositoryTest {
     @Transactional
     @Rollback(false)
     public void addStore() {
-        if(managerRepository.existsById("storeManager2"))
+        if(managerRepository.existsById("storeManager3"))
             throw new RuntimeException("아이디 중복X");
-        Store store = storeRepository.save(Store.builder().storeStatus("영업중").storeManagerId(managerRepository.save(Manager.builder().managerId("storeManager2").pw("123")
-                                                .email("storeManager2@pizza.com").managerName("문석햔")
+        Store store = storeRepository.save(Store.builder().storeStatus("영업중").manager(managerRepository.save(Manager.builder().managerId("storeManager3").pw("123")
+                                                .email("storeManager2@pizza.com").managerName("김동글")
                                                 .phoneNumber("010-1212-2222").role("ROLE_STORE").build()))
                                             .storeName("염창점").address("서울 강서구 양천로 683")
                                             .latitude("37.5509706499685 ").longitude("126.872328876047")
@@ -56,6 +56,7 @@ public class StoreRepositoryTest {
     @Rollback(false)
     public void setStore() {
         Store store = storeRepository.findById(11L).get();
+        System.out.println(store);
         store.setStorePhoneNumber("02-3344-1122");
     }
 

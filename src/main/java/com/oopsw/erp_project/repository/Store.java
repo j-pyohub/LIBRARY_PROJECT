@@ -5,22 +5,22 @@ import lombok.*;
 
 import java.sql.Date;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 @Setter
 @Getter
+@ToString(exclude = "manager")
 @Table(name = "store")
 public class Store {
     @Id
     @Column(name = "store_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeNo;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "store_manager_id")
-    private Manager storeManagerId;
+    private Manager manager;
     @Column(nullable = false)
     private String storeStatus;
     @Column(nullable = false)
