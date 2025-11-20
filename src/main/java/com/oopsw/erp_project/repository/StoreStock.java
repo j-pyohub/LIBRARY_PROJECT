@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
 
 @Entity
 @Getter
@@ -21,7 +22,7 @@ public class StoreStock {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime changeDatetime; // 등록 시각 (입고/폐기 발생 시간)
+    private Timestamp changeDatetime; // 등록 시각 (입고/폐기 발생 시간)
     private Integer changeQuantity;
     private String changeReason;
     private Integer currentQuantity;
