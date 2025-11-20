@@ -5,10 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -18,6 +15,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Entity
 @Builder
+@Setter
+@Getter
 @Table(name = "manager")
 public class Manager {
     @Id
