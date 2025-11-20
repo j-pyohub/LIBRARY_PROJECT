@@ -3,6 +3,8 @@ package com.oopsw.erp_project.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class StoreRepositoryTest {
@@ -12,6 +14,8 @@ public class StoreRepositoryTest {
     private ManagerRepository managerRepository;
 
     @Test
+    @Transactional
+    @Rollback(false)
     public void addStore() {
         if(managerRepository.existsById("storeManager2"))
             throw new RuntimeException("아이디 중복X");
@@ -22,5 +26,13 @@ public class StoreRepositoryTest {
                                             .latitude("37.5509706499685 ").longitude("126.872328876047")
                                             .storePhoneNumber("02-4433-2211").openTime("11:00").closeTime("22:00").menuStopRole("N").build());
         System.out.println(store);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    public void setStore() {
+        Store store = storeRepository.findById(11L).get();
+        store.setStorePhoneNumber("02-3344-1122");
     }
 }
