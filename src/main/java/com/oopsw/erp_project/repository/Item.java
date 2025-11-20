@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -33,8 +33,8 @@ public class Item {
     private String note;
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime inDate;
+    private Timestamp inDate;
     @UpdateTimestamp
-    private LocalDateTime editDate;
-    private LocalDateTime delDate;
+    private Timestamp editDate;
+    private Timestamp delDate;
 }
