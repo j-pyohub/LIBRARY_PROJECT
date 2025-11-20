@@ -1,0 +1,26 @@
+package com.oopsw.erp_project.repository;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class StoreRepositoryTest {
+    @Autowired
+    private StoreRepository storeRepository;
+    @Autowired
+    private ManagerRepository managerRepository;
+
+    @Test
+    public void addStore() {
+        if(managerRepository.existsById("storeManager2"))
+            throw new RuntimeException("아이디 중복X");
+        Store store = storeRepository.save(Store.builder().storeStatus("영업중").storeManagerId(managerRepository.save(Manager.builder().managerId("storeManager2").pw("123")
+                                                .email("storeManager2@pizza.com").managerName("문석햔")
+                                                .phoneNumber("010-1212-2222").role("ROLE_STORE").build()))
+                                            .storeName("염창점").address("서울 강서구 양천로 683")
+                                            .latitude("37.5509706499685 ").longitude("126.872328876047")
+                                            .storePhoneNumber("02-4433-2211").openTime("11:00").closeTime("22:00").menuStopRole("N").build());
+        System.out.println(store);
+    }
+}

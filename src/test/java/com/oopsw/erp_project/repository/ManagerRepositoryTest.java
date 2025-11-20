@@ -15,9 +15,9 @@ public class ManagerRepositoryTest {
     private ManagerRepository managerRepository;
     @Test
     public void addManager() {
-        if(managerRepository.existsById("hello"))
+        if(managerRepository.existsById("storeManager1"))
             throw new RuntimeException("아이디 중복X");
-        Manager manager = managerRepository.save(Manager.builder().managerId("hello").pw("123").email("hello@pizza.com").managerName("문석현").phoneNumber("010-1212-2020").role("ROLE_MANAGER").build());
+        Manager manager = managerRepository.save(Manager.builder().managerId("storeManager1").pw("123").email("storeManager1@pizza.com").managerName("문석현").phoneNumber("010-1212-1111").role("ROLE_STORE").build());
         System.out.println(manager);
     }
 
