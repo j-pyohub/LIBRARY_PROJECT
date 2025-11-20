@@ -27,5 +27,11 @@ public class StoreRepositoryTest {
     public void getStoreByManagerName(){
         System.out.println(storeRepository.findByManager_ManagerNameContaining("수정"));
     }
+    @Test
+    @Transactional
+    public void getStoreByStoreStatus(){
+        System.out.println(storeRepository.findByStoreStatus("오픈준비"));
+
+    }
 
 }

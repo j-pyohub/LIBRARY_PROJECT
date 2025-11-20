@@ -10,5 +10,5 @@ public interface StoreRepository extends JpaRepository<Store, String> {
     List<Store> findByAddressContaining(String address);
     List<Store> findByStoreNameContaining(String storeName);
     List<Store> findByManager_ManagerNameContaining(String managerName);
-    List<Store> findByStoreStatusContaining(String storeStatus);
+    List<Store> findByStoreStatus(String storeStatus);
 }
