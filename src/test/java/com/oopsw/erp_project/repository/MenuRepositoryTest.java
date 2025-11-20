@@ -10,7 +10,18 @@ public class MenuRepositoryTest {
     private MenuRepository menuRepository;
 
     @Test
-    public void getMenu() {
+    public void getAllMenu() {
         System.out.println(menuRepository.findAll());
     }
+
+    @Test
+    public void getMenuByCategory() {
+        System.out.println(menuRepository.findByMenuCategory("음료"));
+    }
+
+    @Test
+    public void getMenuByReleaseStatus() {
+        System.out.println(menuRepository.findByReleaseStatus("출시 예정"));
+    }
+
 }
