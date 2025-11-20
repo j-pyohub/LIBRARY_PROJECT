@@ -1,8 +1,6 @@
 package com.oopsw.erp_project.repository;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +17,11 @@ import java.sql.Timestamp;
 public class Store {
     @Id
     private Long storeNo;
-    private String storeManagerId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_manager_id")
+    private Manager manager;
+
     private String storeStatus;
     private String storeName;
     private String address;

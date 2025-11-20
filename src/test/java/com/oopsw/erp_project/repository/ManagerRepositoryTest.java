@@ -9,7 +9,6 @@ public class ManagerRepositoryTest {
     @Autowired
     ManagerRepository managerRepository;
 
-
     @Test
     public void getManager(){
         System.out.println(managerRepository.findAll());
