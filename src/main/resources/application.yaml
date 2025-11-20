@@ -5,7 +5,7 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/mydb
+    url: jdbc:mariadb://127.0.0.1:3306/erp_project
     username: mydbid
     password: mydbpw
   jpa:
