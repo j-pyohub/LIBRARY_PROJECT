@@ -14,6 +14,30 @@ public class StoreRepositoryTest {
     private ManagerRepository managerRepository;
 
     @Test
+    public void getStore(){
+        System.out.println(storeRepository.findAll());
+    }
+    @Test
+    public void getStoreByAddress(){
+        System.out.println(storeRepository.findByAddressContaining("송파구"));
+    }
+    @Test
+    public void getStoreByStoreName(){
+        System.out.println(storeRepository.findByStoreNameContaining("가산"));
+    }
+
+    @Test
+    @jakarta.transaction.Transactional
+    public void getStoreByManagerName(){
+        System.out.println(storeRepository.findByManager_ManagerNameContaining("수정"));
+    }
+    @Test
+    @jakarta.transaction.Transactional
+    public void getStoreByStoreStatus(){
+        System.out.println(storeRepository.findByStoreStatus("오픈준비"));
+
+    }
+    @Test
     @Transactional
     @Rollback(false)
     public void addStore() {
@@ -27,7 +51,6 @@ public class StoreRepositoryTest {
                                             .storePhoneNumber("02-4433-2211").openTime("11:00").closeTime("22:00").menuStopRole("N").build());
         System.out.println(store);
     }
-
     @Test
     @Transactional
     @Rollback(false)
@@ -35,4 +58,6 @@ public class StoreRepositoryTest {
         Store store = storeRepository.findById(11L).get();
         store.setStorePhoneNumber("02-3344-1122");
     }
+
+
 }

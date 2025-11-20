@@ -39,5 +39,8 @@ public class ManagerRepositoryTest {
         manager.setDelDate(Timestamp.valueOf(LocalDateTime.now())); //수정 가능한 다른 것들도 조건절 해서 추가하면 됨
         System.out.println(manager);
     }
-
+    @Test
+    public void getManager(){
+        System.out.println(managerRepository.findAll());
+    }
 }

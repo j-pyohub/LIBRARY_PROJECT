@@ -18,7 +18,7 @@ public class Store {
     @Column(name = "store_no")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeNo;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_manager_id")
     private Manager storeManagerId;
     @Column(nullable = false)
@@ -42,5 +42,4 @@ public class Store {
     private String closeTime;
     @Column(nullable = false)
     private String menuStopRole;
-
 }
