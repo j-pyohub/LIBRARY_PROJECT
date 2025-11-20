@@ -1,0 +1,122 @@
+package com.crm.model;
+
+import java.util.Date;
+
+public class ReserveVO {
+	private int reserveNo;
+	private String patientName;
+	private Date datetime;
+	private String reserveDay;
+	private String reserveTime;
+	private String employeeName;
+	private String department;
+	private String phone;
+	private String reason;
+	private int cnt;
+	private Date lastMedicalDate;
+
+	public ReserveVO(){};
+	
+	
+
+	public ReserveVO(int reserveNo, String patientName, Date datetime, String reserveDay, String reserveTime,
+			String employeeName, String department, String phone, String reason, int cnt, Date lastMedicalDate) {
+		setReserveNo(reserveNo);
+		setPatientName(patientName);
+		setDatetime(datetime);
+		setReserveDay(reserveDay);
+		setReserveTime(reserveTime);
+		setEmployeeName(employeeName);
+		setDepartment(department);
+		setPhone(phone);
+		setReason(reason);
+		setCnt(cnt);
+		setLastMedicalDate(lastMedicalDate);
+	}
+
+
+
+	public int getReserveNo() {
+		return reserveNo;
+	}
+	public void setReserveNo(int reserveNo) {
+		this.reserveNo = reserveNo;
+	}
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public Date getDatetime() {
+		return datetime;
+	}
+	public void setDatetime(Date datetime) {
+		this.datetime = datetime;
+	}
+	public String getReserveDay() {
+		return reserveDay;
+	}
+	public void setReserveDay(String reserveDay) {
+		this.reserveDay = reserveDay;
+	}
+	public String getReserveTime() {
+		return reserveTime;
+	}
+	public void setReserveTime(String reserveTime) {
+		this.reserveTime = reserveTime;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+	public String getDepartment() {
+		return department;
+	}
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getReason() {
+		return reason;
+	}
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	public int getCnt() {
+		return cnt;
+	}
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
+	}
+	public Date getLastMedicalDate() {
+		return lastMedicalDate;
+	}
+	public void setLastMedicalDate(Date lastMedicalDate) {
+		this.lastMedicalDate = lastMedicalDate;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "ReserveVO [reserveNo=" + reserveNo + ", patientName=" + patientName + ", datetime=" + datetime
+				+ ", reserveDay=" + reserveDay + ", reserveTime=" + reserveTime + ", employeeName=" + employeeName
+				+ ", department=" + department + ", phone=" + phone + ", reason=" + reason + ", cnt=" + cnt + "]";
+	}
+
+
+
+
+	
+	
+	
+	
+}

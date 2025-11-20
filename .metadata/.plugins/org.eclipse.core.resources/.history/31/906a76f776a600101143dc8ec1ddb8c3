@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>메시지 전송</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<style>
+/* 부드러운 페이드 전환 */
+.fade-section {
+	opacity: 0;
+	transition: opacity 0.4s ease-in-out;
+	display: none;
+}
+
+.fade-section.show {
+	display: block;
+	opacity: 1;
+}
+
+.custom-modal-size {
+	height: 80vh;
+	max-height: 100%;
+}
+
+.table thead th {
+	text-align: center;
+}
+
+.table tbody td {
+	vertical-align: middle;
+	text-align: center;
+}
+
+#pager .page-item.active .page-link {
+	background: #212529;
+	color: #fff;
+	border-color: #212529;
+	border-radius: .6rem;
+}
+
+#pager .page-item.disabled .page-link {
+	color: #bbb;
+	pointer-events: none;
+	background: transparent;
+	border-color: transparent;
+}
+
+#pager .page-link {
+	border: none;
+	background: transparent;
+	color: #4a4a4a;
+}
+</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+
+			<!-- ✅ 좌측 사이드바 -->
+			<aside
+				class="col-2 bg-white border-end vh-100 d-flex flex-column p-3">
+				<!-- 로고 -->
+				<div class="text-center mb-4">
+					<img src="hospital_logo.png" alt="병원 로고" class="img-fluid"
+						style="max-width: 100px;">
+				</div>
+
+				<!-- 사용자 정보 -->
+				<div class="card mb-4">
+					<div class="card-body text-center">
+						<h6 class="fw-bold mb-1">
+							홍길동 <span class="text-muted">실장</span>
+						</h6>
+						<div class="small text-muted">최종 접속 일시</div>
+						<div class="small">2023/10/26 00:00:30</div>
+						<div class="small text-muted mt-2">최종 접속 IP</div>
+						<div class="small">255.255.0.0</div>
+					</div>
+				</div>
+
+				<!-- 메뉴 -->
+				<nav class="nav flex-column gap-1 mb-auto">
+					<a href="#" class="nav-link text-dark">예약 관리</a> <a href="#"
+						class="nav-link text-dark">주간 근무 관리</a> <a href="#"
+						class="nav-link text-dark">환자 관리</a> <a href="#"
+						class="nav-link active bg-primary text-white rounded">메시지 서비스</a>
+				</nav>
+
+				<!-- 로그아웃 -->
+				<div class="mt-4 text-center">
+					<button class="btn btn-danger w-100">로그아웃</button>
+				</div>
+			</aside>
+
+			<!-- ✅ 메인 콘텐츠 -->
+			<main class="col-10 p-4">
+
+
+			<div class="container py-4">
+				<h2 class="text-center mb-4">메시지 서비스</h2>
+
+				<!-- ✅상단 탭 -->
+				<ul class="nav nav-tabs justify-content-center mb-3"
+					id="messageTabs">
+					<li class="nav-item">
+						<button id="reserveBtn" class="nav-link active">예약 메시지</button>
+					</li>
+					<li class="nav-item">
+						<button id="commonBtn" class="nav-link">일반 메시지</button>
+					</li>
+				</ul>
+
+				<!-- ✅ 예약 메시지 구역 -->
+				<div class="reserveSms fade-section show">
+
+					<div class="row justify-content-center align-items-start mt-3">
+						<!-- 왼쪽 영역 -->
+						<div class="col-md-6 text-center">
+							<textarea class="form-control w-75 mx-auto mb-3" rows="10"
+								placeholder="템플릿을 선택하세요."></textarea>
+							<button type="button" class="btn btn-secondary btn-sm"
+								data-bs-toggle="modal" data-bs-target="#managerReservationModal">명단
+								추가</button>
+							<input type="text"
+								class="form-control d-inline-block w-50 ms-2 mt-2"
+								placeholder="템플릿명" disabled>
+							<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
+							<p>수신자 : 0명</p>
+							<div class="mb-4">
+								<button type="button" class="btn btn-warning btn-sm">초기화</button>
+								<button type="button" class="btn btn-success btn-sm">전송</button>
+							</div>
+						</div>
+
+						<!-- ✅ 오른쪽 영역 -->
+						<div class="col-md-6">
+							<div class="d-flex justify-content-center mb-2">
+								<input type="search" class="form-control w-75"
+									placeholder="템플릿 검색">
+								<button type="submit" class="btn btn-primary ms-2">검색</button>
+							</div>
+
+							<ul class="list-group w-75 mx-auto text-start">
+								<li class="list-group-item d-flex justify-content-between"><span>광고
+										수신 동의</span><span>광고 수신을 동의하시겠습니까?</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>수납
+										안내</span><span>#(이름)님 #(가격) 나왔습니다.</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>예약</span><span>#(이름)님
+										안녕하세요. #(병원)...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>접수
+										안내</span><span>#(이름)님 #(의사)과 의사 #(예...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>재초진
+										알림</span><span>사랑합니다❤ #(이름)님 저희 ...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>시술
+										예약</span><span>안녕하세요. #(이름)님. #(병원)...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>결제
+										완료</span><span>#(이름)님 안녕하세요. #(병원)...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>new_예약</span><span>[#(병원)
+										알림톡] #(이름) 고객...</span></li>
+								<li class="list-group-item d-flex justify-content-between"><span>접수
+										안내(2)</span><span>#(이름)님 #(의사)과 의사 #(예...</span></li>
+							</ul>
+
+							<div class="text-center mt-3">
+								<button type="button" class="btn btn-outline-secondary">보낸
+									메세지함</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ✅ 일반 메시지 구역 -->
+				<div class="commonSms fade-section">
+					<div class="text-center">
+						<textarea class="form-control w-75 mx-auto mb-3" rows="10"
+							placeholder="메시지 보내실 내용을 입력하세요."></textarea>
+						<button type="button" class="btn btn-secondary btn-sm"
+							data-bs-toggle="modal" data-bs-target="#patientListModal">명단
+							추가</button>
+						<canvas class="border d-block w-75 mx-auto my-3" height="100"></canvas>
+						<p>수신자 : 0명</p>
+						<button type="button" class="btn btn-warning btn-sm">초기화</button>
+						<button type="button" class="btn btn-success btn-sm">전송</button>
+						<button type="button" class="btn btn-outline-secondary btn-sm">보낸
+							메세지함</button>
+					</div>
+				</div>
+			</div>
+
+
+
+			<!-- ✅ 예약메시지-명단추가 모달 -->
+			<div class="modal fade" id="managerReservationModal" tabindex="-1"
+				aria-hidden="true">
+				<div
+					class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+					<div class="modal-content custom-modal-size">
+
+						<div class="modal-header">
+							<div class="d-flex gap-2">
+								<h5 class="modal-title fw-bold">예약 목록(sms)</h5>
+							</div>
+							<div>
+								<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+							</div>
+						</div>
+
+						<div class="modal-body">
+							<div class="row mb-3">
+								<div class="col-md-3">
+									<label class="form-label">월</label> <select class="form-select">
+										<option>9월</option>
+									</select>
+								</div>
+								<div class="col-md-3">
+									<label class="form-label">주</label> <select class="form-select">
+										<option>9월 15일 ~ 9월 21일</option>
+									</select>
+								</div>
+								<div class="col-md-3">
+									<label class="form-label">일</label> <select class="form-select">
+										<option>16일</option>
+									</select>
+								</div>
+								<div class="col-md-3">
+									<label class="form-label">시간</label> <select
+										class="form-select">
+										<option>전체</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="table-responsive">
+								<table id="reservationTable"
+									class="table table-bordered text-center align-middle">
+									<thead class="table-light">
+										<tr>
+											<th scope="col"><input type="checkbox"
+												id="selectAll-reserve" class="select-all"></th>
+											<th scope="col">이름</th>
+											<th scope="col">방문 예정 일</th>
+											<th scope="col">방문 예정 시간</th>
+											<th scope="col">담당의사</th>
+											<th scope="col">진료과</th>
+											<th scope="col">상세</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>이승희</td>
+											<td>2025-09-16</td>
+											<td>8:30</td>
+											<td>나신경</td>
+											<td>신경외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>심채윤</td>
+											<td>2025-09-16</td>
+											<td>9:00</td>
+											<td>나신경</td>
+											<td>신경외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>황태준</td>
+											<td>2025-09-16</td>
+											<td>10:30</td>
+											<td>홍길동</td>
+											<td>신경외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>이승희</td>
+											<td>2025-09-16</td>
+											<td>11:00</td>
+											<td>나신경</td>
+											<td>신경외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>김찰수</td>
+											<td>2025-09-16</td>
+											<td>14:00</td>
+											<td>박임강</td>
+											<td>정형외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+										<tr>
+											<td><input class="row-check" type="checkbox"></td>
+											<td>신명구</td>
+											<td>2025-09-16</td>
+											<td>15:00</td>
+											<td>김의사</td>
+											<td>정형외과</td>
+											<td><a href="?id=#"><img src="detail.png" alt="상세보기"
+													width="24" height="24"></a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<div class="modal-footer d-flex justify-content-between">
+							<div class="d-flex gap-2">
+								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- ✅ 일반메시지-명단추가 모달 -->
+			<div class="modal fade" id="patientListModal" tabindex="-1"
+				aria-hidden="true">
+				<div
+					class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+					<div class="modal-content custom-modal-size">
+
+						<div
+							class="modal-header d-flex justify-content-between align-items-center">
+							<h5 class="modal-title fw-bold">환자 목록 (sms)</h5>
+							<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+						</div>
+
+						<div class="modal-body">
+
+							<!-- 검색 영역 -->
+							<div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+								<input type="date" class="form-control w-auto"
+									value="2025-09-01"> <span>~</span> <input type="date"
+									class="form-control w-auto" value="2025-09-30"> <select
+									class="form-select w-auto">
+									<option selected disabled hidden>담당의사</option>
+									<option>김의사 / 정형외과 / DO001</option>
+									<option>원강 / 정형외과 / DO003</option>
+									<option>나길동 / 신경외과 / DN004</option>
+									<option>사공길동 / 신경외과 / DN005</option>
+									<option>김철수 / 마취통증의학과 / DA001</option>
+								</select>
+
+								<!-- 검색 조건 영역 -->
+								<div class="d-flex align-items-center">
+									<select class="form-select w-auto">
+										<option selected>생년월일</option>
+										<option>이름</option>
+									</select> <input type="text" class="form-control w-auto ms-2"
+										placeholder="검색어 입력">
+									<button class="btn btn-outline-primary ms-2">검색</button>
+								</div>
+							</div>
+
+							<!-- 환자 목록 테이블 -->
+							<table class="table table-bordered align-middle">
+								<thead class="table-light">
+									<tr>
+										<th scope="col"><input type="checkbox"
+											id="selectAll-reserve" class="select-all"></th>
+										<th>환자등록번호</th>
+										<th>이름</th>
+										<th>전화번호</th>
+										<th>입원일</th>
+										<th>담당의</th>
+										<th>진료과</th>
+										<th>상태</th>
+										<th>진단명</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="checkbox" class="row-check" checked></td>
+										<td>06071</td>
+										<td>김상철</td>
+										<td>010-1211-6337</td>
+										<td>2025-09-20</td>
+										<td>김의사</td>
+										<td>정형외과</td>
+										<td>외래</td>
+										<td>피로골절</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" class="row-check" checked></td>
+										<td>06072</td>
+										<td>김병만</td>
+										<td>010-4567-8901</td>
+										<td>2025-09-19</td>
+										<td>김의사</td>
+										<td>정형외과</td>
+										<td>외래</td>
+										<td>염좌</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" class="row-check" checked></td>
+										<td>06073</td>
+										<td>김아리</td>
+										<td>010-5678-9012</td>
+										<td>2025-09-19</td>
+										<td>박원장</td>
+										<td>정형외과</td>
+										<td>입원 예정</td>
+										<td>중족골골절</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" class="row-check"></td>
+										<td>06074</td>
+										<td>최상현</td>
+										<td>010-6789-0123</td>
+										<td>2025-09-19</td>
+										<td>원 장</td>
+										<td>정형외과</td>
+										<td>입원 예정</td>
+										<td>복합골절</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" class="row-check"></td>
+										<td>06075</td>
+										<td>오인표</td>
+										<td>010-7890-1234</td>
+										<td>2025-09-19</td>
+										<td>홍길동</td>
+										<td>정형외과</td>
+										<td>입원 중</td>
+										<td>척추측만</td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" class="row-check"></td>
+										<td>06076</td>
+										<td>밥말리</td>
+										<td>010-8901-2345</td>
+										<td>2025-09-18</td>
+										<td>나신경</td>
+										<td>신경외과</td>
+										<td>입원 중</td>
+										<td>디스크파열</td>
+									</tr>
+								</tbody>
+							</table>
+
+							<!-- ✅ 페이지 이동 버튼 -->
+							<nav aria-label="페이지 이동"
+								class="d-flex justify-content-center my-3">
+								<ul id="pager"
+									class="pagination pagination-sm align-items-center gap-2">
+									<!-- 처음 / 이전 -->
+									<li class="page-item"><button class="page-link"
+											data-action="first" aria-label="처음">«</button></li>
+									<li class="page-item"><button class="page-link"
+											data-action="prev" aria-label="이전">‹</button></li>
+
+									<!-- 숫자들 -->
+									<li class="page-item"><button class="page-link"
+											data-page="1">1</button></li>
+									<li class="page-item"><button class="page-link"
+											data-page="2">2</button></li>
+									<li class="page-item"><button class="page-link"
+											data-page="3">3</button></li>
+									<li class="page-item"><button class="page-link"
+											data-page="4">4</button></li>
+									<li class="page-item"><button class="page-link"
+											data-page="5">5</button></li>
+									<li class="page-item"><button class="page-link"
+											data-page="6">6</button></li>
+
+									<!-- 다음 / 마지막 -->
+									<li class="page-item"><button class="page-link"
+											data-action="next" aria-label="다음">›</button></li>
+									<li class="page-item"><button class="page-link"
+											data-action="last" aria-label="마지막">»</button></li>
+								</ul>
+							</nav>
+						</div>
+
+						<div class="modal-footer d-flex justify-content-between">
+							<div>
+								<button class="btn btn-primary">선택 환자 메시지 보내기</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+	<script>
+	<!-- ✅ 기본html 관련 js -->
+	  const reserveBtn = document.getElementById('reserveBtn');
+	  const commonBtn  = document.getElementById('commonBtn');
+	  const reserveSec = document.querySelector('.reserveSms');
+	  const commonSec  = document.querySelector('.commonSms');
+
+	  function showSection(showEl, hideEl, activeBtn, inactiveBtn) {
+	    hideEl.classList.remove('show');
+	    activeBtn.classList.add('active');
+	    inactiveBtn.classList.remove('active');
+	    setTimeout(() => {
+	      hideEl.style.display = 'none';
+	      showEl.style.display = 'block';
+	      setTimeout(() => showEl.classList.add('show'), 10);
+	    }, 200);
+	  }
+
+	  reserveBtn.addEventListener('click', () => {
+	    showSection(reserveSec, commonSec, reserveBtn, commonBtn);
+	  });
+
+	  commonBtn.addEventListener('click', () => {
+	    showSection(commonSec, reserveSec, commonBtn, reserveBtn);
+	  });
+
+	
+	<!-- ✅ 명단추가 모달 js-->
+	document.addEventListener('DOMContentLoaded', () => {
+  // 각 모달(또는 원하는 컨테이너)마다 select-all 로직을 연결
+  ['#managerReservationModal', '#patientListModal'].forEach(selector => {
+    const container = document.querySelector(selector);
+    if (!container) return;
+
+    const selectAll = container.querySelector('.select-all');
+    const getRows = () => Array.from(container.querySelectorAll('.row-check')).filter(cb => !cb.disabled);
+
+    if (!selectAll) return;
+
+    // 전체선택 클릭
+    selectAll.addEventListener('change', () => {
+      getRows().forEach(cb => cb.checked = selectAll.checked);
+      selectAll.indeterminate = false;
+    });
+
+    // 행 체크 변경(이벤트 위임으로 동적 추가에도 대응)
+    container.addEventListener('change', (e) => {
+      if (!e.target.classList.contains('row-check')) return;
+      const rows = getRows();
+      const checked = rows.filter(cb => cb.checked).length;
+
+      if (rows.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        return;
+      }
+
+      selectAll.checked = checked === rows.length;
+      selectAll.indeterminate = checked > 0 && checked < rows.length;
+    });
+  });
+});
+	
+	  
+	  // ✅ 페이지 이동 js
+	(() => {
+		  const pager = document.getElementById('pager');
+		  const minPage = 1;
+		  const maxPage = 6;
+		  let current = 1; // ✅ 1페이지부터 시작
+
+		  updateUI();
+
+		  pager.addEventListener('click', (e) => {
+		    const btn = e.target.closest('.page-link');
+		    if (!btn) return;
+
+		    const page = btn.getAttribute('data-page');
+		    if (page) {
+		      current = Number(page);
+		      updateUI();
+		      return;
+		    }
+
+		    const action = btn.getAttribute('data-action');
+		    if (!action) return;
+
+		    if (action === 'first') current = minPage;
+		    if (action === 'prev')  current = Math.max(minPage, current - 1);
+		    if (action === 'next')  current = Math.min(maxPage, current + 1);
+		    if (action === 'last')  current = maxPage;
+
+		    updateUI();
+		  });
+
+		  function updateUI() {
+		    pager.querySelectorAll('.page-item').forEach(li => li.classList.remove('active'));
+		    pager.querySelectorAll('[data-page]').forEach(btn => {
+		      if (Number(btn.getAttribute('data-page')) === current) {
+		        btn.parentElement.classList.add('active');
+		      }
+		    });
+		    setDisabled('[data-action="first"],[data-action="prev"]', current === minPage);
+		    setDisabled('[data-action="next"],[data-action="last"]', current === maxPage);
+		  }
+
+		  function setDisabled(selector, isDisabled) {
+		    pager.querySelectorAll(selector).forEach(btn => {
+		      btn.parentElement.classList.toggle('disabled', isDisabled);
+		      btn.setAttribute('tabindex', isDisabled ? '-1' : '0');
+		      btn.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
+		    });
+		  }
+		})();
+</script>
+
+
+</body>
+</html>

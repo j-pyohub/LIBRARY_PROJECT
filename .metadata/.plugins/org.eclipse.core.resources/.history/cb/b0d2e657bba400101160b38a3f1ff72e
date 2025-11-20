@@ -1,0 +1,101 @@
+package com.crm.model;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+public class ReserveDAO {
+	
+	public List<ReserveVO> getReserveList(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectReserveList", paramMap);
+		conn.close();
+		return list;
+	}
+	
+	public List<ReserveVO> countReserve(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.countReserve", paramMap);
+		conn.close();
+		return list;
+	}
+	
+	public List<ReserveVO> countMyReserve(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.countMyReserve", paramMap);
+		conn.close();
+		return list;
+	}
+	
+	public ReserveVO getReserveDetail(int reserveNo){
+		ReserveVO detail = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		detail = conn.selectOne("memberMapper.selectReserveDetail", reserveNo);
+		conn.close();
+		return detail;
+	}
+	
+	
+	public List<ReserveVO> getPatientName(String patientName){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectPatientName", patientName);
+		conn.close();
+		return list;
+	}
+	
+	public List<Map<String, Object>> getPossibleDoctor(Map<String, Object> paramMap){
+		List<Map<String, Object>> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectPossibleDoctor", paramMap);
+		conn.close();
+		return list;
+
+	}
+	public boolean addReserve(Map<String, Object> paramMap){
+		boolean result = false;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		int count = conn.insert("memberMapper.insertReserve", paramMap);
+		if (count==1){
+			result = true;
+			conn.commit();
+		} else {
+			conn.rollback();
+		}
+		conn.close();
+		return result;
+	}
+	
+	public boolean editReserve(Map<String, Object> paramMap){
+		boolean result = false;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		int count = conn.insert("memberMapper.updateReserve", paramMap);
+		if (count==1){
+			result = true;
+			conn.commit();
+		} else {
+			conn.rollback();
+		}
+		conn.close();
+		return result;
+	}
+	
+	public boolean deleteReserve(int reserveNO){
+		boolean result = false;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		int count = conn.insert("memberMapper.deleteReserve", reserveNO);
+		if (count==1){
+			result = true;
+			conn.commit();
+		} else {
+			conn.rollback();
+		}
+		conn.close();
+		return result;
+	}
+}

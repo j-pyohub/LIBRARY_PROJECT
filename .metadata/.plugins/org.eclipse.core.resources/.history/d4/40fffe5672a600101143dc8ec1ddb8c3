@@ -1,0 +1,58 @@
+package com.crm.model;
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+public class LoginDAO {
+	public String login(String employeeId, String pw, String loginIp){
+		Map<String, Object> login = new HashMap<>();
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		login.put("employee_id", employeeId);
+		login.put("pw", pw);
+		String authority = conn.selectOne("loginMapper.login", employeeId);
+		
+		if (authority != null){
+			// 로그 insert 성공 시 1 실패시 0
+			Map<String, Object> logMap = new HashMap<>();
+			logMap.put("employee_id", employeeId);
+	        logMap.put("login_ip", loginIp);
+	        
+            int inserted = conn.insert("loginMapper.insertLog", logMap);
+            if (inserted==0) System.out.println("로그 기록 실패");
+            conn.commit();
+		}
+		return authority;
+	}
+//	public boolean addLog(Map<String, Object> paramMap){
+//		boolean result = false;
+//		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+//		int count = conn.insert("loginMapper.insertLog", paramMap);
+//		if (count==1){
+//			result = true;
+//			conn.commit();
+//		} else {
+//			conn.rollback();
+//		}
+//		conn.close();
+//		return result;
+//	}
+//	
+	public String getAuthority(String employeeId){
+		String authority = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		authority = (String) conn.selectOne("loginMapper.selectAuthority", employeeId);
+		conn.close();		
+		return authority;
+	}
+	
+	public Map<String, Object> getEmployeeInfo(String employeeId){
+		Map<String, Object> empInfo = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		empInfo = conn.selectOne("loginMapper.selectLoginLog", employeeId);
+		conn.close();
+		return empInfo;		
+	}
+}

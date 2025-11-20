@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>예약 달력 (Bootstrap 적용)</title>
+
+<!-- ✅ Bootstrap 5.3.0 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+table, th, td { border-collapse: collapse; }
+
+#container { margin-top: 20px; }
+
+.calendar-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* ✅ 날짜를 오른쪽 상단으로 정렬 */
+.month-view td {
+  position: relative;
+  height: 80px;
+  vertical-align: top !important;
+}
+.month-view td strong {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.9rem;
+}
+.month-view td small {
+  display: block;
+  margin-top: 22px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+/* ✅ 주간 / 일간 달력의 표 높이 축소 */
+.week-view td, .day-view td {
+  height: 36px;
+  padding: 4px 6px !important;
+  font-size: 0.85rem;
+  vertical-align: middle !important;
+}
+
+/* 선택 강조 */
+.table-hover tbody tr.table-active td { background-color: #e7f1ff !important; }
+</style>
+</head>
+
+<body class="bg-body-tertiary">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- 여기서 사이드바를 주입 -->
+      <div id="sidebar-slot" class="col-2 p-0"></div>
+
+      <!-- ✅ 메인 콘텐츠 -->
+      <main class="col-10 p-4">
+        <div class="container py-4">
+          <h2 class="text-center mb-4">예약 달력 (Bootstrap 버전)</h2>
+
+          <div class="calendar-controls">
+            <!-- ✅ 드롭다운 -->
+            <div class="d-inline-flex align-items-center">
+              <label for="viewSelect" class="me-2 mb-0 fw-bold">월/주/일 선택</label>
+              <select id="viewSelect" class="form-select form-select-sm w-auto">
+                <option value="month" selected>Month</option>
+                <option value="week">Week</option>
+                <option value="day">Day</option>
+              </select>
+            </div>
+
+            <!-- ✅ 이전/다음 버튼 -->
+            <div>
+              <button id="prev" class="btn btn-outline-dark">◀</button>
+              <span id="ym" class="fw-bold fs-5">—</span>
+              <button id="next" class="btn btn-outline-dark">▶</button>
+            </div>
+          </div>
+
+          <div id="container"></div>
+
+        </div>
+
+        <!-- ✅ 예약 버튼 영역 -->
+        <div class="d-flex justify-content-end gap-2 mt-4 pe-4">
+          <!-- 예약 등록 버튼 -->
+          <button class="btn btn-outline-primary px-4" data-bs-toggle="modal" data-bs-target="#reservationModal">예약 등록</button>
+          <!-- 예약 목록 버튼 -->
+          <button class="btn btn-outline-primary px-4" data-bs-toggle="modal" data-bs-target="#managerReservationModal">예약 목록</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ✅ Bootstrap JS (한 번만 로드) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <!-- ============================
+       ✅ 예약 등록 모달
+  ============================ -->
+  <div class="modal fade" id="reservationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content custom-modal-size">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-center">예약 등록</h5>
+          <button class="btn btn-primary modal-back-btn">닫기</button>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">이름</label>
+              <div class="input-group">
+                <input type="text" id="patientName" class="form-control" readonly>
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#patientSearchModal">환자 조회</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">일시</label>
+              <div class="row g-2 align-items-center">
+                <div class="col-md-4 col-12">
+                  <input type="date" class="form-control" id="reserveDate">
+                </div>
+                <div class="col-md-3 col-6">
+                  <input type="time" class="form-control" id="reserveTime">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">환자연락처</label>
+              <input type="text" id="patientPhone" class="form-control" readonly>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">담당의사 / 진료과</label>
+              <select class="form-select" id="doctorSelect">
+                <option value="" selected>-</option>
+                <option>신경외과 / 나신경 / DN002</option>
+                <option>정형외과 / 원장 / DO003</option>
+                <option>정형외과 / 김의사 / DO001</option>
+              </select>
+            </div>
+
+            <div class="col-md-7">
+              <label class="form-label">내원 사유</label>
+              <textarea class="form-control" id="visitReason"></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer justify-content-center">
+          <button class="btn btn-primary">저장</button>
+          <button class="btn btn-primary">삭제</button>
+          <button class="btn btn-primary">문자보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ 환자 검색 모달 -->
+  <div class="modal fade" id="patientSearchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">환자 검색</h5>
+          <button class="btn btn-primary modal-back-btn">닫기</button>
+        </div>
+        <div class="modal-body">
+
+          <!-- 검색창 -->
+          <div class="input-group mb-3">
+            <input type="text" id="patientSearchInput" class="form-control" placeholder="환자 이름">
+            <button class="btn btn-primary" type="button" id="searchBtn">검색</button>
+            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">초기화</button>
+          </div>
+
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>환자번호</th>
+                <th>이름</th>
+                <th>연락처</th>
+                <th>최근내원일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>6102</td>
+                <td>이승희</td>
+                <td>010-1111-2222</td>
+                <td>2025-09-03</td>
+              </tr>
+              <tr>
+                <td>5800</td>
+                <td>이승희</td>
+                <td>010-2656-5566</td>
+                <td>2023-07-05</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="selectPatientBtn">선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ✅ 전체 예약 목록 모달
+  ============================ -->
+  <div class="modal fade" id="managerReservationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content custom-modal-size">
+        <div class="modal-header">
+          <div class="d-flex gap-2">
+            <h5 class="modal-title fw-bold">전체 예약 목록</h5>
+          </div>
+          <div>
+            <button class="btn btn-primary modal-back-btn">닫기</button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label class="form-label">월</label>
+              <select class="form-select">
+                <option>9월</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">주</label>
+              <select class="form-select">
+                <option>9월 15일 ~ 9월 21일</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">일</label>
+              <select class="form-select">
+                <option>16일</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">시간</label>
+              <select class="form-select">
+                <option>전체</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table id="reservationTable" class="table table-bordered text-center align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col"><input type="checkbox" id="selectAll"></th>
+                  <th scope="col">이름</th>
+                  <th scope="col">방문 예정 일</th>
+                  <th scope="col">방문 예정 시간</th>
+                  <th scope="col">담당의사</th>
+                  <th scope="col">진료과</th>
+                  <th scope="col">상세</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>이승희</td>
+                  <td>2025-09-16</td>
+                  <td>08:30</td>
+                  <td>나신경</td>
+                  <td>신경외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>심채윤</td>
+                  <td>2025-09-16</td>
+                  <td>09:00</td>
+                  <td>나신경</td>
+                  <td>신경외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>황태준</td>
+                  <td>2025-09-16</td>
+                  <td>10:30</td>
+                  <td>홍길동</td>
+                  <td>신경외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>이승희</td>
+                  <td>2025-09-16</td>
+                  <td>11:00</td>
+                  <td>나신경</td>
+                  <td>신경외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>김찰수</td>
+                  <td>2025-09-16</td>
+                  <td>14:00</td>
+                  <td>박임강</td>
+                  <td>정형외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+                <tr>
+                  <td><input class="row-check" type="checkbox"></td>
+                  <td>신명구</td>
+                  <td>2025-09-16</td>
+                  <td>15:00</td>
+                  <td>김의사</td>
+                  <td>정형외과</td>
+<td>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#reservationDetailModal">
+    <img src="detail.png" alt="상세보기" width="24" height="24">
+  </a>
+</td>                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between">
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary">선택 환자 문자 보내기</button>
+            <button class="btn btn-primary">선택 환자 예약 삭제</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       ✅ 예약 상세 모달 + 삭제 확인
+  ============================ -->
+ <!-- 예약 상세 모달 (샘플 데이터 표시용) -->
+<div class="modal fade" id="reservationDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content custom-modal-size">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">예약 상세</h5>
+        <!-- 닫기: 아래(예약목록) 모달이 그대로 보임 -->
+        <button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="reservationForm">
+          <div class="mb-3 col-md-4">
+            <label class="form-label">이름</label>
+            <!-- 샘플 -->
+            <input type="text" class="form-control" value="이승희" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">일시</label>
+            <div class="row g-2 align-items-center">
+              <div class="col-md-4 col-12">
+                <!-- 샘플 -->
+                <input type="date" class="form-control" value="2025-09-15" readonly>
+              </div>
+              <div class="col-md-3 col-6">
+                <!-- 샘플 -->
+                <input type="time" class="form-control" value="08:30" readonly>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3 col-md-4">
+            <label class="form-label">환자연락처</label>
+            <!-- 샘플 -->
+            <input type="text" class="form-control" value="010-1111-2222" readonly>
+          </div>
+
+          <div class="mb-3 col-md-4">
+            <label class="form-label">담당의사 / 진료과</label>
+            <!-- 샘플(비활성) -->
+            <select class="form-select" disabled>
+              <option selected>신경외과 / 나신경 / DN002</option>
+              <option>정형외과 / 원장 / DO003</option>
+              <option>정형외과 / 김의사 / DO001</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">내원 사유</label>
+            <!-- 샘플(상세 모드용) -->
+            <input type="text" class="form-control" value="수술 이후 손발 저림" readonly>
+            <!-- (선택) 수정 모드 지원하려면 textarea 유지 -->
+            <textarea class="form-control d-none">수술 이후 손발 저림</textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer justify-content-center">
+        <!-- 수정/저장/삭제 스크립트 쓰는 경우만 유지 -->
+        <button id="editBtn" class="btn btn-primary">수정</button>
+        <button id="saveBtn" class="btn btn-success d-none">저장</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">삭제</button>
+        <button class="btn btn-secondary">메시지보내기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center border border-danger">
+        <div class="modal-body">
+          <p class="fs-5 fw-bold text-danger mb-4">삭제하시겠습니까!?</p>
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-primary" id="confirmDeleteBtn">확인</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================
+       ✅ 사이드바 + 달력 + 모달 스크립트
+  ============================ -->
+  <script>
+  // ---------- 사이드바 로드 ----------
+  async function loadSidebar(activeKey) {
+    const slot = document.getElementById('sidebar-slot');
+    try {
+      const resp = await fetch('./sidebar.html');
+      const html = await resp.text();
+      slot.innerHTML = html;
+      const current = slot.querySelector(`[data-route="${activeKey}"]`);
+      if (current) {
+        slot.querySelectorAll('#sidebar-nav .nav-link').forEach(a=>{
+          a.classList.remove('active','bg-primary','text-white');
+          a.classList.add('text-dark');
+        });
+        current.classList.add('active','bg-primary','text-white');
+        current.classList.remove('text-dark');
+      }
+    } catch (e) {
+      // 사이드바 파일이 없을 수도 있으니 조용히 무시
+    }
+  }
+  loadSidebar('reserve');
+
+  /* 예약 데이터 (예시) */
+  const reservationEvents = {
+    "2025-09-16": [
+      { start: "09:00", end: "09:30", title: "고은님 9:00" },
+      { start: "14:00", end: "14:30", title: "이수현 14:00" }
+    ],
+    "2025-09-15": [
+      { start: "10:00", end: "11:00", title: "심박 검사" }
+    ]
+  };
+
+  /* 전역 상태 */
+  let viewMode = 'month';
+  let viewDate = new Date(); viewDate.setDate(1);
+
+  function fmt(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth()+1).padStart(2,'0');
+    const d = String(date.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+  function startOfWeekMonday(d) {
+    const dt = new Date(d);
+    const day = dt.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    dt.setDate(dt.getDate() + diff);
+    dt.setHours(0,0,0,0);
+    return dt;
+  }
+  function addDays(d, n) { const dt = new Date(d); dt.setDate(dt.getDate() + n); return dt; }
+
+  const container = document.getElementById('container');
+  const ymSpan = document.getElementById('ym');
+
+  function render() {
+    if (viewMode === 'month') renderMonth();
+    else if (viewMode === 'week') renderWeek();
+    else renderDay();
+  }
+
+  /* ✅ Month View */
+  function renderMonth() {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    ymSpan.textContent = `${year}년 ${month + 1}월`;
+
+    let firstDay = new Date(year, month, 1).getDay();
+    if (firstDay === 0) firstDay = 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const days = ['월', '화', '수', '목', '금', '토', '일'];
+
+    let html = '<table class="table table-bordered text-center align-middle month-view"><thead><tr>';
+    for (const d of days) html += `<th>${d}</th>`;
+    html += '</tr></thead><tbody>';
+
+    let day = 1;
+    let started = false;
+
+    for (let r = 0; r < 6 && day <= daysInMonth; r++) {
+      html += '<tr>';
+      for (let c = 1; c <= 7; c++) {
+        if (!started && c < firstDay) {
+          html += '<td></td>';
+        } else if (day > daysInMonth) {
+          html += '<td></td>';
+        } else {
+          const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const count = (reservationEvents[dateKey] || []).length;
+          html += `<td><strong>${day}</strong><small>총 예약 ${count}건</small></td>`;
+          day++;
+          started = true;
+        }
+      }
+      html += '</tr>';
+    }
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  /* ✅ Week View */
+  function renderWeek() {
+    const monday = startOfWeekMonday(viewDate);
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) weekDays.push(addDays(monday, i));
+    ymSpan.textContent = `${fmt(weekDays[0])} ~ ${fmt(weekDays[6])}`;
+
+    const hours = []; for (let h = 7; h <= 19; h++) hours.push(h);
+
+    let html = '<table class="table table-bordered text-center align-middle week-view"><thead><tr><th>시간</th>';
+    for (let d of weekDays) {
+      const dayLabel = d.toLocaleDateString('ko-KR', { weekday: 'short' });
+      html += `<th>${dayLabel} (${d.getMonth() + 1}/${d.getDate()})</th>`;
+    }
+    html += '</tr></thead><tbody>';
+
+    for (let h of hours) {
+      html += '<tr>';
+      html += `<td>${String(h).padStart(2,'0')}:00</td>`;
+      for (let d of weekDays) {
+        const key = fmt(d);
+        const evs = reservationEvents[key] || [];
+        const count = evs.filter(e => e.start.startsWith(String(h).padStart(2, '0'))).length;
+        html += `<td>${count > 0 ? `<span class="text-danger fw-bold">예약 ${count}건</span>` : ''}</td>`;
+      }
+      html += '</tr>';
+    }
+
+    // 일별 합계
+    html += '<tr>';
+    html += `<td class="fw-bold bg-light">총 예약</td>`;
+    for (let d of weekDays) {
+      const key = fmt(d);
+      const total = (reservationEvents[key] || []).length;
+      html += `<td class="bg-light fw-bold">총 예약 ${total}건</td>`;
+    }
+    html += '</tr>';
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  /* ✅ Day View */
+  function renderDay() {
+    const key = fmt(viewDate);
+    ymSpan.textContent = key;
+
+    const hours = []; for (let h=7; h<=19; h++) hours.push(h);
+
+    let html = '<table class="table table-bordered text-center align-middle day-view"><thead><tr><th>시간</th><th>예약</th></tr></thead><tbody>';
+    for (let h of hours) {
+      const evs = (reservationEvents[key]||[]).filter(e => e.start.startsWith(String(h).padStart(2,'0')));
+      html += `<tr><td>${String(h).padStart(2,'0')}:00</td><td>${evs.map(e=>`${e.start}-${e.end} ${e.title}`).join('<br>')}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  /* ✅ 드롭다운 이벤트 */
+  const viewSelect = document.getElementById('viewSelect');
+  viewSelect.addEventListener('change', () => { viewMode = viewSelect.value; render(); });
+
+  /* ✅ 이전 / 다음 버튼 */
+  document.getElementById('prev').onclick = ()=>{
+    if (viewMode==='month') viewDate.setMonth(viewDate.getMonth()-1);
+    else if (viewMode==='week') viewDate.setDate(viewDate.getDate()-7);
+    else if (viewMode==='day') viewDate.setDate(viewDate.getDate()-1);
+    render();
+  };
+  document.getElementById('next').onclick = ()=>{
+    if (viewMode==='month') viewDate.setMonth(viewDate.getMonth()+1);
+    else if (viewMode==='week') viewDate.setDate(viewDate.getDate()+7);
+    else if (viewMode==='day') viewDate.setDate(viewDate.getDate()+1);
+    render();
+  };
+
+  /* ✅ 최초 렌더 */
+  render();
+
+
+
+  // ============================
+  // 🔥 모달 내비게이션 스택 처리
+  //   - modal-back-btn 클릭 시 "직전 모달" 복귀
+  //   - 첫 진입이면 그냥 닫힘(페이지로 복귀)
+  // ============================
+  const modalStack = []; // ['reservationModal', 'patientSearchModal', ...]
+  function showModal(id, fromId /* string or null */) {
+    if (fromId) modalStack.push(fromId);
+    const el = document.getElementById(id);
+    const m = bootstrap.Modal.getOrCreateInstance(el, {backdrop: 'static', keyboard: false});
+    m.show();
+  }
+  function hideModal(id) {
+    const el = document.getElementById(id);
+    const m = bootstrap.Modal.getInstance(el);
+    if (m) m.hide();
+  }
+  function currentOpenModalId(btnEl) {
+    const modalEl = btnEl.closest('.modal');
+    return modalEl ? modalEl.id : null;
+  }
+  function modalBack(btnEl) {
+    const currId = currentOpenModalId(btnEl);
+    if (!currId) return;
+    hideModal(currId);
+    const prev = modalStack.pop();
+    if (prev) {
+      // 이전이 페이지면 아무것도 안 띄움
+      if (prev !== 'PAGE') {
+        showModal(prev, null);
+      }
+    }
+  }
+
+  // 모든 닫기 버튼에 공통 바인딩
+  document.querySelectorAll('.modal-back-btn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      modalBack(btn);
+    });
+  });
+
+  // 모달이 백드롭 등으로 닫힌 경우에도 스택 복귀 동작
+  document.querySelectorAll('.modal').forEach(modalEl=>{
+    modalEl.addEventListener('hidden.bs.modal', ()=>{
+      // 닫힌 뒤 직전 모달 복원 (단, 버튼을 통한 명시적 back에서도 한 번 더 호출될 수 있으니 안전하게 처리)
+      if (document.querySelector('.modal.show')) return; // 이미 다른 모달이 떠있으면 무시
+      const prev = modalStack.pop();
+      if (prev && prev !== 'PAGE') showModal(prev, null);
+    });
+  });
+
+  // ============================
+  // ✅ 환자 검색 모달 로직
+  // ============================
+  (function initPatientSearch(){
+    let selectedRow = null;
+
+    // 행 선택
+    document.querySelectorAll("#patientSearchModal tbody tr").forEach(row => {
+      row.addEventListener("click", () => {
+        if (selectedRow) selectedRow.classList.remove("table-active");
+        row.classList.add("table-active");
+        selectedRow = row;
+      });
+    });
+
+    // 선택 버튼 -> 값 전달 후 검색모달 닫고 예약등록 모달 복귀
+    document.getElementById("selectPatientBtn").addEventListener("click", () => {
+      if (selectedRow) {
+        const cells = selectedRow.querySelectorAll("td");
+        const name = cells[1].innerText;
+        const phone = cells[2].innerText;
+        document.getElementById("patientName").value = name;
+        document.getElementById("patientPhone").value = phone;
+
+        hideModal("patientSearchModal");
+        showModal("reservationModal", null); // 이전 모달 다시 열기
+      }
+    });
+
+    // 검색
+    const searchPatients = () => {
+      const keyword = document.getElementById("patientSearchInput").value.trim();
+      const rows = document.querySelectorAll("#patientSearchModal tbody tr");
+      rows.forEach(row => {
+        const name = row.querySelectorAll("td")[1].innerText.trim();
+        row.style.display = (keyword === "" || name.includes(keyword)) ? "" : "none";
+      });
+    };
+    document.getElementById("searchBtn").addEventListener("click", searchPatients);
+    document.getElementById("patientSearchInput").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchPatients();
+      }
+    });
+    document.getElementById("clearSearchBtn").addEventListener("click", () => {
+      document.getElementById("patientSearchInput").value = "";
+      document.querySelectorAll("#patientSearchModal tbody tr").forEach(row => row.style.display = "");
+    });
+
+    // "환자 조회" 버튼을 눌러 검색 모달 열 때 스택 처리 (예약등록 -> 환자검색)
+    document.querySelectorAll('[data-bs-target="#patientSearchModal"]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        modalStack.push('reservationModal');
+      });
+    });
+  })();
+
+
+  // ============================
+  // ✅ 예약 목록(체크박스) 로직
+  // ============================
+  (function initManagerList(){
+    const selectAll = document.getElementById("selectAll");
+    const rowChecks = document.querySelectorAll(".row-check");
+
+    if (selectAll) {
+      selectAll.addEventListener("change", function () {
+        rowChecks.forEach((checkbox) => { checkbox.checked = selectAll.checked; });
+      });
+      rowChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+          const allChecked = [...rowChecks].every((chk) => chk.checked);
+          selectAll.checked = allChecked;
+        });
+      });
+    }
+
+    // 상세 아이콘 클릭 -> 상세 모달로 이동 (스택: 목록 -> 상세)
+    document.getElementById('reservationTable')?.addEventListener('click', (e)=>{
+      const a = e.target.closest('.detail-link');
+      if (!a) return;
+      e.preventDefault();
+
+      const tr = a.closest('tr');
+      const tds = tr.querySelectorAll('td');
+
+      // 표에서 정보 추출
+      const name  = tds[1].innerText.trim();
+      const date  = tds[2].innerText.trim();
+      const time  = tds[3].innerText.trim();
+      const doc   = tds[4].innerText.trim();
+      const dept  = tds[5].innerText.trim();
+
+      // 상세 모달에 주입
+      document.getElementById('detailName').value = name;
+      document.getElementById('visitDate').value  = date;
+      document.getElementById('visitTime').value  = time.padStart(5, '0'); // 8:30 -> 08:30
+      document.getElementById('detailPhone').value = ''; // 필요 시 목록에 '연락처' 컬럼 추가해 주입
+
+      // 담당의사/진료과 선택값(간단 매칭)
+      const doctorSelect = document.getElementById('doctorDept');
+      const options = [...doctorSelect.options].map(o=>o.textContent.trim());
+      const targetText = `${dept} / ${doc}`;
+      let matched = options.findIndex(t => t.includes(dept) && t.includes(doc));
+      doctorSelect.selectedIndex = matched >= 0 ? matched : 0;
+
+      // 스택: 목록 -> 상세
+      modalStack.push('managerReservationModal');
+      showModal('reservationDetailModal', null);
+    });
+  })();
+
+
+  // ============================
+  // ✅ 예약 상세 모달: 수정/저장/삭제
+  // ============================
+  (function initDetailModal(){
+    const editBtn = document.getElementById("editBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+    const dateInput = document.getElementById("visitDate");
+    const timeInput = document.getElementById("visitTime");
+    const doctorSelect = document.getElementById("doctorDept");
+
+    const reasonInput = document.getElementById("visitReasonInput");
+    const reasonTextarea = document.getElementById("visitReasonTextarea");
+
+    editBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      dateInput.removeAttribute("readonly");
+      timeInput.removeAttribute("readonly");
+      doctorSelect.removeAttribute("disabled");
+
+      reasonInput.classList.add("d-none");
+      reasonTextarea.classList.remove("d-none");
+      reasonTextarea.value = reasonInput.value;
+
+      document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 수정";
+      editBtn.classList.add("d-none");
+      saveBtn.classList.remove("d-none");
+    });
+
+    saveBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      dateInput.setAttribute("readonly", true);
+      timeInput.setAttribute("readonly", true);
+      doctorSelect.setAttribute("disabled", true);
+
+      reasonInput.value = reasonTextarea.value;
+      reasonTextarea.classList.add("d-none");
+      reasonInput.classList.remove("d-none");
+
+      document.querySelector("#reservationDetailModal .modal-title").innerText = "예약 상세";
+      saveBtn.classList.add("d-none");
+      editBtn.classList.remove("d-none");
+
+      alert("예약 정보가 저장되었습니다.");
+    });
+
+    confirmDeleteBtn.addEventListener("click", () => {
+      const deleteModal = bootstrap.Modal.getInstance(document.getElementById("deleteConfirmModal"));
+      deleteModal.hide();
+      alert("예약이 삭제되었습니다.");
+      // 실제 삭제 로직 연결 가능
+    });
+  })();
+
+
+  // ============================
+  // ✅ 첫 진입에서 버튼으로 모달 여는 경우 스택에 'PAGE' 푸시
+  //    (닫기 누르면 페이지로 복귀 = 아무 모달도 안 띄움)
+  // ============================
+  document.querySelectorAll('[data-bs-target="#reservationModal"]').forEach(btn=>{
+    btn.addEventListener('click', ()=> modalStack.push('PAGE'));
+  });
+  document.querySelectorAll('[data-bs-target="#managerReservationModal"]').forEach(btn=>{
+    btn.addEventListener('click', ()=> modalStack.push('PAGE'));
+  });
+  </script>
+</body>
+</html>

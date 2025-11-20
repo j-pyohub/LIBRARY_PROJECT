@@ -1,0 +1,113 @@
+package test.com.crm.model;
+
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.crm.model.DBCP;
+import com.crm.model.ReserveDAO;
+import com.crm.model.ReserveVO;
+
+public class reserveDAOTest {
+
+	//@Test
+	public void getReserveListTest(){
+		
+		/**월 검색*/
+		Map<String, Object> monthOnly = new HashMap<>();
+        monthOnly.put("month", "2025-09");
+        List<ReserveVO> monthList = new ReserveDAO().getReserveList(monthOnly);
+        System.out.println("[MONTH] size=" + monthList.size());
+        System.out.println(monthList);
+
+		
+		/**주 검색*/
+		Map<String, Object> week = new HashMap<>();
+        week.put("month", "2025-09");
+        week.put("week1", "15");
+        week.put("week2", "19");
+        List<ReserveVO> weekList = new ReserveDAO().getReserveList(week);
+        System.out.println("[week] size=" + weekList.size());
+        System.out.println(weekList);
+	
+		/**일 검색*/
+		Map<String, Object> date = new HashMap<>();
+        date.put("month", "2025-09");
+        date.put("week1", "15");
+        date.put("week2", "19");       
+        date.put("date", "17");       
+        List<ReserveVO> dateList = new ReserveDAO().getReserveList(date);
+        System.out.println("[week] size=" + dateList.size());
+        System.out.println(dateList);
+
+
+		/**시간 검색*/
+		Map<String, Object> time = new HashMap<>();
+	    time.put("month", "2025-09");
+	    time.put("week1", "15");
+	    time.put("week2", "19");       
+	    time.put("date", "16");       
+	    time.put("time", "08");       
+	    List<ReserveVO> timeList = new ReserveDAO().getReserveList(time);
+	    System.out.println("[time] size=" + timeList.size());
+	    System.out.println(timeList);
+}
+	
+	//@Test
+	public void countReserveTest(){
+		/**일자별 총 건수*/
+		Map<String, Object> day = new HashMap<>();
+		day.put("unit", "day");
+		day.put("startDate", "2025-09-15");
+		day.put("endDate", "2025-09-21");
+        List<ReserveVO> countDay = new ReserveDAO().countReserve(day);
+        System.out.println("[일자별]");
+        countDay.forEach(System.out::println);
+		
+        
+		/**시간별 총 건수*/
+		Map<String, Object> time = new HashMap<>();
+		time.put("unit", "time");
+		time.put("startDate", "2025-09-15");
+		time.put("endDate", "2025-09-21");
+        List<ReserveVO> countTime = new ReserveDAO().countReserve(time);
+        System.out.println("[시간별]");
+        countTime.forEach(System.out::println);
+	}
+	
+	//@Test
+	public void getReserveDetailTest(){
+		ReserveVO detail = null;
+		detail = new ReserveDAO().getReserveDetail(10001);
+		System.out.println(detail);
+	}
+	
+	//@Test
+	public void getPatientNameTest(){
+		List<ReserveVO> patients = new ReserveDAO().getPatientName("김병만");
+		System.out.println(patients);
+		
+	}
+	
+	@Test
+	public void getPossibleDoctor(){
+		Map<String,Object> datetime = new HashMap<>();
+		datetime.put("reserveDate", "2025-09-16");
+		datetime.put("reserveDateTime", "2025-09-16 08:00");
+		List<Map<String, Object>> list = new ReserveDAO().getPossibleDoctor(datetime);
+        list.forEach(System.out::println);
+	}
+	
+	//@Test
+	public void test() {
+		System.out.println(DBCP.getSqlSessionFactory());
+		System.out.println(DBCP.getSqlSessionFactory().openSession());
+		System.out.println(DBCP.getSqlSessionFactory().openSession().getConnection());
+	}
+
+}

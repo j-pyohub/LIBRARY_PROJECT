@@ -1,0 +1,38 @@
+package com.crm.model;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+public class ReserveDAO {
+	
+	public static List<ReserveVO> getReserveList(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectReserveList", paramMap);
+		return list;
+	}
+	
+	public List<ReserveVO> countReserve(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.countReserve", paramMap);
+		return list;
+	}
+	
+//	public ReserveVO getReserveDetail(int reserveNo){
+//		
+//		return ;
+//	}
+//	public ReserveVO getPatientName(String patientName){
+//		
+//		return ;
+//	}
+//	public manageDoctorVO getPossibleDoctor(){}
+//	public boolean addReserve(){}
+//	public boolean editReserve(){}
+//	public boolean deleteReserve(){}
+//	
+}

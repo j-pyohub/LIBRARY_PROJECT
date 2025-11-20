@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환자 정보 등록</title>
+    <link rel="stylesheet" href="customerInfo.css">
+</head>
+<body>
+    <div class="patient-form-container">
+        <form action="/registerPatient" method="post">
+            <table class="patient-info-table">
+                <tbody>
+                    <tr>
+                        <th>등록번호</th>
+                        <td><input type="text" id="patientId" name="patientId" value="06080" readonly></td>
+                        <th>이름</th>
+                        <td><input type="text" id="patientName" name="patientName"></td>
+                        <th>전화번호</th>
+                        <td><input type="tel" id="patientPhone" name="patientPhone"></td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td colspan="3"><input type="text" id="patientAddress" name="patientAddress"></td>
+                        <th>등록일</th>
+                        <td><input type="date" id="registrationDate" name="registrationDate" value="2025-07-22"></td>
+                    </tr>
+                    <tr>
+                        <th>진료과</th>
+                        <td>
+                            <select id="department" name="department">
+                                <option value="정형외과" selected>정형외과</option>
+                                <option value="내과">내과</option>
+                                <option value="피부과">피부과</option>
+                                <option value="소아과">소아과</option>
+                            </select>
+                        </td>
+                        <th>담당의사</th>
+                        <td><input type="text" id="doctorName" name="doctorName"></td>
+                        <th>상태</th>
+                        <td>
+                            <select id="status" name="status">
+                                <option value="외래" selected>외래</option>
+                                <option value="입원">입원</option>
+                                <option value="퇴원">퇴원</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주민번호</th>
+                        <td><input type="text" id="residentId" name="residentId" placeholder="xxxxxx-xxxxxxx"></td>
+                        <th>성별</th>
+                        <td>
+                            <select id="gender" name="gender">
+                                <option value="남" selected>남</option>
+                                <option value="여">여</option>
+                            </select>
+                        </td>
+                        <th>내원경로</th>
+                        <td><input type="text" id="visitPath" name="visitPath"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="records-section">
+                <h2>진료 기록</h2>
+                
+                <div class="records-content"> 
+                
+                    <div class="visit-dates-list">
+                        <ul>
+                            <li class="visit-date" data-visit-id="101">
+                                <span class="date">2025-09-26</span>
+                                <span class="doctor">김의사 / 정형외과</span>
+                            </li>
+                            <li class="visit-date active" data-visit-id="102">
+                                <span class="date">2025-08-15</span>
+                                <span class="doctor">박의사 / 내과</span>
+                            </li>
+                            <li class="visit-date" data-visit-id="103">
+                                <span class="date">2025-07-01</span>
+                                <span class="doctor">김의사 / 정형외과</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="record-display">
+                        <div class="record-header">
+                            <h3>2025-08-15 진료 기록</h3>
+                            <span>담당의: 박의사</span>
+                        </div>
+                        <div class="record-body">
+                            <p><strong>주요 증상 (S):</strong> 최근 잦은 소화 불량과 복통을 호소함.</p>
+                            <p><strong>객관적 소견 (O):</strong> 복부 팽만감 관찰, 압통은 없음.</p>
+                            <p><strong>진단 (A):</strong> 기능성 소화불량으로 판단됨.</p>
+                            <p><strong>처방 및 계획 (P):</strong> 소화제 및 위장 운동 촉진제 3일분 처방. 식습관 개선 교육. 3일 후에도 증상 지속 시 내시경 검사 권유.</p>
+                        </div>
+                    </div>
+                    
+                </div> </div> <div class="form-actions">
+                <button type="submit" class="submit-btn">등록</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

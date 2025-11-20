@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	<select id="login" parameterType="String" resultType="map">
+	    select employee_id, pw from employee
+	    where employee_id = #{employeeId} and del_flag is null
+	</select>
+
+
+	<insert id="insertLog" parameterType="map">
+	    insert into login_log (login_no, employee_id, login_ip, login_date)
+	    values (login_no.nextval, #{employeeId}, #{loginIp}, sysdate)
+	</insert>
+
+	<select id="selectAuthority" parameterType="map" resultType="String">
+		select authority from employee where employee_id = #{employeeId}
+	</select>
+
+	<select id="selectLoginLog" parameterType="String" resultType="map">
+		select e.employee_name, e.position, ll.login_ip, to_char(ll.login_date, 'YYYY/MM/DD HH24:MI:SS') AS login_date
+		from login_log ll
+		join employee e on e.employee_id = ll.employee_id
+		where e.employee_id = #{employeeId}
+		  and ll.login_date = (
+		        select MAX(login_date)
+		        from login_log
+		        where employee_id = #{employeeId}
+      );
+	</select>
+	
+	<resultMap id="ReserveMap" type="com.crm.model.ReserveVO">
+	  <id     property="reserveNo"   column="reserve_no"/>
+	  <result property="patientName" column="patient_name"/>
+	  <result property="datetime"    column="datetime" />
+	  <result property="reserveDay"    column="reserve_day"/>
+	  <result property="reserveTime"    column="reserve_time" />
+	  <result property="employeeName"      column="employee_name"/>
+	  <result property="department"  column="department"/>
+	  <result property="phone"  column="phone"/>
+	  <result property="reason"  column="reason"/>
+	  <result property="cnt" column="cnt"/>
+	  <result property="lastMedicalDate" column="last_medical_date" jdbcType="TIMESTAMP"/>
+	  <result property="patientNo" column="patient_no"/>
+	</resultMap>
+	
+	
+	<select id="selectReserveList" parameterType="map" resultMap="ReserveMap">
+		SELECT r.reserve_no, p.patient_name, TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserve_day,
+		 TO_CHAR(r.datetime, 'HH24:MI') AS reserve_time, d.department, e.employee_name
+		FROM reserve r JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.del_flag IS NULL
+		<if test="month != null and month != ''">
+		  AND TO_CHAR(r.datetime, 'YYYY-MM') = #{month}
+			<if test="week1 != null and week2 != null">
+			  AND TO_CHAR(r.datetime, 'DD') BETWEEN #{week1} AND #{week2}	
+				<if test="date != null">
+				AND TO_CHAR(r.datetime, 'DD') = #{date}
+					<if test="time != null">
+					AND TO_CHAR(r.datetime, 'HH24') = #{time}
+					</if>
+				</if>
+			</if>
+		</if>
+		ORDER BY r.datetime
+	</select>
+	
+	
+	<select id="countReserve" parameterType = "map" resultMap = "ReserveMap">
+		SELECT
+		<choose>
+			<when test="unit == 'day'">
+				TO_CHAR(datetime, 'YYYY-MM-DD') AS reserve_day
+			</when>
+			<when test="unit == 'time'">
+				TO_CHAR(datetime, 'YYYY-MM-DD') AS reserve_day, TO_CHAR(datetime, 'HH24:MI')
+				AS reserve_time
+			</when>
+			<otherwise>
+				TO_CHAR(datetime, 'YYYY-MM-DD') AS reserve_day
+			</otherwise>
+		</choose>,
+		COUNT(*) AS cnt
+		FROM reserve
+		WHERE del_flag IS NULL
+		AND datetime &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		AND datetime &lt; TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
+		GROUP BY
+		<choose>
+			<!-- day: 날짜만 그룹 -->
+			<when test="unit == 'day'">
+				TO_CHAR(datetime, 'YYYY-MM-DD')
+			</when>
+	
+			<!-- hour: 날짜 + 시간 모두 그룹 -->
+			<when test="unit == 'time'">
+				TO_CHAR(datetime, 'YYYY-MM-DD'),
+				TO_CHAR(datetime, 'HH24:MI')
+			</when>
+	
+			<otherwise>
+				TO_CHAR(datetime, 'YYYY-MM-DD')
+			</otherwise>
+		</choose>
+		ORDER BY
+		<choose>
+			<when test="unit == 'time'">
+				reserve_day, reserve_time
+			</when>
+			<otherwise>
+				reserve_day
+			</otherwise>
+		</choose>
+	</select>	
+	
+	<select id="selectReserveDetail" parameterType="int" resultMap = "ReserveMap">
+		SELECT p.patient_name, TO_CHAR(r.datetime, 'YYYY-MM-DD') AS reserve_day,
+		 TO_CHAR(r.datetime, 'HH24:MI') AS reserve_time, d.department, e.employee_name
+		FROM reserve r JOIN patient p ON r.patient_no = p.patient_no
+		JOIN doctor_schedule ds ON r.doctor_schedule_no = ds.doctor_schedule_no
+		JOIN doctor d ON ds.doctor_code = d.doctor_code
+		JOIN employee e ON d.employee_id = e.employee_id
+		WHERE r.reserve_no = #{reserveNo}
+	</select>
+	
+	<select id="selectPatientName" parameterType="String" resultMap = "ReserveMap">
+		SELECT p.patient_no, p.patient_name, p.phone, MAX(mr.medical_date) AS last_medical_date
+		FROM patient p
+		LEFT JOIN medical_record mr ON p.patient_no = mr.patient_no
+		WHERE p.patient_name = #{patientName}
+		AND p.del_flag IS NULL
+		GROUP BY p.patient_no, p.patient_name, p.phone
+		ORDER BY last_medical_date DESC
+	</select>
+</mapper>

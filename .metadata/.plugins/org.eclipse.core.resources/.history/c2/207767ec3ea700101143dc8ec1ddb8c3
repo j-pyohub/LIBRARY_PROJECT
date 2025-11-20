@@ -1,0 +1,29 @@
+<meta charset="utf-8">
+<!-- sidebar.html -->
+<aside class="bg-white border-end vh-100 d-flex flex-column p-3">
+  <!--  <div class="text-center mb-4">
+    <img src="hospital_logo.png" alt="병원 로고" class="img-fluid" style="max-width:100px;">
+  </div>-->
+  	<div>여기에 병원 마크</div>
+  <div class="card mb-4">
+
+    <div class="card-body text-center">
+      <h6 class="fw-bold mb-1">홍길동 <span class="text-muted">실장</span></h6>
+      <div class="small text-muted">최종 접속 일시</div>
+      <div class="small">2023/10/26 00:00:30</div>
+      <div class="small text-muted mt-2">최종 접속 IP</div>
+      <div class="small">255.255.0.0</div>
+    </div>
+  </div>
+
+  <nav class="nav flex-column gap-1 mb-auto" id="sidebar-nav">
+    <a href="/reserve.html" class="nav-link text-dark" data-route="reserve">예약 관리</a>
+    <a href="/manageDoctorSchedule.html"   class="nav-link text-dark" data-route="manageDoctorSchedule">주간 근무 관리</a>
+    <a href="/patientList.html" class="nav-link text-dark" data-route="patientList">환자 관리</a>
+    <a href="/smsService.html"  class="nav-link text-dark" data-route="smsService">메시지 서비스</a>
+  </nav>
+
+  <div class="mt-4 text-center">
+    <button class="btn btn-danger w-100">로그아웃</button>
+  </div>
+</aside>

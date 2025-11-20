@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>예약 등록/검색 모달 (최소 변경 체인)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5.3.0 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .custom-modal-size { height: 90vh; max-height: 100%; }
+    .table-active { background-color: #f2f2f2 !important; }
+    input[readonly] { background-color: #f8f9fa !important; }
+  </style>
+</head>
+<body class="p-3">
+
+  <!-- 데모용: 예약 등록 모달 여는 버튼 (실사용 환경에선 필요 없으면 삭제해도 됨) -->
+  <div class="mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reservationModal">예약 등록 열기</button>
+  </div>
+
+  <!-- 예약 등록 모달 -->
+  <div class="modal fade" id="reservationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content custom-modal-size">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold text-center">예약 등록</h5>
+          <button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">이름</label>
+              <div class="input-group">
+                <input type="text" id="patientName" class="form-control" readonly>
+                <!-- ✅ 최소 변경: id 추가 -->
+                <button id="openPatientSearchBtn" class="btn btn-outline-danger" type="button"
+                        data-bs-toggle="modal" data-bs-target="#patientSearchModal">환자 조회</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">일시</label>
+              <div class="row g-2 align-items-center">
+                <div class="col-md-4 col-12">
+                  <input type="date" class="form-control">
+                </div>
+                <div class="col-md-3 col-6">
+                  <input type="time" class="form-control">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">환자연락처</label>
+              <input type="text" id="patientPhone" class="form-control" readonly>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">담당의사 / 진료과</label>
+              <select class="form-select">
+                <option value="" selected>-</option>
+                <option>신경외과 / 나신경 / DN002</option>
+                <option>정형외과 / 원장 / DO003</option>
+                <option>정형외과 / 김의사 / DO001</option>
+              </select>
+            </div>
+
+            <div class="col-md-7 mb-3">
+              <label class="form-label">내원 사유</label>
+              <textarea class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button class="btn btn-primary">저장</button>
+          <button class="btn btn-primary">삭제</button>
+          <button class="btn btn-primary">문자보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 환자 검색 모달 -->
+  <div class="modal fade" id="patientSearchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">환자 검색</h5>
+          <button class="btn-close" id="closeSearchModalBtn" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- 검색창 -->
+          <div class="input-group mb-3">
+            <input type="text" id="patientSearchInput" class="form-control" placeholder="환자 이름">
+            <button class="btn btn-primary" type="button" id="searchBtn">검색</button>
+            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">초기화</button>
+          </div>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>환자번호</th>
+                <th>이름</th>
+                <th>연락처</th>
+                <th>최근내원일</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>6102</td>
+                <td>이승희</td>
+                <td>010-1111-2222</td>
+                <td>2025-09-03</td>
+              </tr>
+              <tr>
+                <td>5800</td>
+                <td>이승희</td>
+                <td>010-2656-5566</td>
+                <td>2023-07-05</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="selectPatientBtn">선택</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS (한 번만 로드) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    let selectedRow = null;
+
+    // ===== 1) '환자 조회' 체인 플로우 (최소 변경) =====
+    let cameFromReservation = false;
+    const reservationEl = document.getElementById("reservationModal");
+    const searchEl = document.getElementById("patientSearchModal");
+
+    // 환자 조회 버튼: 등록 모달 닫고 → 닫힌 뒤 검색 모달 열기
+    document.getElementById("openPatientSearchBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      cameFromReservation = true;
+      const resInst = bootstrap.Modal.getOrCreateInstance(reservationEl);
+      reservationEl.addEventListener("hidden.bs.modal", function openSearchOnce() {
+        reservationEl.removeEventListener("hidden.bs.modal", openSearchOnce);
+        bootstrap.Modal.getOrCreateInstance(searchEl).show();
+      });
+      resInst.hide();
+    });
+
+    // 검색 모달이 닫히면: 등록 모달 복귀 (cameFromReservation 플래그가 true일 때만)
+    searchEl.addEventListener("hidden.bs.modal", () => {
+      if (cameFromReservation) {
+        bootstrap.Modal.getOrCreateInstance(reservationEl).show();
+        cameFromReservation = false; // 1회 복귀 후 리셋(원하면 유지해도 무방)
+      }
+    });
+
+    // ===== 2) 검색 리스트 인터랙션 =====
+    document.querySelectorAll("#patientSearchModal tbody tr").forEach(row => {
+      row.addEventListener("click", () => {
+        if (selectedRow) selectedRow.classList.remove("table-active");
+        row.classList.add("table-active");
+        selectedRow = row;
+      });
+    });
+
+    // 선택 버튼: 값만 채우고 → 검색 모달 닫기 (닫힌 다음 등록 모달은 위 체인 로직이 자동 처리)
+    document.getElementById("selectPatientBtn").addEventListener("click", () => {
+      if (selectedRow) {
+        const cells = selectedRow.querySelectorAll("td");
+        const name = cells[1].innerText;
+        const phone = cells[2].innerText;
+        document.getElementById("patientName").value = name;
+        document.getElementById("patientPhone").value = phone;
+
+        bootstrap.Modal.getOrCreateInstance(searchEl).hide();
+      }
+    });
+
+    // ===== 3) 검색/초기화 =====
+    const searchPatients = () => {
+      const keyword = document.getElementById("patientSearchInput").value.trim();
+      const rows = document.querySelectorAll("#patientSearchModal tbody tr");
+      rows.forEach(row => {
+        const name = row.querySelectorAll("td")[1].innerText.trim();
+        row.style.display = (keyword === "" || name === keyword) ? "" : "none";
+      });
+    };
+
+    document.getElementById("searchBtn").addEventListener("click", searchPatients);
+    document.getElementById("patientSearchInput").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchPatients();
+      }
+    });
+
+    document.getElementById("clearSearchBtn").addEventListener("click", () => {
+      document.getElementById("patientSearchInput").value = "";
+      document.querySelectorAll("#patientSearchModal tbody tr").forEach(row => row.style.display = "");
+    });
+  });
+  </script>
+</body>
+</html>

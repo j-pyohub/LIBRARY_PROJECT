@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>예약 목록 보기(관리자)</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+<style>
+.custom-modal-size {
+  height: 80vh;
+  max-height: 100%;
+}
+</style>
+<body class="p-3">
+
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+		data-bs-target="#managerReservationModal">예약 목록 보기(관리자)</button>
+
+	<div class="modal fade" id="managerReservationModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content custom-modal-size">
+
+				<div class="modal-header">
+					<div class="d-flex gap-2">
+						<h5 class="modal-title fw-bold">전체 예약 목록</h5>
+					</div>
+					<div>
+						<button class="btn btn-primary">예약 등록</button>
+						<button class="btn btn-primary" data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+
+				<div class="modal-body">
+					<div class="row mb-3">
+						<div class="col-md-3">
+							<label class="form-label">월</label> <select class="form-select">
+								<option>9월</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label class="form-label">주</label> <select class="form-select">
+								<option>9월 15일 ~ 9월 21일</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label class="form-label">일</label> <select class="form-select">
+								<option>16일</option>
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label class="form-label">시간</label> <select class="form-select">
+								<option>전체</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-responsive">
+						<table id="reservationTable"
+							class="table table-bordered text-center align-middle">
+							<thead class="table-light">
+								<tr>
+									<th scope="col"><input type="checkbox" id="selectAll"></th>
+									<th scope="col">이름</th>
+									<th scope="col">방문 예정 일</th>
+									<th scope="col">방문 예정 시간</th>
+									<th scope="col">담당의사</th>
+									<th scope="col">진료과</th>
+									<th scope="col">상세</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input class="row-check" type="checkbox"></td>
+									<td>이승희</td>
+									<td>2025-09-16</td>
+									<td>8:30</td>
+									<td>나신경</td>
+									<td>신경외과</td>
+				                    <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+								</tr>
+								<tr>
+				                  <td><input class="row-check" type="checkbox"></td>
+				                  <td>심채윤</td>
+				                  <td>2025-09-16</td>
+				                  <td>9:00</td>
+				                  <td>나신경</td>
+				                  <td>신경외과</td>
+				                  <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+				                </tr>
+				                <tr>
+				                  <td><input class="row-check" type="checkbox"></td>
+				                  <td>황태준</td>
+				                  <td>2025-09-16</td>
+				                  <td>10:30</td>
+				                  <td>홍길동</td>
+				                  <td>신경외과</td>
+				                  <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+				                </tr>
+				                <tr>
+				                  <td><input class="row-check" type="checkbox"></td>
+				                  <td>이승희</td>
+				                  <td>2025-09-16</td>
+				                  <td>11:00</td>
+				                  <td>나신경</td>
+				                  <td>신경외과</td>
+				                  <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+				                </tr>
+				                <tr>
+				                  <td><input class="row-check" type="checkbox"></td>
+				                  <td>김찰수</td>
+				                  <td>2025-09-16</td>
+				                  <td>14:00</td>
+				                  <td>박임강</td>
+				                  <td>정형외과</td>
+				                  <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+				                </tr>
+				                <tr>
+				                  <td><input class="row-check" type="checkbox"></td>
+				                  <td>신명구</td>
+				                  <td>2025-09-16</td>
+				                  <td>15:00</td>
+				                  <td>김의사</td>
+				                  <td>정형외과</td>
+				                  <td><a href="?id=#"><img src="detail.png" alt="상세보기" width="24" height="24"></a></td>
+				                </tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="modal-footer d-flex justify-content-between">
+					<div class="d-flex gap-2">
+						<button class="btn btn-primary">선택 환자 문자 보내기</button>
+						<button class="btn btn-primary">선택 환자 예약 삭제</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		  const selectAll = document.getElementById("selectAll");
+		  const rowChecks = document.querySelectorAll(".row-check");
+		
+		  selectAll.addEventListener("change", function () {
+		    rowChecks.forEach((checkbox) => {
+		      checkbox.checked = selectAll.checked;
+		    });
+		  });
+		
+		  rowChecks.forEach((checkbox) => {
+		    checkbox.addEventListener("change", function () {
+		      const allChecked = [...rowChecks].every((chk) => chk.checked);
+		      const noneChecked = [...rowChecks].every((chk) => !chk.checked);
+		
+		      if (allChecked) {
+		        selectAll.checked = true;
+		      } else {
+		        selectAll.checked = false;
+		      }
+		    });
+		  });
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+package com.crm.model;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+public class ReserveDAO {
+	
+	public List<ReserveVO> getReserveList(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectReserveList", paramMap);
+		return list;
+	}
+	
+	public List<ReserveVO> countReserve(Map<String, Object> paramMap){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.countReserve", paramMap);
+		return list;
+	}
+	
+	public ReserveVO getReserveDetail(int reserveNo){
+		ReserveVO detail = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		detail = conn.selectOne("memberMapper.selectReserveDetail", reserveNo);
+		return detail;
+	}
+	
+	
+	public List<ReserveVO> getPatientName(String patientName){
+		List<ReserveVO> list = null;
+		SqlSession conn = DBCP.getSqlSessionFactory().openSession();
+		list = conn.selectList("memberMapper.selectPatientName", patientName);
+		return list;
+	}
+	public manageDoctorVO getPossibleDoctor(){}
+//	public boolean addReserve(){}
+//	public boolean editReserve(){}
+//	public boolean deleteReserve(){}
+//	
+}
