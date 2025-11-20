@@ -29,7 +29,5 @@ public class ItemProposal {
     @CreationTimestamp
     private Timestamp proposalDate;
 
-
-    @UpdateTimestamp
     private Timestamp responseDate;
 }

@@ -28,6 +28,5 @@ public class ItemOrder {
     @CreationTimestamp
     private Timestamp requestDatetime;
 
-    @UpdateTimestamp
     private Timestamp processDatetime;
 }

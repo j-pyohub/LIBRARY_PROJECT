@@ -34,7 +34,6 @@ public class Item {
     @Column(updatable = false)
     @CreationTimestamp
     private Timestamp inDate;
-    @UpdateTimestamp
     private Timestamp editDate;
     private Timestamp delDate;
 }
