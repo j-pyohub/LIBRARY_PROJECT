@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class ItemProposal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

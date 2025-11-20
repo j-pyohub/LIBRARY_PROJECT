@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class StoreItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

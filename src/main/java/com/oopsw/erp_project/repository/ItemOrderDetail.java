@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class ItemOrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
