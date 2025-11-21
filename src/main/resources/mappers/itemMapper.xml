@@ -4,7 +4,7 @@
 <mapper namespace="com.oopsw.erp_project.dao.ItemDAO">
 
     <!-- ResultMap -->
-    <resultMap id="ItemMap" type="com.oopsw.erp_project.entity.Item">
+    <resultMap id="ItemMap" type="com.oopsw.erp_project.repository.entity.Item">
         <id property="itemNo" column="item_no"/>
         <result property="itemCode" column="item_code"/>
         <result property="itemCategory" column="item_category"/>
@@ -29,7 +29,7 @@
     <!-- =========================== -->
     <!-- 1) INSERT -->
     <!-- =========================== -->
-    <insert id="insertItem" parameterType="com.oopsw.erp_project.entity.Item" useGeneratedKeys="true" keyProperty="itemNo">
+    <insert id="insertItem" parameterType="com.oopsw.erp_project.repository.entity.Item" useGeneratedKeys="true" keyProperty="itemNo">
         INSERT INTO ITEM
         (item_code, item_category, item_name, ingredient_name, stock_unit, supply_unit,
          supplier, item_price, convert_stock, storage_type, expiration_type, expiration,
@@ -45,7 +45,7 @@
     <!-- =========================== -->
     <!-- 2) UPDATE -->
     <!-- =========================== -->
-    <update id="updateItem" parameterType="com.oopsw.erp_project.entity.Item">
+    <update id="updateItem" parameterType="com.oopsw.erp_project.repository.entity.Item">
         UPDATE ITEM
         SET item_code = #{itemCode},
             item_category = #{itemCategory},

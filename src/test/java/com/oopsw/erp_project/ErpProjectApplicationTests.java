@@ -1,7 +1,7 @@
 package com.oopsw.erp_project;
 
 import com.oopsw.erp_project.dao.ItemDAO;
-import com.oopsw.erp_project.entity.ItemOrder;
+import com.oopsw.erp_project.repository.entity.ItemOrder;
 import com.oopsw.erp_project.repository.ItemOrderDetailRepository;
 import com.oopsw.erp_project.repository.ItemOrderRepository;
 

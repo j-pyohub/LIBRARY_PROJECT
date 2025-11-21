@@ -1,6 +1,6 @@
 package com.oopsw.erp_project.repository;
 
-import com.oopsw.erp_project.entity.Menu;
+import com.oopsw.erp_project.repository.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

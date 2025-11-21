@@ -1,4 +1,4 @@
-package com.oopsw.erp_project.entity;
+package com.oopsw.erp_project.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,20 +13,20 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ItemOrder {
+public class ItemProposal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemOrderNo;
+    private Long itemProposalNo;
 
     private String managerId;
     private Long storeNo;
-    private Integer totalItem;
-    private Integer totalAmount;
-    private String itemOrderStatus;
+    private Long itemNo;
+    private Integer proposalQuantity;
+    private String proposalReason;
 
     @Column(updatable = false)
     @CreationTimestamp
-    private Timestamp requestDatetime;
+    private Timestamp proposalDate;
 
-    private Timestamp processDatetime;
+    private Timestamp responseDate;
 }

@@ -1,6 +1,6 @@
 package com.oopsw.erp_project.dao;
 
-import com.oopsw.erp_project.entity.Item;
+import com.oopsw.erp_project.repository.entity.Item;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

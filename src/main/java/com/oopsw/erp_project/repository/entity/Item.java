@@ -1,4 +1,4 @@
-package com.oopsw.erp_project.entity;
+package com.oopsw.erp_project.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
