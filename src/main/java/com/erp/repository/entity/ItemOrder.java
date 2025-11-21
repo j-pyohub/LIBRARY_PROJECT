@@ -3,7 +3,7 @@ package com.erp.repository.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
+import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
 @Entity
@@ -12,14 +12,20 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = {"managerId","storeNo"})
 public class ItemOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemOrderNo;
 
-    private String managerId;
-    private Long storeNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private Manager managerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no")
+    private Store storeNo;
+
     private Integer totalItem;
     private Integer totalAmount;
     private String itemOrderStatus;
