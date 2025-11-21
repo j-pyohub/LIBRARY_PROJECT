@@ -10,9 +10,27 @@ public class StoreDAOTest {
     private StoreDAO storeDAO;
 
     @Test
-    void getStores() {
+    void getStoresTest() {
         System.out.println(storeDAO.getStores());
-
     }
-
+    @Test
+    void getStoresByAddressTest() {
+        System.out.println(storeDAO.getStoresByAddress("서울"));
+    }
+    @Test
+    void getStoresByStoreNameTest() {
+        System.out.println(storeDAO.getStoresByStoreName("가산"));
+    }
+    @Test
+    void getStoresByManagerNameTest() {
+        System.out.println(storeDAO.getStoresByManagerName("수정"));
+    }
+    @Test
+    void getStoresByStoreStatusTest() {
+        System.out.println(storeDAO.getStoresByStoreStatus("오픈준비"));
+    }
+    @Test
+    void getStoreDetailTest() {
+        System.out.println(storeDAO.getStoreDetail(1));
+    }
 }
