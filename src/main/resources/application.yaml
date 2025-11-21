@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/erp_sample
+    url: jdbc:mariadb://127.0.0.1:3306/mydb
     username: mydbid
     password: mydbpw
   jpa:
@@ -19,8 +19,10 @@ spring:
         format_sql: true
 
 mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
   mapper-locations:
-    - classpath:mappers/itemMapper.xml
+    - classpath:mappers/*.xml
 
 server:
   port: 5432
