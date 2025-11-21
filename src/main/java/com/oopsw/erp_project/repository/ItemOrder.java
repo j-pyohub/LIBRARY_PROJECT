@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = {"managerId","storeNo"})
 public class ItemOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

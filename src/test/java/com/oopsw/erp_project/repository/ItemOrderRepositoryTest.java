@@ -1,7 +1,6 @@
-package com.oopsw.erp_project;
+package com.oopsw.erp_project.repository;
 
 import com.oopsw.erp_project.dao.ItemDAO;
-import com.oopsw.erp_project.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +29,7 @@ class ItemOrderRepositoryTest {
     // 전체 발주 내역 조회
     @Test
     void getAllItemsOrder() {
-
-        System.out.println(repoOrder.findAll());
+        repoOrder.findAll().iterator().forEachRemaining(System.out::println);
     }
 
     // 기간 발주 내역 조회
