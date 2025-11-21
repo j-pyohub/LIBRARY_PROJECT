@@ -44,7 +44,7 @@ public class ManagerDAOTest {
     @Test
     void removeManager() {
         ManagerDTO manager = new ManagerDTO();
-        manager.setManagerId("test123");
+        manager.setManagerId("test1234");
         managerDAO.removeManager(manager);
     }
 }
