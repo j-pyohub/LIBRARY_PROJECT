@@ -1,0 +1,24 @@
+package com.erp.repository;
+
+import com.erp.repository.entity.ItemOrder;
+import com.erp.repository.entity.Store;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public interface ItemOrderRepository extends CrudRepository<ItemOrder, Long> {
+
+    List<ItemOrder> findByRequestDatetimeBetween(LocalDateTime requestDatetime, LocalDateTime end);
+
+    @Query("select o from ItemOrder o where function('DAYOFWEEK', o.requestDatetime) = :day")
+    List<ItemOrder> findByRequestDatetimeDay(@Param("day") int day);
+
+    List<ItemOrder> findByStoreNo(Store storeNo);
+
+    List<ItemOrder> findByItemOrderStatus(String status);
+
+    List<ItemOrder> findByItemOrderStatusAndStoreNo(String status, Store storeNo);
+}
