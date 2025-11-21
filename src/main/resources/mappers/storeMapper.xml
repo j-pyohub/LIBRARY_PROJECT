@@ -13,9 +13,18 @@
         join manager m
         on s.store_manager_id = m.manager_id
     </select>
-<!--    <select id="" resultType="">-->
-
-<!--    </select>-->
+    <select id="getStoresByAddress" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE s.address LIKE CONCAT('%', #{address}, '%')
+    </select>
 <!--    <select id="" resultType="">-->
 
 <!--    </select>-->

@@ -12,6 +12,10 @@ public class StoreDAOTest {
     @Test
     void getStores() {
         System.out.println(storeDAO.getStores());
+    }
+    @Test
+    void getStoresByAddress() {
+        System.out.println(storeDAO.getStoresByAddress("서울"));
 
     }
 
