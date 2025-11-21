@@ -1,9 +1,8 @@
-
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.erp.">
-    <insert id="addManager" parameterType="com.erp.dao.dto.managerDTO">
+<mapper namespace="com.erp.dao.ManagerDAO">
+    <insert id="addManager" parameterType="com.erp.dao.dto.ManagerDTO">
         insert into manager (
             manager_id,
             pw,
@@ -23,7 +22,7 @@
          )
     </insert>
 
-    <update id="setManager" parameterType="com.erp.dao.dto.managerDTO">
+    <update id="setManager" parameterType="com.erp.dao.dto.ManagerDTO">
         update manager
         set
             pw=#{pw},
