@@ -61,8 +61,23 @@
                       on s.store_manager_id = m.manager_id
         WHERE s.store_status = #{store_status}
     </select>
-<!--    <select id="" resultType="">-->
-
-<!--    </select>-->
+    <select id="getStoreDetail" resultType="com.erp.dao.dto.StoreDetailDTO">
+        select
+            s.store_no,
+            s.store_name,
+            s.store_status,
+            m.manager_name,
+            m.phone_number,
+            s.address,
+            s.store_phone_number,
+            s.opened_date,
+            s.closed_date,
+            s.open_time,
+            s.close_time
+        from store s
+                 join manager m
+                      on s.store_manager_id = m.manager_id
+        WHERE s.store_no = #{store_no}
+    </select>
 
 </mapper>

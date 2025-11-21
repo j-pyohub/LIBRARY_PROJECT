@@ -28,7 +28,9 @@ public class StoreDAOTest {
     @Test
     void getStoresByStoreStatusTest() {
         System.out.println(storeDAO.getStoresByStoreStatus("오픈준비"));
-
     }
-
+    @Test
+    void getStoreDetailTest() {
+        System.out.println(storeDAO.getStoreDetail(1));
+    }
 }
