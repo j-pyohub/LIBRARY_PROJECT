@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메뉴 조회</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .tab-content-area { display: none; }
+        .tab-active { display: block; }
+    </style>
+</head>
+
+<body class="bg-light py-4">
+
+<div class="container">
+
+    <!-- 제목 / 버튼 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">메뉴 조회</h2>
+        <div>
+            <button class="btn btn-warning me-2">메뉴 등록</button>
+            <button class="btn btn-outline-secondary">직영점별 판매 메뉴 보기</button>
+        </div>
+    </div>
+
+    <!-- 카테고리 + 탭 -->
+    <div class="d-flex align-items-center mb-3">
+        <div class="me-4">
+            <label class="fw-semibold me-2">카테고리</label>
+            <select class="form-select d-inline-block w-auto" name="category">
+                <option value="">전체</option>
+                <option value="pizza">피자</option>
+                <option value="side">사이드디시</option>
+                <option value="drink">음료</option>
+                <option value="etc">기타</option>
+            </select>
+        </div>
+
+        <!-- 탭 버튼 -->
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <span class="fw-semibold">보기</span>
+            <button class="btn btn-dark btn-sm" data-tab="list">목록</button>
+            <button class="btn btn-outline-dark btn-sm" data-tab="image">이미지</button>
+        </div>
+    </div>
+
+    <!-- 목록 뷰 -->
+    <div class="tab-content-area tab-active list">
+        <table class="table text-center align-middle bg-white rounded shadow-sm">
+            <thead class="table-light">
+            <tr>
+                <th>메뉴 코드</th>
+                <th>메뉴 명</th>
+                <th>사이즈</th>
+                <th>가격</th>
+                <th>판매 상태</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+                <td rowspan="2">PEPPERONI_PIZZA</td>
+                <td rowspan="2">페퍼로니 피자</td>
+                <td>라지</td>
+                <td>25,000</td>
+                <td rowspan="2">판매 중</td>
+                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+            <tr>
+                <td>미디움</td>
+                <td>18,000</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">CHEEZE_PIZZA</td>
+                <td rowspan="2">치즈 피자</td>
+                <td>라지</td>
+                <td>23,000</td>
+                <td rowspan="2">판매 중</td>
+                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+            <tr>
+                <td>미디움</td>
+                <td>16,000</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">BULGOGI_PIZZA</td>
+                <td rowspan="2">불고기 피자</td>
+                <td>라지</td>
+                <td>28,000</td>
+                <td rowspan="2">판매 중</td>
+                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+            <tr>
+                <td>미디움</td>
+                <td>20,000</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">POTATO_PIZZA</td>
+                <td rowspan="2">포테이토 피자</td>
+                <td>라지</td>
+                <td>28,000</td>
+                <td rowspan="2">판매 예정</td>
+                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+            <tr>
+                <td>미디움</td>
+                <td>20,000</td>
+            </tr>
+
+            <tr>
+                <td>SUPERSUPREME_PIZZA</td>
+                <td>슈퍼슈프림 피자</td>
+                <td>라지</td>
+                <td>28,000</td>
+                <td>판매 종료</td>
+                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+
+            <tr>
+                <td>SWEETPOTATO_PIZZA</td>
+                <td>고구마 피자</td>
+                <td>미디움</td>
+                <td>20,000</td>
+                <td>판매 종료</td>
+                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+
+            <tr>
+                <td>BACONCHEDDARCHEEZE_PIZZA</td>
+                <td>베이컨 체다치즈 피자</td>
+                <td>단일</td>
+                <td>26,000</td>
+                <td>판매 예정</td>
+                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 이미지 뷰 -->
+    <div class="tab-content-area image">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-2 bg-white shadow-sm text-center">
+                    <img src="https://via.placeholder.com/120" class="img-fluid mb-2">
+                    <div>페퍼로니 피자</div>
+                    <small class="text-muted">25,000원 / 판매 중</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-2 bg-white shadow-sm text-center">
+                    <img src="https://via.placeholder.com/120" class="img-fluid mb-2">
+                    <div>치즈 피자</div>
+                    <small class="text-muted">23,000원 / 판매 중</small>
+                </div>
+            </div>
+
+            <!-- 필요하면 카드 계속 추가 -->
+        </div>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script>
+    document.querySelectorAll("[data-tab]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tabName = btn.dataset.tab;
+
+            document.querySelectorAll(".tab-content-area").forEach(t => t.classList.remove("tab-active"));
+            document.querySelector(`.${tabName}`).classList.add("tab-active");
+        });
+    });
+</script>
+
+</body>
+</html>
