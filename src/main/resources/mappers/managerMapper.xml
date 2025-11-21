@@ -1,4 +1,41 @@
-<insert id="addManager" parameterType="com">
 
-test
-</insert>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.">
+    <insert id="addManager" parameterType="com.erp.dao.dto.managerDTO">
+        insert into manager (
+            manager_id,
+            pw,
+            email,
+            manager_name,
+            phone_number,
+            in_date,
+            role
+        ) values (
+             #{managerId},
+             #{pw},
+             #{email},
+             #{managerName},
+             #{phoneNumber},
+             NOW(),
+             #{role}
+         )
+    </insert>
+
+    <update id="setManager" parameterType="com.erp.dao.dto.managerDTO">
+        update manager
+        set
+            pw=#{pw},
+            email=#{email},
+            manager_name=#{managerName},
+            phone_number=#{phoneNumber}
+        where manager_id = #{managerId}
+    </update>
+
+
+
+</mapper>
+
+
+
