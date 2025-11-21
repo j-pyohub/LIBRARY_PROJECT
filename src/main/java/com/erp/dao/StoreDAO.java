@@ -10,5 +10,6 @@ public interface StoreDAO {
     List<StoreDTO> getStores();
     List<StoreDTO> getStoresByAddress(String address);
     List<StoreDTO> getStoresByStoreName(String storeName);
+    List<StoreDTO> getStoresByManagerName(String managerName);
 
 }
