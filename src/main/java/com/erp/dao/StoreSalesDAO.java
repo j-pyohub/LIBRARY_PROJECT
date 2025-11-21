@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface StoreSalesDAO {
-    List<StoreSalesDTO> getStoreSales();
+    List<StoreSalesDTO> getStoreSales(String startDate, String endDate);
 }

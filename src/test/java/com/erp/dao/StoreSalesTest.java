@@ -11,6 +11,6 @@ public class StoreSalesTest {
 
     @Test
     void getStoreSalesTest() {
-        System.out.println(storeSalesDAO.getStoreSales());
+        System.out.println(storeSalesDAO.getStoreSales("2025-12-18","2025-12-30"));
     }
 }
