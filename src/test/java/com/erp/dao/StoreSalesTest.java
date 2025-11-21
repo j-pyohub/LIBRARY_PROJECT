@@ -13,4 +13,8 @@ public class StoreSalesTest {
     void getStoreSalesTest() {
         System.out.println(storeSalesDAO.getStoreSales("2025-12-18","2025-12-30"));
     }
+    @Test
+    void getStoreSalesByStoreNo() {
+        System.out.println(storeSalesDAO.getStoreSalesByStoreNo(1,"2025-12-18","2025-12-30"));
+    }
 }

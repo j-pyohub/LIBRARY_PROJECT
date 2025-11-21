@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface StoreSalesDAO {
     List<StoreSalesDTO> getStoreSales(String startDate, String endDate);
+    List<StoreSalesDTO> getStoreSalesByStoreNo(long storeNo,String startDate, String endDate);
+
 }

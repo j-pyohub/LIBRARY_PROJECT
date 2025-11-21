@@ -28,4 +28,31 @@
         order by ss.sales_date desc;
 
     </select>
+
+    <select id="getStoreSalesByStoreNo" resultType="com.erp.dao.dto.StoreSalesDTO">
+        select
+            ss.store_sales_no,
+            ss.store_no,
+            s.store_name,
+            s.address,
+            ss.sales_date,
+            ss.sales_price,
+            count(so.sales_order_no) as order_count
+        from store_sales ss
+                 join store s
+                      on ss.store_no = s.store_no
+                 left join sales_order so
+                           on so.store_no = ss.store_no
+                               and date(so.sales_order_datetime) = ss.sales_date
+        where ss.sales_date between #{startDate} and #{endDate}
+        group by
+            ss.store_sales_no,
+            ss.store_no,
+            s.store_name,
+            s.address,
+            ss.sales_date,
+            ss.sales_price
+        order by ss.sales_date desc;
+
+    </select>
 </mapper>
