@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.dao.StoreDAO">
+    <select id="getStores" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+    </select>
+    <select id="getStoresByAddress" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE s.address LIKE CONCAT('%', #{address}, '%')
+    </select>
+    <select id="getStoresByStoreName" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE s.store_name LIKE CONCAT('%', #{store_name}, '%')
+    </select>
+    <select id="getStoresByManagerName" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE m.manager_name LIKE CONCAT('%', #{manager_name}, '%')
+    </select>
+    <select id="getStoresByStoreStatus" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+                 join manager m
+                      on s.store_manager_id = m.manager_id
+        WHERE s.store_status = #{store_status}
+    </select>
+    <select id="getStoreDetail" resultType="com.erp.dao.dto.StoreDetailDTO">
+        select
+            s.store_no,
+            s.store_name,
+            s.store_status,
+            m.manager_name,
+            m.phone_number,
+            s.address,
+            s.store_phone_number,
+            s.opened_date,
+            s.closed_date,
+            s.open_time,
+            s.close_time
+        from store s
+                 join manager m
+                      on s.store_manager_id = m.manager_id
+        WHERE s.store_no = #{store_no}
+    </select>
+
+</mapper>
