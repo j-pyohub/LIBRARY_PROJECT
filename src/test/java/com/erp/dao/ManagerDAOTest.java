@@ -47,4 +47,10 @@ public class ManagerDAOTest {
         manager.setManagerId("test123");
         managerDAO.removeManager(manager);
     }
+
+    @Test
+    void getManagers() {
+        System.out.println(managerDAO.getManagers());
+
+    }
 }
