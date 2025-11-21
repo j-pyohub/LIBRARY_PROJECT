@@ -12,6 +12,7 @@ import lombok.ToString;
 public class StoreSalesDTO {
     private long storeSalesNo;
     private long storeNo;
+    private String storeName;
     private String salesDate;
     private String salesPrice;
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.dao.StoreSalesDAO">
+    <select id="getStoreSales" resultType="com.erp.dao.dto.StoreSalesDTO">
+        select
+            ss.store_sales_no,
+            ss.store_no,
+            s.store_name,
+            ss.sales_date,
+            ss.sales_price
+        from store_sales ss
+                 join store s on ss.store_no = s.store_no
+        order by ss.sales_date desc;
+    </select>
+</mapper>
