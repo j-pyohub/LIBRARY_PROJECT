@@ -1,9 +1,8 @@
-package com.oopsw.erp_project.repository;
+package com.oopsw.erp_project.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 

@@ -1,17 +1,15 @@
 package com.oopsw.erp_project;
 
 import com.oopsw.erp_project.dao.ItemDAO;
+import com.oopsw.erp_project.entity.ItemOrder;
 import com.oopsw.erp_project.repository.ItemOrderDetailRepository;
 import com.oopsw.erp_project.repository.ItemOrderRepository;
-import com.oopsw.erp_project.repository.ItemRepository;
-import com.oopsw.erp_project.vo.ItemOrder;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -28,7 +26,7 @@ class ErpProjectApplicationTests {
 
     @Test
     void myBatisTest() {
-        System.out.println(dao.getItems());
+        System.out.println(dao.selectItemList());
     }
 
     // 전체 발주 내역 조회
@@ -79,7 +77,7 @@ class ErpProjectApplicationTests {
 
     @Test
     void makeOrder(){
-        repoOrder.save(new ItemOrder().);
+        repoOrder.save(new ItemOrder());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.oopsw.erp_project.repository;
 
+import com.oopsw.erp_project.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

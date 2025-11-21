@@ -1,5 +1,7 @@
 package com.oopsw.erp_project.repository;
 
+import com.oopsw.erp_project.entity.Manager;
+import com.oopsw.erp_project.entity.Store;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

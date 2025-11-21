@@ -1,25 +1,21 @@
-package com.oopsw.erp_project.vo;
+package com.oopsw.erp_project.entity;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-@Entity
+@ToString
 public class Item {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemNo;
     private String itemCode;
     private String itemCategory;
@@ -32,13 +28,12 @@ public class Item {
     private Integer convertStock;
     private String storageType;
     private String expirationType;
-    private String expiration;
+    private Integer expiration;
     private String itemImage;
     private String note;
-
+    @Column(updatable = false)
     @CreationTimestamp
     private Timestamp inDate;
-
-    private Date editDate;
-    private Date delDate;
+    private Timestamp editDate;
+    private Timestamp delDate;
 }
