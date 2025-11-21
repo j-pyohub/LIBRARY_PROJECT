@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oopsw.erp_project.dao.ItemDAO">
+
+    <!-- ResultMap -->
+    <resultMap id="ItemMap" type="com.oopsw.erp_project.entity.Item">
+        <id property="itemNo" column="item_no"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemCategory" column="item_category"/>
+        <result property="itemName" column="item_name"/>
+        <result property="ingredientName" column="ingredient_name"/>
+        <result property="stockUnit" column="stock_unit"/>
+        <result property="supplyUnit" column="supply_unit"/>
+        <result property="supplier" column="supplier"/>
+        <result property="itemPrice" column="item_price"/>
+        <result property="convertStock" column="convert_stock"/>
+        <result property="storageType" column="storage_type"/>
+        <result property="expirationType" column="expiration_type"/>
+        <result property="expiration" column="expiration"/>
+        <result property="itemImage" column="item_image"/>
+        <result property="note" column="note"/>
+        <result property="inDate" column="in_date"/>
+        <result property="editDate" column="edit_date"/>
+        <result property="delDate" column="del_date"/>
+    </resultMap>
+
+
+    <!-- =========================== -->
+    <!-- 1) INSERT -->
+    <!-- =========================== -->
+    <insert id="insertItem" parameterType="com.oopsw.erp_project.entity.Item" useGeneratedKeys="true" keyProperty="itemNo">
+        INSERT INTO ITEM
+        (item_code, item_category, item_name, ingredient_name, stock_unit, supply_unit,
+         supplier, item_price, convert_stock, storage_type, expiration_type, expiration,
+         item_image, note, in_date)
+        VALUES
+            (#{itemCode}, #{itemCategory}, #{itemName}, #{ingredientName}, #{stockUnit}, #{supplyUnit},
+             #{supplier}, #{itemPrice}, #{convertStock}, #{storageType}, #{expirationType}, #{expiration},
+             #{itemImage}, #{note}, NOW())
+    </insert>
+
+
+
+    <!-- =========================== -->
+    <!-- 2) UPDATE -->
+    <!-- =========================== -->
+    <update id="updateItem" parameterType="com.oopsw.erp_project.entity.Item">
+        UPDATE ITEM
+        SET item_code = #{itemCode},
+            item_category = #{itemCategory},
+            item_name = #{itemName},
+            ingredient_name = #{ingredientName},
+            stock_unit = #{stockUnit},
+            supply_unit = #{supplyUnit},
+            supplier = #{supplier},
+            item_price = #{itemPrice},
+            convert_stock = #{convertStock},
+            storage_type = #{storageType},
+            expiration_type = #{expirationType},
+            expiration = #{expiration},
+            item_image = #{itemImage},
+            note = #{note},
+            edit_date = NOW()
+        WHERE item_no = #{itemNo}
+    </update>
+
+
+    <!-- =========================== -->
+    <!-- 3) DELETE (소프트 삭제) -->
+    <!-- =========================== -->
+    <update id="deleteItem">
+        UPDATE ITEM
+        SET del_date = NOW()
+        WHERE item_no = #{itemNo}
+    </update>
+
+
+    <!-- =========================== -->
+    <!-- 4) 전체 목록 조회 -->
+    <!-- =========================== -->
+    <select id="selectItemList" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE del_date IS NULL
+        ORDER BY item_no DESC
+    </select>
+
+
+    <!-- =========================== -->
+    <!-- 5) 카테고리 검색 -->
+    <!-- =========================== -->
+    <select id="selectByCategory" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE del_date IS NULL
+          AND item_category LIKE CONCAT('%', #{itemCategory}, '%')
+    </select>
+
+
+    <!-- =========================== -->
+    <!-- 6) 품목명 검색 -->
+    <!-- =========================== -->
+    <select id="selectByItemName" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE del_date IS NULL
+          AND item_name LIKE CONCAT('%', #{itemName}, '%')
+    </select>
+
+
+    <!-- =========================== -->
+    <!-- 7) 품목코드 검색 -->
+    <!-- =========================== -->
+    <select id="selectByItemCode" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE del_date IS NULL
+          AND item_code LIKE CONCAT('%', #{itemCode}, '%')
+    </select>
+
+
+    <!-- =========================== -->
+    <!-- 8) 재료명 검색 -->
+    <!-- =========================== -->
+    <select id="selectByIngredient" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE del_date IS NULL
+          AND ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
+    </select>
+
+
+    <!-- =========================== -->
+    <!-- 9) 상세 조회 -->
+    <!-- =========================== -->
+    <select id="selectItemDetail" resultMap="ItemMap">
+        SELECT *
+        FROM ITEM
+        WHERE item_no = #{itemNo}
+    </select>
+
+</mapper>
