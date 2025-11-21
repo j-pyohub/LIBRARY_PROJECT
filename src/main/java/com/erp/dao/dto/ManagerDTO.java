@@ -1,6 +1,5 @@
 package com.erp.dao.dto;
 
-import jakarta.persistence.Table;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -11,7 +10,6 @@ import java.sql.Timestamp;
 @Builder
 @Setter
 @Getter
-@Table(name = "manager")
 public class ManagerDTO {
     private String managerId;
     private String pw;
