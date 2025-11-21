@@ -9,5 +9,6 @@ import java.util.List;
 public interface StoreDAO {
     List<StoreDTO> getStores();
     List<StoreDTO> getStoresByAddress(String address);
+    List<StoreDTO> getStoresByStoreName(String storeName);
 
 }
