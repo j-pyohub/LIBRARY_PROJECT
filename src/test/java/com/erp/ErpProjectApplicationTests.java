@@ -26,7 +26,7 @@ class ErpProjectApplicationTests {
 
     @Test
     void myBatisTest() {
-        System.out.println(dao.selectItemList());
+        System.out.println(dao.getItemList());
     }
 
     // 전체 발주 내역 조회
