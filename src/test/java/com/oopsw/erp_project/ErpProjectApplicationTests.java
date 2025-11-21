@@ -79,7 +79,6 @@ class ErpProjectApplicationTests {
 
     @Test
     void makeOrder(){
-        repoOrder.save(new ItemOrder().);
     }
 
 }

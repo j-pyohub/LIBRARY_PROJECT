@@ -1,16 +1,18 @@
-package com.oopsw.erp_project.vo;
+package com.oopsw.erp_project.repository;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
+import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-@Entity
+@ToString
 public class ItemOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,9 @@ public class ItemOrder {
     private Integer totalAmount;
     private String itemOrderStatus;
 
+    @Column(updatable = false)
     @CreationTimestamp
     private Timestamp requestDatetime;
+
     private Timestamp processDatetime;
 }
