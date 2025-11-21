@@ -44,14 +44,15 @@ type: description
 - 영어
 - 명령형(add, fix, update…)
 
-| 타입     | 코드     | 설명                                   | 예시                              |
-|----------|----------|------------------------------------------|-----------------------------------|
-| feat     | 기능 추가 | 새로운 기능, API, 화면 추가               | add login screen                  |
-| fix      | 버그 수정 | 오류 해결, 잘못된 로직 수정               | fix sales detail                  |
-| style    | UI/스타일 | CSS, 레이아웃, 포맷 변경 (기능 변화 없음)  | style item table layout           |
-| refactor | 리팩터링  | 코드 구조 개선, 공통화 (기능 변화 없음)     | refactor stock filtering logic    |
-| docs     | 문서      | README, 문서, ERD 업데이트               | docs update API spec              |
-| test     | 테스트    | 테스트 코드 추가/수정                     | test item repository test         |
-| delete   | 삭제      | 사용하지 않는 파일/코드 삭제               | delete deprecated dto             |
-| revert   | 되돌리기   | 이전 커밋 취소                           | revert wrong calculation commit   |
-| wip      | 작업중    | 미완성 기능 임시 커밋                     | wip implement stock movement      |
+| 타입     | 코드     | 설명                          | 예시                              |
+|----------|----------|-----------------------------|-----------------------------------|
+| feat     | 기능 추가 | 새로운 기능, API, 화면 추가          | add login screen                  |
+| fix      | 버그 수정 | 오류 해결, 잘못된 로직 수정            | fix sales detail                  |
+| style    | UI/스타일 | CSS, 레이아웃, 포맷 변경 (기능 변화 없음) | style item table layout           |
+| refactor | 리팩터링  | 코드 구조 개선, 공통화 (기능 변화 없음)    | refactor stock filtering logic    |
+| docs     | 문서      | README, 문서, ERD 업데이트        | docs update API spec              |
+| test     | 테스트    | 테스트 코드 추가/수정                | test item repository test         |
+| delete   | 삭제      | 사용하지 않는 파일/코드 삭제            | delete deprecated dto             |
+| revert   | 되돌리기   | 이전 커밋 취소                    | revert wrong calculation commit   |
+| wip      | 작업중    | 미완성 기능 임시 커밋                | wip implement stock movement      |
+| merge      | 작업중    | 브랜치 병합 커밋                | merge feature/item into main      |
