@@ -1,8 +1,5 @@
-package com.oopsw.erp_project;
+package com.oopsw.erp_project.repository;
 
-import com.oopsw.erp_project.repository.Item;
-import com.oopsw.erp_project.repository.ItemRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,7 @@ public class ItemRepositoryTest {
     @Autowired
     ItemRepository itemRepository;
 
-    // ============================================================
     // 1) 품목 등록
-    // ============================================================
     @Test
     void testCreateItem() {
 
@@ -47,9 +42,7 @@ public class ItemRepositoryTest {
         Assertions.assertNotNull(saved.getItemNo());
     }
 
-    // ============================================================
     // 2) 품목 수정
-    // ============================================================
     @Test
     void testUpdateItem() {
 
@@ -81,9 +74,7 @@ public class ItemRepositoryTest {
         Assertions.assertEquals("B공급업체", updated.getSupplier());
     }
 
-    // ============================================================
     // 3) 품목 삭제
-    // ============================================================
     @Test
     void testDeleteItem() {
         Item item = itemRepository.save(
@@ -111,9 +102,7 @@ public class ItemRepositoryTest {
         Assertions.assertTrue(itemRepository.findById(deleteId).isEmpty());
     }
 
-    // ============================================================
     // 4) 품목 전체 목록 조회
-    // ============================================================
     @Test
     void testFindAllItems() {
 
@@ -141,9 +130,7 @@ public class ItemRepositoryTest {
         Assertions.assertFalse(list.isEmpty());
     }
 
-    // ============================================================
     // 5) 품목 코드 검색
-    // ============================================================
     @Test
     void testFindByItemCode() {
 
@@ -163,7 +150,7 @@ public class ItemRepositoryTest {
                 .build()
         );
 
-        List<Item> result = itemRepository.findByItemCodeContaining("CODE");
+        List<Item> result = itemRepository.findByItemCode("CODE");
 
         System.out.println("▶ 코드 검색 결과:");
         result.forEach(System.out::println);
@@ -171,9 +158,7 @@ public class ItemRepositoryTest {
         Assertions.assertFalse(result.isEmpty());
     }
 
-    // ============================================================
     // 6) 품목명 검색
-    // ============================================================
     @Test
     void testFindByName() {
 
@@ -193,7 +178,7 @@ public class ItemRepositoryTest {
                 .build()
         );
 
-        List<Item> result = itemRepository.findByItemNameContaining("파");
+        List<Item> result = itemRepository.findByItemName("파");
 
         System.out.println("▶ 이름 검색 결과:");
         result.forEach(System.out::println);
@@ -201,9 +186,7 @@ public class ItemRepositoryTest {
         Assertions.assertFalse(result.isEmpty());
     }
 
-    // ============================================================
     // 7) 재료명 검색
-    // ============================================================
     @Test
     void testFindByIngredient() {
 
@@ -223,7 +206,7 @@ public class ItemRepositoryTest {
                 .build()
         );
 
-        List<Item> result = itemRepository.findByIngredientNameContaining("마늘");
+        List<Item> result = itemRepository.findByIngredientName("마늘");
 
         System.out.println("▶ 재료 검색 결과:");
         result.forEach(System.out::println);

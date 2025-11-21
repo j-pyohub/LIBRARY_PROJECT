@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByItemCodeContaining(String code);
+    List<Item> findByItemCode(String itemCode);
 
-    List<Item> findByItemNameContaining(String 파);
+    List<Item> findByItemName(String itemName);
 
-    List<Item> findByIngredientNameContaining(String 마늘);
+    List<Item> findByIngredientName(String ingredientName);
 }
