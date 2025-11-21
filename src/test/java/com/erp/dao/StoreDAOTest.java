@@ -25,5 +25,10 @@ public class StoreDAOTest {
     void getStoresByManagerNameTest() {
         System.out.println(storeDAO.getStoresByManagerName("수정"));
     }
+    @Test
+    void getStoresByStoreStatusTest() {
+        System.out.println(storeDAO.getStoresByStoreStatus("오픈준비"));
+
+    }
 
 }
