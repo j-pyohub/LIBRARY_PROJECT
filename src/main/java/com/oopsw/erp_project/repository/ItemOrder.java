@@ -17,8 +17,14 @@ public class ItemOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long itemOrderNo;
 
-    private String managerId;
-    private Long storeNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private Manager managerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no")
+    private Store storeNo;
+
     private Integer totalItem;
     private Integer totalAmount;
     private String itemOrderStatus;

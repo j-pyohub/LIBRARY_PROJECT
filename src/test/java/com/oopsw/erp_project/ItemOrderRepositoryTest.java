@@ -1,13 +1,12 @@
 package com.oopsw.erp_project;
 
 import com.oopsw.erp_project.dao.ItemDAO;
-import com.oopsw.erp_project.repository.ItemOrder;
-import com.oopsw.erp_project.repository.ItemOrderDetailRepository;
-import com.oopsw.erp_project.repository.ItemOrderRepository;
+import com.oopsw.erp_project.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,7 +30,8 @@ class ItemOrderRepositoryTest {
     // 전체 발주 내역 조회
     @Test
     void getAllItemsOrder() {
-        repoOrder.findAll().iterator().forEachRemaining(System.out::println);
+
+        System.out.println(repoOrder.findAll());
     }
 
     // 기간 발주 내역 조회
@@ -50,7 +50,7 @@ class ItemOrderRepositoryTest {
 
     @Test
     void getItemOrderByStore(){
-        repoOrder.findByStoreNo(2L).iterator().forEachRemaining(System.out::println);
+        repoOrder.findByStoreNo(Store.builder().storeNo(2L).build()).iterator().forEachRemaining(System.out::println);
     }
 
     @Test
@@ -66,16 +66,40 @@ class ItemOrderRepositoryTest {
 
     @Test
     void cancelItemOrder(){
-        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", 8L);
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(2L).build());
         System.out.println(orderList);
+
+        // 발주 요청 no 선택
         if(!orderList.isEmpty()){
-            orderList.get(0).setItemOrderStatus("취소");
+            orderList.get(0).setItemOrderStatus("취소"); // 상태 변경
+            orderList.get(0).setProcessDatetime(new Timestamp(System.currentTimeMillis())); // 처리 시간
             repoOrder.save(orderList.get(0));
         }
     }
 
     @Test
     void makeOrder(){
+        ItemOrder newOrder = new ItemOrder().builder() // 발주 요청 발생
+                .storeNo(Store.builder().storeNo(3L).build())
+                .totalItem(2)
+                .totalAmount(100000)
+                .itemOrderStatus("대기")
+                .requestDatetime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        repoOrder.save(newOrder);
     }
 
+    @Test
+    void approveOrder(){
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(3L).build());
+        System.out.println(orderList);
+
+        // 발주 요청 no 선택
+        if(!orderList.isEmpty()){
+            orderList.get(0).setManagerId(Manager.builder().managerId("galaxy0712").build());
+            orderList.get(0).setItemOrderStatus("승인"); // 상태 변경
+            orderList.get(0).setProcessDatetime(new Timestamp(System.currentTimeMillis())); // 처리 시간
+            repoOrder.save(orderList.get(0));
+        }
+    }
 }
