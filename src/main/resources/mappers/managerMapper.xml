@@ -19,15 +19,24 @@
                 #{role})
     </insert>
 
-    <update id="setManager" parameterType="com.erp.dao.dto.ManagerDTO">
-        update manager
-        set
-            pw=#{pw},
-            email=#{email},
-            manager_name=#{managerName},
-            phone_number=#{phoneNumber}
-        where manager_id = #{managerId}
-    </update>
+        <update id="setManager" parameterType="com.erp.dao.dto.ManagerDTO">
+            update manager
+            set
+                pw=#{pw},
+                email=#{email},
+                manager_name=#{managerName},
+                phone_number=#{phoneNumber}
+            where manager_id = #{managerId}
+        </update>
+
+        <update id="removeManager" parameterType="com.erp.dao.dto.ManagerDTO">
+            update manager
+            set
+                del_date = now()
+            where manager_id = #{managerId}
+        </update>
+
+
 
     <update id="removeManager" parameterType="com.erp.dao.dto.ManagerDTO">
         update manager
