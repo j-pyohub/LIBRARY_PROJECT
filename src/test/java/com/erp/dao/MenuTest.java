@@ -25,4 +25,9 @@ public class MenuTest {
         menuDAO.addMenu(menu);
     }
 
+    @Test
+    void removeMenuTest() {
+        menuDAO.removeMenu(23L);
+    }
+
 }

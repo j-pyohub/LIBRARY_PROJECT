@@ -25,5 +25,9 @@
             NOW()
             )
     </insert>
-
+    <update id="removeMenu">
+        UPDATE menu
+        SET del_date = NOW()
+        WHERE menu_no = #{menuNo}
+    </update>
 </mapper>

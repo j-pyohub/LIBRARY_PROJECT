@@ -10,12 +10,19 @@ public interface MenuDAO {
 
     void addMenu(MenuDTO menu);
 
+    void removeMenu(Long menuNo);
+
+
+
+
+
+
     List<MenuDTO> findByMenuCode(String menuCode);
 
     void updateMenu(MenuDTO menu);
 
     void insertMenu(MenuDTO menu);
 
-    void deleteMenu(Long menuNo);
+
 
 }
