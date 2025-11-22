@@ -1,9 +1,6 @@
 package com.erp.dao.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -11,6 +8,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Data
 @ToString
+@Getter
+@Setter
+@Builder
 public class MenuDTO {
     private Long menuNo;
     private String menuName;
