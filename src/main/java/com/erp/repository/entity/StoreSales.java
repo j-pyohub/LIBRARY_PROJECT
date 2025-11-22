@@ -13,6 +13,7 @@ import java.util.Date;
 @Builder
 @Setter
 @Getter
+@ToString
 @Table(name = "store_sales")
 public class StoreSales {
     @Id
