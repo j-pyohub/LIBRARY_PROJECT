@@ -1,7 +1,6 @@
 package com.erp.dao;
 
 import com.erp.dao.dto.StoreDTO;
-import com.erp.dao.dto.StoreDetailDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -13,5 +12,10 @@ public interface StoreDAO {
     List<StoreDTO> getStoresByStoreName(String storeName);
     List<StoreDTO> getStoresByManagerName(String managerName);
     List<StoreDTO> getStoresByStoreStatus(String storeStatus);
-    StoreDetailDTO getStoreDetail(long storeNo);
+    StoreDTO getStoreDetail(long storeNo);
+    void addStore(StoreDTO store);
+    void setStore(StoreDTO store);
+    void setStoreRole(StoreDTO store);
+    List<StoreDTO> getStoresByAdmin();
+
 }
