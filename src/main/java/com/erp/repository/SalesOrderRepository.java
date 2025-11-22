@@ -17,7 +17,6 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
            WHERE o.store.storeNo = :storeNo
              AND DATE(o.salesOrderDatetime) = :salesDate
            """)
-    int countOrders(@Param("storeNo") Long storeNo, @Param("salesDate") Date salesDate
-    );
+    int countOrders(@Param("storeNo") Long storeNo, @Param("salesDate") Date salesDate );
 }
 

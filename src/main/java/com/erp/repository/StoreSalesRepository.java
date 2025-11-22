@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface StoreSalesRepository extends JpaRepository<StoreSales,Long> {
     List<StoreSales> findBySalesDateBetween(Date startDate, Date endDate);
+    List<StoreSales> findByStore_StoreNoAndSalesDateBetween(Long storeNo, Date startDate, Date endDate);
 }
