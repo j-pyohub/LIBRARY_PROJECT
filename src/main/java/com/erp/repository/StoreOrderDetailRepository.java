@@ -18,6 +18,6 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
        WHERE o.salesOrderNo = :orderNo
        GROUP BY o.salesOrderNo
 """)
-    SalesOrderDTO calculateSalesOrder(@Param("orderNo") Long orderNo);
+    SalesOrderDTO countSalesOrder(@Param("orderNo") Long orderNo);
 
 }

@@ -67,12 +67,14 @@ public class StoreOrderDetailRepositoryTest {
         detail2.setMenuPrice(8000);
         storeOrderDetailRepository.save(detail2);
 
-        SalesOrderDTO summary = storeOrderDetailRepository.calculateSalesOrder(orderNo);
+        SalesOrderDTO summary = storeOrderDetailRepository.countSalesOrder(orderNo);
         int totalAmount = summary.getSalesOrderAmount();
+        int totalMenu = summary.getSalesOrderCount();
         order.setSalesOrderAmount(totalAmount);
         salesOrderRepository.save(order);
 
-        System.out.println("DB에 저장된 총액 = " + order.getSalesOrderAmount());
+        System.out.println("총 판매금액 = " + order.getSalesOrderAmount());
+        System.out.println("총 메뉴개수 = " + totalMenu);
 
     }
 
