@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,7 @@ public class SalesOrder {
     private LocalDateTime salesOrderDatetime;
     @Column(nullable = false)
     private Integer salesOrderAmount;
+
+    @OneToMany(mappedBy = "salesOrder", fetch = FetchType.LAZY)
+    private List<StoreOrderDetail> orderDetails = new ArrayList<>();
 }
