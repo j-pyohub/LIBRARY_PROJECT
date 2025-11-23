@@ -34,6 +34,10 @@ public class StoreOrderDetailRepositoryTest {
     void findDailyMenuSalesTest(){
         System.out.println(storeOrderDetailRepository.findDailyMenuSales(LocalDateTime.of(2024,1,7,0,0   ),LocalDateTime.of(2024,1,8,0,0)));
     }
+    @Test
+    void findDailyMenuSalesByStore(){
+        System.out.println(storeOrderDetailRepository.findDailyMenuSalesByStore(5L,LocalDateTime.of(2024,1,7,0,0   ),LocalDateTime.of(2024,1,8,0,0)));
+    }
 
 
     @Test

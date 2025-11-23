@@ -45,4 +45,27 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
         """)
     List<StoreDailyMenuSalesDTO> findDailyMenuSales(@org.springframework.data.repository.query.Param("start") LocalDateTime startDate, @org.springframework.data.repository.query.Param("end")  LocalDateTime endDate);
 
+    @Query("""
+    select new com.erp.repository.dto.StoreDailyMenuSalesDTO(
+        so.store.storeName,
+        m.menuCategory,
+        m.menuName,
+        m.size,
+        sod.menuCount,
+        (sod.menuPrice * sod.menuCount)
+    )
+    from SalesOrder so
+        join so.orderDetails sod
+        join sod.storeMenu sm
+        join sm.menu m
+    where so.store.storeNo = :storeNo       
+      and so.salesOrderDatetime >= :start
+      and so.salesOrderDatetime < :end
+    order by (sod.menuPrice * sod.menuCount) desc
+    """)
+    List<StoreDailyMenuSalesDTO> findDailyMenuSalesByStore(@org.springframework.data.repository.query.Param("storeNo") Long storeNo,
+                                                           @org.springframework.data.repository.query.Param("start") LocalDateTime start,
+                                                           @org.springframework.data.repository.query.Param("end") LocalDateTime end
+    );
+
 }
