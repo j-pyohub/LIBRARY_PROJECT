@@ -10,6 +10,16 @@ public class StoreMenuRepositoryTest {
     private StoreMenuRepository storeMenuRepository;
 
     @Test
+    void findSellingMenuByMenuName() {
+        System.out.println(storeMenuRepository.findSellingMenuByMenuName("콜라"));
+    }
+
+    @Test
+    void findSellingMenuByStoreNoTest(){
+        System.out.println(storeMenuRepository.findSellingMenuByStoreNo(1L));
+    }
+
+    @Test
     public void setSalesStatusTest() {
         int result = storeMenuRepository.setSalesStatus(40L, "판매중");
         if (result == 0) {
@@ -17,8 +27,5 @@ public class StoreMenuRepositoryTest {
         }
     }
 
-    @Test
-    void findSellingMenuByStoreNoTest(){
-        System.out.println(storeMenuRepository.findSellingMenuByStoreNo(1L));
-    }
+
 }

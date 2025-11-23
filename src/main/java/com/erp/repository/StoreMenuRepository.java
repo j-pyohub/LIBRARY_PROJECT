@@ -37,5 +37,19 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
     """)
         List<StoreSellingMenuDTO> findSellingMenuByStoreNo(@Param("storeNo") Long storeNo);
 
-
+        @Query("""
+    SELECT new com.erp.repository.dto.StoreSellingMenuDTO(
+        s.storeName,
+        m.menuCode,
+        m.menuName,
+        m.size,
+        m.menuPrice,
+        sm.salesStatus
+    )
+    FROM StoreMenu sm
+        JOIN sm.store s
+        JOIN sm.menu m
+    WHERE m.menuName LIKE %:menuName%
+""")
+        List<StoreSellingMenuDTO> findSellingMenuByMenuName(@Param("menuName") String menuName);
 }
