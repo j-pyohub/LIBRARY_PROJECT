@@ -127,7 +127,7 @@
             item_price
         FROM ITEM
         WHERE del_date IS NULL
-          AND item_category LIKE CONCAT('%', #{itemCategory}, '%')
+          AND item_category =#{itemCategory}
     </select>
 
     <!-- 6) 품목명 검색 -->
