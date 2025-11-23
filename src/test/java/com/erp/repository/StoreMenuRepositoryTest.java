@@ -10,6 +10,10 @@ public class StoreMenuRepositoryTest {
     private StoreMenuRepository storeMenuRepository;
 
 
+    @Test
+    void findStoreMenuForStoreTest(){
+        System.out.println(storeMenuRepository.findStoreMenuForStore(1L,null,null,null));
+    }
 
     @Test
     void findSellingMenuByMenuNameTest(){
