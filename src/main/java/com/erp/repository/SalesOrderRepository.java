@@ -28,4 +28,11 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
             WHERE DATE(o.salesOrderDatetime) = :salesDate
 """)
     List<SalesOrder> getSalesOrderbyDate(@Param("salesDate") LocalDate salesDate);
+
+    @Query("""
+            SELECT o
+            FROM SalesOrder o
+            where o.store.storeNo = :storeNo
+""")
+    List<SalesOrder> getSalesOrdersByStore(@Param("storeNo") Long storeNo);
 }
