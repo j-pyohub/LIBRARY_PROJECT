@@ -1,35 +1,37 @@
 package com.erp.dao;
 
-import com.erp.repository.entity.Item;
+import com.erp.dao.dto.ItemDTO;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ItemDAOTest {
 
     @Autowired
     private ItemDAO itemDAO;
 
+    // 1) 새 품목 등록
     @Test
     void 새_품목_등록() {
 
-        Item item = Item.builder()
+        ItemDTO item = ItemDTO.builder()
                 .itemCode("TEST-001")
                 .itemCategory("테스트카테고리")
                 .itemName("테스트아이템")
                 .ingredientName("테스트재료명")
                 .stockUnit("ea")
                 .supplyUnit("box")
-                .supplier("테스트공급사")
-                .itemPrice(12345)
                 .convertStock(100)
+                .itemPrice(12345)
+                .supplier("테스트공급사")
                 .storageType("냉장")
                 .expirationType("입고 후 n일")
                 .expiration(3)
@@ -39,21 +41,21 @@ public class ItemDAOTest {
 
         int result = itemDAO.addItem(item);
 
-        System.out.println("▶ addItem result = " + result);
+        System.out.println("▶ addItem result = " + result + ", PK = " + item.getItemNo());
         assertEquals(1, result);
+        assertNotNull(item.getItemNo()); // useGeneratedKeys 확인
     }
 
+    // 2) 품목 수정
     @Test
     void 품목_수정() {
-        List<Item> list = itemDAO.getByItemCode("TEST-001");
+        List<ItemDTO> list = itemDAO.getByItemCode("TEST-001");
         assertFalse(list.isEmpty());
 
-        Item item = list.get(0);
-
+        ItemDTO item = list.get(0);
         Long itemNo = item.getItemNo();
         assertNotNull(itemNo);
 
-        // 수정 필드들 적용
         item.setItemCategory("수정된카테고리");
         item.setItemCode("EDIT-001");
         item.setItemName("수정된 품목명");
@@ -69,93 +71,90 @@ public class ItemDAOTest {
         item.setItemImage("/img/edited.png");
         item.setNote("수정된 테스트 비고");
 
-        // edit_date는 XML에서 NOW()로 업데이트
-
         int result = itemDAO.setItem(item);
         assertEquals(1, result);
 
-        // 수정된 값 검증
-        Item updated = itemDAO.getItemDetail(itemNo);
+        ItemDTO updated = itemDAO.getItemDetail(itemNo);
         assertEquals("EDIT-001", updated.getItemCode());
         assertEquals("수정된 품목명", updated.getItemName());
 
         System.out.println("▶ 수정된 item = " + updated);
     }
 
+    // 3) 전체 목록 조회
     @Test
     void 전체_품목_목록_조회() {
-        List<Item> list = itemDAO.getItemList();
+        List<ItemDTO> list = itemDAO.getItemList();
 
-        System.out.println("▶ getItemList = " + list.size());
+        System.out.println("▶ getItemList size = " + list.size());
         list.forEach(System.out::println);
 
         assertNotNull(list);
+        assertFalse(list.isEmpty());
     }
 
+    // 4) 카테고리 검색
     @Test
     void 카테고리_검색() {
-        List<Item> list = itemDAO.getByCategory("도우");
+        List<ItemDTO> list = itemDAO.getByCategory("도우");
 
-        System.out.println("▶ getByCategory(도우) = " + list.size());
+        System.out.println("▶ getByCategory(도우) size = " + list.size());
         list.forEach(System.out::println);
 
         assertNotNull(list);
     }
 
-
+    // 5) 품목명 검색
     @Test
     void 품목명_검색() {
-        List<Item> list = itemDAO.getByItemName("도우");
+        List<ItemDTO> list = itemDAO.getByItemName("도우");
 
-        System.out.println("▶ getByItemName = " + list.size());
+        System.out.println("▶ getByItemName size = " + list.size());
         list.forEach(System.out::println);
 
         assertNotNull(list);
     }
 
-
+    // 6) 품목코드 검색
     @Test
     void 품목코드_검색() {
-        List<Item> list = itemDAO.getByItemCode("DOUGH");
+        List<ItemDTO> list = itemDAO.getByItemCode("DOUGH");
 
-        System.out.println("▶ getByItemCode = " + list.size());
+        System.out.println("▶ getByItemCode size = " + list.size());
         list.forEach(System.out::println);
 
         assertNotNull(list);
     }
 
-
+    // 7) 재료명 검색
     @Test
     void 재료명_검색() {
-        List<Item> list = itemDAO.getByIngredient("페퍼로니");
+        List<ItemDTO> list = itemDAO.getByIngredient("페퍼로니");
 
-        System.out.println("▶ getByIngredient = " + list.size());
+        System.out.println("▶ getByIngredient size = " + list.size());
         list.forEach(System.out::println);
 
         assertNotNull(list);
     }
 
-
+    // 8) 품목 상세 보기
     @Test
     void 품목_상세_보기() {
-        Item item = itemDAO.getItemDetail(1L);
+        ItemDTO item = itemDAO.getItemDetail(1L); // 샘플데이터 1번 기준
 
         System.out.println("▶ getItemDetail = " + item);
-
         assertNotNull(item);
     }
 
-
+    // 9) 품목 삭제 (소프트 삭제)
     @Test
     void 품목_삭제() {
-
-        List<Item> list = itemDAO.getByItemCode("EDIT-001");
+        List<ItemDTO> list = itemDAO.getByItemCode("EDIT-001");
 
         if (!list.isEmpty()) {
             Long itemNo = list.get(0).getItemNo();
 
             int result = itemDAO.removeItem(itemNo);
-
             System.out.println("▶ removeItem result = " + result);
             assertEquals(1, result);
         }

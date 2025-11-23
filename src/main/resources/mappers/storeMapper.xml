@@ -13,20 +13,136 @@
         join manager m
         on s.store_manager_id = m.manager_id
     </select>
-<!--    <select id="" resultType="">-->
+    <select id="getStoresByAddress" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE s.address LIKE CONCAT('%', #{address}, '%')
+    </select>
+    <select id="getStoresByStoreName" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE s.store_name LIKE CONCAT('%', #{store_name}, '%')
+    </select>
+    <select id="getStoresByManagerName" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+        join manager m
+        on s.store_manager_id = m.manager_id
+        WHERE m.manager_name LIKE CONCAT('%', #{manager_name}, '%')
+    </select>
+    <select id="getStoresByStoreStatus" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.address,
+            m.manager_name,
+            s.store_name,
+            s.store_status
+        from store s
+                 join manager m
+                      on s.store_manager_id = m.manager_id
+        WHERE s.store_status = #{store_status}
+    </select>
+    <select id="getStoreDetail" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.store_name,
+            s.store_status,
+            m.manager_name,
+            m.phone_number,
+            s.address,
+            s.store_phone_number,
+            s.opened_date,
+            s.closed_date,
+            s.open_time,
+            s.close_time
+        from store s
+                 join manager m
+                      on s.store_manager_id = m.manager_id
+        WHERE s.store_no = #{store_no}
+    </select>
 
-<!--    </select>-->
-<!--    <select id="" resultType="">-->
+    <insert id="addStore" parameterType="com.erp.dao.dto.StoreDTO">
+        INSERT INTO store (
+            store_manager_id,
+            store_status,
+            store_name,
+            address,
+            latitude,
+            longitude,
+            opened_date,
+            closed_date,
+            store_phone_number,
+            store_image,
+            open_time,
+            close_time,
+            menu_stop_role
+        ) VALUES (
+                     #{storeManagerId},
+                     #{storeStatus},
+                     #{storeName},
+                     #{address},
+                     #{latitude},
+                     #{longitude},
+                     #{openedDate},
+                     #{closedDate},
+                     #{storePhoneNumber},
+                     #{storeImage},
+                     #{openTime},
+                     #{closeTime},
+                     #{menuStopRole}
+                 )
+    </insert>
 
-<!--    </select>-->
-<!--    <select id="" resultType="">-->
+    <update id="setStore" parameterType="com.erp.dao.dto.StoreDTO">
+        update store
+        set store_status=#{storeStatus},
+            address=#{address},
+            latitude=#{latitude},
+            longitude=#{longitude},
+            opened_date=#{openedDate},
+            closed_date=#{closedDate},
+            store_phone_number=#{storePhoneNumber},
+            store_image=#{storeImage},
+            open_time=#{openTime},
+            close_time=#{closeTime}
+        where store_no = #{storeNo};
+    </update>
 
-<!--    </select>-->
-<!--    <select id="" resultType="">-->
+    <update id="setStoreRole" parameterType="com.erp.dao.dto.StoreDTO">
+        update store
+        set menu_stop_role = #{menuStopRole}
+        where store_no = #{storeNo};
+    </update>
 
-<!--    </select>-->
-<!--    <select id="" resultType="">-->
-
-<!--    </select>-->
-
+    <select id="getStoresByAdmin" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            m.manager_id,
+            m.email,
+            s.store_name,
+            s.store_phone_number,
+            m.role
+        from manager m
+        join store s
+        on s.store_manager_id = m.manager_id
+        where m.role = 'ROLE_STORE'
+    </select>
 </mapper>
