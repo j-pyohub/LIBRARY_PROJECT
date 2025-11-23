@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 public class MenuTest {
     @Autowired
@@ -30,4 +32,21 @@ public class MenuTest {
         menuDAO.removeMenu(23L);
     }
 
+    @Test
+    void getAllMenuTest() {
+        List<MenuDTO> menuList = menuDAO.getAllMenu();
+        System.out.println(menuList);
+    }
+
+    @Test
+    void getMenuByCategoryTest() {
+        List<MenuDTO> menuList = menuDAO.getMenuByCategory("피자");
+        System.out.println(menuList);
+    }
+
+    @Test
+    void getMenuByReleaseStatusTest() {
+        List<MenuDTO> menuList = menuDAO.getMenuByReleaseStatus("출시 예정");
+        System.out.println(menuList);
+    }
 }

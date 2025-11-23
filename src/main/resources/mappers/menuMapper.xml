@@ -30,4 +30,21 @@
         SET del_date = NOW()
         WHERE menu_no = #{menuNo}
     </update>
+    <select id="getAllMenu" resultType="com.erp.dao.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE del_date IS NULL;
+    </select>
+    <select id="getMenuByCategory" resultType="com.erp.dao.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE menu_category = #{menuCategory}
+          AND del_date IS NULL;
+    </select>
+    <select id="getMenuByReleaseStatus" resultType="com.erp.dao.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE release_status = #{releaseStatus}
+          AND del_date IS NULL;
+    </select>
 </mapper>

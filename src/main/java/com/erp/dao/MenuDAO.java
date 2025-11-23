@@ -12,10 +12,11 @@ public interface MenuDAO {
 
     void removeMenu(Long menuNo);
 
+    List<MenuDTO> getAllMenu();
 
+    List<MenuDTO> getMenuByCategory(String menuCategory);
 
-
-
+    List<MenuDTO> getMenuByReleaseStatus(String releaseStatus);
 
     List<MenuDTO> findByMenuCode(String menuCode);
 
