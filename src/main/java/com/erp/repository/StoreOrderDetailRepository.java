@@ -20,10 +20,10 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
    )
        FROM StoreOrderDetail d
        JOIN d.salesOrder o
-       WHERE o.salesOrderNo = :orderNo
+       WHERE o.salesOrderNo = :salesOrderNo
        GROUP BY o.salesOrderNo
 """)
-    SalesOrderDTO countSalesOrder(@Param("orderNo") Long orderNo);
+    SalesOrderDTO countSalesOrder(@Param("salesOrderNo") Long salesOrderNo);
 
     @Query("""
         select new com.erp.repository.dto.StoreDailyMenuSalesDTO(
@@ -68,4 +68,14 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
                                                            @org.springframework.data.repository.query.Param("end") LocalDateTime end
     );
 
+    @Query("""
+        select d
+        from StoreOrderDetail d
+             JOIN FETCH d.salesOrder o
+             JOIN FETCH o.store s
+             JOIN FETCH d.storeMenu sm
+             JOIN FETCH sm.menu m
+        WHERE o.salesOrderNo = :salesOrderNo
+""")
+    List<StoreOrderDetail> getStoreOrderDetail(@Param("salesOrderNo") Long salesOrderNo);
 }

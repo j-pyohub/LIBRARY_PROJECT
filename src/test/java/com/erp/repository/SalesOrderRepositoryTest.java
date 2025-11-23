@@ -28,7 +28,7 @@ public class SalesOrderRepositoryTest {
 
     @Test
     @Transactional
-    void F() {
+    void getSalesOrdersTest() {
         List<SalesOrder> orders = salesOrderRepository.findAll();
         List<SalesOrderDTO> dtos = new ArrayList<>();
 
@@ -66,4 +66,46 @@ public class SalesOrderRepositoryTest {
         dtos.forEach(System.out::println);
     }
 
+    @Test
+    @Transactional
+    void getSalesOrdersByStoreNoTest() {
+        Long storeNo = 2L;
+
+        List<SalesOrder> orders = salesOrderRepository.getSalesOrdersByStore(storeNo);
+        List<SalesOrderDTO> dtos = new ArrayList<>();
+
+        for (SalesOrder order : orders) {
+            Long orderNo = order.getSalesOrderNo();
+            SalesOrderDTO countDto = storeOrderDetailRepository.countSalesOrder(orderNo);
+            countDto.setStoreNo(order.getStore().getStoreNo());
+            countDto.setStoreName(order.getStore().getStoreName());
+            dtos.add(countDto);
+        }
+
+        for (SalesOrderDTO dto : dtos) {
+            System.out.println(dto);
+        }
+    }
+
+    @Test
+    @Transactional
+    void getSalesOrdersByStoreAndDateTest() {
+        LocalDate targetDate = LocalDate.of(2025, 12, 30);
+        Long storeNo = 2L;
+
+        List<SalesOrder> orders = salesOrderRepository.getSalesOrderByStoreAndDate(storeNo, targetDate);
+        List<SalesOrderDTO> dtos = new ArrayList<>();
+
+        for (SalesOrder order : orders) {
+            Long orderNo = order.getSalesOrderNo();
+            SalesOrderDTO countDto = storeOrderDetailRepository.countSalesOrder(orderNo);
+            countDto.setStoreNo(order.getStore().getStoreNo());
+            countDto.setStoreName(order.getStore().getStoreName());
+            dtos.add(countDto);
+        }
+
+        for (SalesOrderDTO dto : dtos) {
+            System.out.println(dto);
+        }
+    }
 }
