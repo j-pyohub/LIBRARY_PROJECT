@@ -12,8 +12,14 @@ import java.time.LocalDate;
 public class SalesOrderRepositoryTest {
     @Autowired
     private SalesOrderRepository salesOrderRepository;
+
     @Autowired
     private StoreRepository storeRepository;
+    @Test
+    public void countOrdersTest() {
+        System.out.println(salesOrderRepository.countOrders(1L, LocalDate("2025-12-30")));
+    }
+
 
     @Test
     @Transactional

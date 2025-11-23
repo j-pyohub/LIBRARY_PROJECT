@@ -15,6 +15,7 @@ import java.util.Date;
 @Getter
 @Table(name = "sales_order")
 public class SalesOrder {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long salesOrderNo;
