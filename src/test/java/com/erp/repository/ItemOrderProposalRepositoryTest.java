@@ -24,7 +24,7 @@ public class ItemOrderProposalRepositoryTest {
 
     // 직영점 별 발주 제안 조회
     @Test
-    public void findProposalByStoreNo() {
+    public void getProposalByStoreNo() {
         repo.findByStoreNo(Store.builder().storeNo(1L).build()).forEach(System.out::println);
     }
 
