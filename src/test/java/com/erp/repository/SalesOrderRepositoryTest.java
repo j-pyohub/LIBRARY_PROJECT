@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @SpringBootTest
 public class SalesOrderRepositoryTest {
     @Autowired
@@ -17,11 +19,13 @@ public class SalesOrderRepositoryTest {
     @Transactional
     public void getSalesOrderTest() {
         var list = salesOrderRepository.findAll();
-        for (SalesOrder s : list) {
-            System.out.println(s.getSalesOrderNo());
-            System.out.println(s.getStore().getStoreNo());
-            System.out.println(s.getSalesOrderDatetime());
-            System.out.println(s.getSalesOrderAmount());
-        }
+        list.forEach(System.out::println);
     }
+
+//    @Test
+//    @Transactional
+//    public void getSalesOrderbyDateTest() {
+//        System.out.println(salesOrderRepository.findSalesOrderByDate(LocalDate.parse("2024-01-24")));
+//
+//    }
 }
