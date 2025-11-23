@@ -200,17 +200,14 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold">품목 코드</label>
-                        <input type="text" class="form-control">
+                        <label class="form-label fw-semibold">검색조건</label>
+                        <select class="form-select">
+                            <option>품목코드</option>
+                            <option>재료명</option>
+                        </select>
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">재료명</label>
-                        <input type="text" class="form-control">
-                    </div>
-
                     <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-outline-dark w-100">조회</button>
+                        <button class="btn btn-outline-dark w-20">조회</button>
                     </div>
                 </div>
 
@@ -260,8 +257,8 @@
             </div>
 
             <div class="modal-footer">
+                <button class="btn btn-warning custom-btn" id="modalAddSelected">선택 재료 등록</button>
                 <button class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button class="btn btn-warning" id="modalAddSelected">선택 재료 등록</button>
             </div>
 
         </div>
