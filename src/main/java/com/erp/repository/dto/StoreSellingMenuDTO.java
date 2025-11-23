@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoreSellingMenuDTO {
+    private Long storeMenuNo;
     private String storeName;
     private String menuCode;
     private String menuName;

@@ -9,14 +9,27 @@ public class StoreMenuRepositoryTest {
     @Autowired
     private StoreMenuRepository storeMenuRepository;
 
+
+
     @Test
-    void findSellingMenuByMenuName() {
-        System.out.println(storeMenuRepository.findSellingMenuByMenuName("콜라"));
+    void findSellingMenuByMenuNameTest(){
+        System.out.println(storeMenuRepository.findStoreMenu(null,"치즈",null,null));
+    }
+
+
+    @Test
+    void findSellingMenuByStoreNameAndSalesStatusTest() {
+        System.out.println(storeMenuRepository.findStoreMenu("가산",null,"품절",null));
     }
 
     @Test
-    void findSellingMenuByStoreNoTest(){
-        System.out.println(storeMenuRepository.findSellingMenuByStoreNo(1L));
+    void findSellingMenuByStoreNameAndMenuCategoryTest() {
+        System.out.println(storeMenuRepository.findStoreMenu("가산",null,null,"피자"));
+    }
+
+    @Test
+    void findSellingMenuByStoreNameTest(){
+        System.out.println(storeMenuRepository.findStoreMenu("가산",null,null,null));
     }
 
     @Test
