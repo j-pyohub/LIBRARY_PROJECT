@@ -172,30 +172,49 @@
 =========================== -->
 <script>
     /* ---------------------------
-       메인 그래프 데이터 정의
+       기간별 데이터 정의
     --------------------------- */
     const chartData = {
         day: {
-            labels: ['3/01','3/02','3/03','3/04','3/05','3/06','3/07'],
-            data:   [11, 13, 9, 15, 17, 14, 20]
+            labels: ['10/01','10/02','10/03','10/04','10/05','10/06','10/07'],
+            data:   [12, 15, 9, 14, 18, 16, 21],
+            kpi: "전일 대비 매출 성장"
         },
         week: {
-            labels: ['1주차','2주차','3주차','4주차'],
-            data:   [80, 74, 90, 88]
+            labels: [
+                '10/06 ~ 10/12 (W41)',
+                '10/13 ~ 10/19 (W42)',
+                '10/20 ~ 10/26 (W43)',
+                '10/27 ~ 11/02 (W44)'
+            ],
+            data:   [380, 410, 395, 420],
+            kpi: "전주 대비 매출 성장"
         },
         month: {
             labels: ['5월','6월','7월','8월','9월','10월','11월','12월','1월','2월','3월'],
             data:   [380000000, 400000000, 395000000, 360000000, 335000000,
-                360000000, 345000000, 355000000, 380000000, 410000000, 450000000]
+                360000000, 345000000, 355000000, 380000000, 410000000, 450000000],
+            kpi: "전월 대비 매출 성장"
         },
         year: {
             labels: ['2021','2022','2023','2024','2025'],
-            data:   [4.2, 4.6, 5.1, 5.8, 6.3]
+            data:   [4.2, 4.6, 5.1, 5.8, 6.3],
+            kpi: "전년 대비 매출 성장"
         }
     };
 
+
     /* ---------------------------
-       메인 차트 생성 함수
+       KPI 카드 4번 텍스트 변경 함수
+    --------------------------- */
+    function updateKpiLabel(type) {
+        const title = document.querySelectorAll('.kpi-title')[3];
+        title.textContent = chartData[type].kpi;
+    }
+
+
+    /* ---------------------------
+       메인 그래프 생성 함수
     --------------------------- */
     let mainChart;
 
@@ -205,36 +224,52 @@
 
         if (mainChart) mainChart.destroy();
 
+        const chartType = (type === 'year') ? 'bar' : 'line';
+
         mainChart = new Chart(ctx, {
-            type: 'line',
+            type: chartType,
             data: {
                 labels: chartData[type].labels,
                 datasets: [{
                     label: '매출액',
                     data: chartData[type].data,
                     borderColor: '#007bff',
-                    backgroundColor: 'rgba(0,123,255,0.15)',
+                    backgroundColor: (chartType === 'bar')
+                        ? 'rgba(0,123,255,0.6)'
+                        : 'rgba(0,123,255,0.15)',
                     borderWidth: 2,
-                    fill: true,
+                    fill: chartType !== 'bar',
                     tension: 0.3
                 }]
             },
-            options: { responsive: true }
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: false }
+                }
+            }
         });
+
+        updateKpiLabel(type);
     }
 
-    // 초기: 월별 그래프
+    /* ---------------------------
+       초기 로드 → 월별 그래프
+    --------------------------- */
     createMainChart('month');
 
-    // 라디오 버튼 이벤트
+    /* ---------------------------
+       라디오 버튼 이벤트
+    --------------------------- */
     document.querySelectorAll('input[name="period"]').forEach(radio => {
         radio.addEventListener('change', () => {
             createMainChart(radio.id);
         });
     });
 
+
     /* ---------------------------
-       서브 차트
+       서브 차트 (기존 그대로 유지)
     --------------------------- */
     new Chart(document.getElementById('storeTop5Chart'), {
         type: 'bar',
@@ -267,6 +302,7 @@
         },
         options: { responsive: true }
     });
+
 </script>
 
 </body>
