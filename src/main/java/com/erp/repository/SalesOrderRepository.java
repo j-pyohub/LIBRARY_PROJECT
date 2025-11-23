@@ -4,6 +4,7 @@ import com.erp.repository.entity.SalesOrder;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -17,17 +18,17 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
            SELECT COUNT(o)
            FROM SalesOrder o
            WHERE o.store.storeNo = :storeNo
-             AND DATE(o.salesOrderDatetime) = :salesDate
+             AND DATE(o.salesOrderDatetime) = :salesOrderDate
            """)
-    int countOrders(@Param("storeNo") Long storeNo, @Param("salesDate") Date salesDate );
+    int countOrders(@Param("storeNo") Long storeNo, @Param("salesOrderDate") Date salesOrderDate );
 
 
     @Query("""
             SELECT o
             FROM SalesOrder o
-            WHERE DATE(o.salesOrderDatetime) = :salesDate
+            WHERE DATE(o.salesOrderDatetime) = :salesOrderDate
 """)
-    List<SalesOrder> getSalesOrderbyDate(@Param("salesDate") LocalDate salesDate);
+    List<SalesOrder> getSalesOrderbyDate(@Param("salesOrderDate") LocalDate salesOrderDate);
 
     @Query("""
             SELECT o
@@ -35,4 +36,14 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
             where o.store.storeNo = :storeNo
 """)
     List<SalesOrder> getSalesOrdersByStore(@Param("storeNo") Long storeNo);
+
+
+    @Query("""
+            select o
+            from SalesOrder o
+            where o.store.storeNo = :storeNo
+              and DATE(o.salesOrderDatetime) = :salesOrderDate
+""")
+    List<SalesOrder> getSalesOrderByStoreAndDate(@Param("storeNo") Long storeNo,
+                                                 @Param("salesOrderDate") LocalDate salesOrderDate);
 }
