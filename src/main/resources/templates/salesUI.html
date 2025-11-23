@@ -177,4 +177,97 @@
     const chartData = {
         day: {
             labels: ['3/01','3/02','3/03','3/04','3/05','3/06','3/07'],
-            data:
+            data:   [11, 13, 9, 15, 17, 14, 20]
+        },
+        week: {
+            labels: ['1주차','2주차','3주차','4주차'],
+            data:   [80, 74, 90, 88]
+        },
+        month: {
+            labels: ['5월','6월','7월','8월','9월','10월','11월','12월','1월','2월','3월'],
+            data:   [380000000, 400000000, 395000000, 360000000, 335000000,
+                360000000, 345000000, 355000000, 380000000, 410000000, 450000000]
+        },
+        year: {
+            labels: ['2021','2022','2023','2024','2025'],
+            data:   [4.2, 4.6, 5.1, 5.8, 6.3]
+        }
+    };
+
+    /* ---------------------------
+       메인 차트 생성 함수
+    --------------------------- */
+    let mainChart;
+
+    function createMainChart(type) {
+        const canvas = document.getElementById('mainChart');
+        const ctx = canvas.getContext('2d');
+
+        if (mainChart) mainChart.destroy();
+
+        mainChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData[type].labels,
+                datasets: [{
+                    label: '매출액',
+                    data: chartData[type].data,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0,123,255,0.15)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true }
+        });
+    }
+
+    // 초기: 월별 그래프
+    createMainChart('month');
+
+    // 라디오 버튼 이벤트
+    document.querySelectorAll('input[name="period"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            createMainChart(radio.id);
+        });
+    });
+
+    /* ---------------------------
+       서브 차트
+    --------------------------- */
+    new Chart(document.getElementById('storeTop5Chart'), {
+        type: 'bar',
+        data: {
+            labels: ['가산1호점', '강릉경포점', '부산서면점', '가산2호점', '부천시청점'],
+            datasets: [{
+                label: '매출금액(개)',
+                data: [820, 740, 690, 650, 610],
+                backgroundColor: [
+                    '#0d6efd', '#6f42c1', '#d63384', '#fd7e14', '#198754'
+                ]
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true
+        }
+    });
+
+    new Chart(document.getElementById('menuPieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['페퍼로니', '치즈피자', '콤비네이션', '불고기피자', '고구마피자'],
+            datasets: [{
+                data: [25, 18, 30, 15, 12],
+                backgroundColor: [
+                    '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'
+                ]
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+
+</body>
+</html>
