@@ -1,16 +1,19 @@
 package com.erp.repository.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class SalesOrderDTO {
     private long salesOrderNo;
+    private long storeNo;
+    private String storeName;
     private int salesOrderCount;
     private int salesOrderAmount;
+
 
     public SalesOrderDTO(Long salesOrderNo, Long salesOrderCount, Long salesOrderAmount) {
         this.salesOrderNo = salesOrderNo;
