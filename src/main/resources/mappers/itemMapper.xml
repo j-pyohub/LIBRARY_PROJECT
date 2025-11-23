@@ -83,7 +83,7 @@
         SELECT *
         FROM ITEM
         WHERE del_date IS NULL
-          AND item_category LIKE CONCAT('%', #{itemCategory}, '%')
+          AND item_category =#{itemCategory}
     </select>
 
 
