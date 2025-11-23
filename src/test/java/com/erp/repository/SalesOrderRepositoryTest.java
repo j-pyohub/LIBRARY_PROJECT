@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 @SpringBootTest
@@ -17,7 +18,7 @@ public class SalesOrderRepositoryTest {
     private StoreRepository storeRepository;
     @Test
     public void countOrdersTest() {
-        System.out.println(salesOrderRepository.countOrders(1L, LocalDate("2025-12-30")));
+        System.out.println(salesOrderRepository.countOrders(1L, Date.valueOf("2025-12-30")));
     }
 
 
