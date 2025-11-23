@@ -2,6 +2,7 @@ package com.erp.repository;
 
 import com.erp.dao.ItemDAO;
 import com.erp.repository.entity.ItemOrder;
+import com.erp.repository.entity.ItemOrderDetail;
 import com.erp.repository.entity.Manager;
 import com.erp.repository.entity.Store;
 import org.junit.jupiter.api.Test;
@@ -33,33 +34,36 @@ class ItemOrderRepositoryTest {
     // 기간 발주 내역 조회
     @Test
     void getItemsOrderByDate(){
-        LocalDate today = LocalDate.of(2025, 11, 12);
-        repoOrder.findByRequestDatetimeBetween(today.atStartOfDay(), today.plusDays(1).atStartOfDay()).iterator().forEachRemaining(System.out::println);
+        repoOrder.findByRequestDatetimeBetween(LocalDate.of(2025, 11, 12).atStartOfDay(), LocalDate.of(2025, 11, 13).atStartOfDay()).forEach(System.out::println);
     }
 
-    // 요잉별 발주 내역 조회
+    // 요일별 발주 내역 조회
     @Test
     void getItemsOrderByDay(){
         // 일: 1, 월: 2, 화: 3, 수: 4, 목: 5, 금: 6, 토: 7
         repoOrder.findByRequestDatetimeDay(4).iterator().forEachRemaining(System.out::println);
     }
 
+    // 발주 요청자 별 조회
     @Test
     void getItemOrderByStore(){
         repoOrder.findByStoreNo(Store.builder().storeNo(2L).build()).iterator().forEachRemaining(System.out::println);
     }
 
+    // 발주 상태별 조회
     @Test
     void getItemOrderByStatus(){
         // status: 승인, 대기, 반려, 취소
-        repoOrder.findByItemOrderStatus("승인").iterator().forEachRemaining(System.out::println);
+        repoOrder.findByItemOrderStatus("승인").forEach(System.out::println);
     }
 
+    // 발주 상세 보기(발주번호에 해당하는)
     @Test
-    void getAlItemOrderDetail(){
-        repoDetail.findAll().iterator().forEachRemaining(System.out::println);
+    void getItemOrderDetailByItemOrder(){
+        repoDetail.findByItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
     }
 
+    // 발주 요청 취소
     @Test
     void cancelItemOrder(){
         List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(2L).build());
@@ -73,18 +77,7 @@ class ItemOrderRepositoryTest {
         }
     }
 
-    @Test
-    void makeOrder(){
-        ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
-                .storeNo(Store.builder().storeNo(3L).build())
-                .totalItem(2)
-                .totalAmount(100000)
-                .itemOrderStatus("대기")
-                .requestDatetime(new Timestamp(System.currentTimeMillis()))
-                .build();
-        repoOrder.save(newOrder);
-    }
-
+    // 발주 요청 승인
     @Test
     void approveOrder(){
         List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(3L).build());
@@ -98,4 +91,47 @@ class ItemOrderRepositoryTest {
             repoOrder.save(orderList.get(0));
         }
     }
+
+    // 발주 요청 반려
+    @Test
+    void declineOrder(){
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(3L).build());
+        System.out.println(orderList);
+
+        if(!orderList.isEmpty()){
+            orderList.get(0).setManagerId(Manager.builder().managerId("galaxy0712").build());
+            orderList.get(0).setItemOrderStatus("반려");
+            orderList.get(0).setProcessDatetime(new Timestamp(System.currentTimeMillis()));
+            repoOrder.save(orderList.get(0));
+        }
+    }
+
+
+    // 발주하기
+    @Test
+    void makeOrder(){
+        ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
+                .storeNo(Store.builder().storeNo(3L).build())
+                .totalItem(2)
+                .totalAmount(100000)
+                .itemOrderStatus("대기")
+                .requestDatetime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        repoOrder.save(newOrder);
+    }
+
+    // 승인 목록 조회
+    @Test
+    void getApprovedOrder(){
+        repoOrder.findByItemOrderStatus("승인").forEach(System.out::println);
+    }
+
+    // 승인 목록 상세 조회
+    @Test
+    void getApprovedOrderDetail(){
+        ItemOrder order = repoOrder.findByItemOrderStatus("승인").get(0); // itemOrder 번째 선택
+
+        repoDetail.findByItemOrderNo(order).forEach(System.out::println);
+    }
+
 }
