@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
 
+
     // 1) 직영점 전체 변동 기록 조회
     @Query("""
         SELECT ss
@@ -43,4 +44,13 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
         ORDER BY ss.storeStockNo DESC
     """)
     List<StoreStock> searchByItemCode(Long storeNo, String itemCode);
+
+
+    // 현재 재고 수량 조회
+
+    StoreStock findFirstByStoreItemNoOrderByStoreStockNoDesc(Long storeItemNo);
+
+
 }
+
+

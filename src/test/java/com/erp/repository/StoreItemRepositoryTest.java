@@ -14,6 +14,22 @@ class StoreItemRepositoryTest {
     @Autowired
     StoreItemRepository storeItemRepository;
 
+    @Test
+    void 하한선_수정() {
+
+        StoreItem item = storeItemRepository.findByStoreNoAndItemNo(1L, 1L)
+                .get(0);
+
+        System.out.println("변경 전: " + item);
+
+        item.setManagerLimit(60);
+        item.setStoreLimit(40);
+
+        StoreItem updated = storeItemRepository.save(item);
+
+        System.out.println("변경 후: " + updated);
+    }
+
 
     @Test
     void 매장번호로_조회() {
