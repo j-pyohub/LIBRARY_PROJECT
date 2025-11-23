@@ -16,4 +16,9 @@ public class StoreMenuRepositoryTest {
             throw new IllegalArgumentException("해당 store_menu_no 없음: " + 40L);
         }
     }
+
+    @Test
+    void findSellingMenuByStoreNoTest(){
+        System.out.println(storeMenuRepository.findSellingMenuByStoreNo(1L));
+    }
 }
