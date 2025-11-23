@@ -16,5 +16,5 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
                 WHERE sm.storeMenuNo = :storeMenuNo
         """)
         int setSalesStatus(@Param("storeMenuNo") Long storeMenuNo,
-                              @Param("status") String status);
+                              @Param("status") String salesStatus);
 }
