@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>직영점별 매출조회 (리스트/본사)</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #e5e5e5;
+    }
+    .top-bar {
+      background-color: #7be3a4;
+      padding: 8px 16px;
+    }
+    .section-box {
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      padding: 16px 20px;
+    }
+    .table thead th {
+      background-color: #fafafa;
+      font-weight: 600;
+    }
+    .page-link {
+      color: #333;
+    }
+    .page-item.active .page-link {
+      background-color: #7be3a4;
+      border-color: #7be3a4;
+      color: #000;
+    }
+
+    /* 페이지네이션 가운데 정렬 */
+    .pagination-wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="p-3">
+
+<div class="border border-secondary" style="max-width: 1200px; margin: 0 auto; background:#fdfdfd;">
+  <!-- 타이틀 -->
+  <div class="fs-4 fw-bold p-2">
+    직영점별 매출조회 (리스트/본사)
+  </div>
+
+  <!-- 상단 메뉴 바 -->
+  <div class="top-bar d-flex align-items-center">
+    <div class="btn-group me-3">
+      <button class="btn btn-light btn-sm">회사 로고</button>
+      <button class="btn btn-secondary btn-sm">회사 명</button>
+    </div>
+
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link active fw-bold text-dark" href="#">매출 ▾</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#">재고 ▾</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#">메뉴 ▾</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="#">직영점</a>
+      </li>
+    </ul>
+
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span>본사 홍길동</span>
+      <button class="btn btn-outline-primary btn-sm">로그아웃</button>
+    </div>
+  </div>
+
+  <!-- 보기 및 검색 -->
+  <div class="px-3 pt-3">
+
+    <!-- 보기 -->
+    <div class="d-flex align-items-center mb-2">
+      <span class="me-2">보기</span>
+      <div class="btn-group" role="group">
+        <button class="btn btn-outline-secondary btn-sm">차트</button>
+        <button class="btn btn-warning btn-sm">목록</button>
+      </div>
+    </div>
+
+    <!-- 조회기간 + 검색 -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+      <span class="fw-semibold me-1">조회기간</span>
+      <input type="date" class="form-control form-control-sm" style="width:150px;" value="2025-10-01">
+      <span>~</span>
+      <input type="date" class="form-control form-control-sm" style="width:150px;" value="2025-11-01">
+
+      <span class="fw-semibold ms-3">직영점명</span>
+      <div class="input-group input-group-sm" style="width:230px;">
+        <input type="text" class="form-control" placeholder="검색">
+        <button class="btn btn-outline-secondary" type="button">🔍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 리스트 테이블 -->
+  <div class="px-3 pb-3">
+    <div class="section-box">
+      <table class="table table-hover align-middle mb-3">
+        <thead>
+        <tr class="text-center">
+          <th>번호</th>
+          <th>직영점명</th>
+          <th>지역</th>
+          <th>전일대비</th>
+          <th>주문수</th>
+          <th>매출액</th>
+          <th>판매날짜</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody id="storeTable">
+        </tbody>
+      </table>
+
+      <!-- 페이지네이션 -->
+      <div class="pagination-wrapper mb-3" id="paginationArea"></div>
+
+      <!-- 페이지 사이즈 선택 -->
+      <div class="d-flex justify-content-end">
+        <select id="pageSize" class="form-select form-select-sm" style="width:80px;">
+          <option value="5" selected>5개</option>
+          <option value="10">10개</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- JS 페이징 및 테이블 채우기 -->
+<script>
+  const sampleData = [
+    {name:"강남직영점", addr:"서울시 강남구 일원동 664-9", diff:"5.3% 상승", order:7000, price:"68,000,000", date:"2025. 10. 1."},
+    {name:"부산직영점", addr:"부산 서구 쌍용동 1201-1", diff:"3.1% 상승", order:5000, price:"56,000,000", date:"2025. 10. 1."},
+    {name:"대전직영점", addr:"대전 서구 도산로 335", diff:"2.8% 상승", order:5500, price:"47,500,000", date:"2025. 10. 1."},
+    {name:"관악직영점", addr:"서울시 관악구 인헌12다길", diff:"10% 상승", order:9500, price:"97,000,000", date:"2025. 10. 1."},
+    {name:"금천직영점", addr:"서울시 금천구 독산동 331", diff:"5% 하락", order:6500, price:"38,000,000", date:"2025. 10. 1."},
+    {name:"수원직영점", addr:"경기도 수원시 영통구 55", diff:"1.2% 상승", order:7200, price:"58,000,000", date:"2025. 10. 1."},
+    {name:"인천직영점", addr:"인천 남동구 논현동 11", diff:"4.1% 상승", order:8200, price:"74,000,000", date:"2025. 10. 1."},
+    {name:"광주직영점", addr:"광주 북구 일곡동 22", diff:"2.2% 상승", order:4300, price:"39,000,000", date:"2025. 10. 1."},
+    {name:"대구직영점", addr:"대구 달서구 본리동 88", diff:"7.5% 상승", order:9000, price:"83,000,000", date:"2025. 10. 1."},
+    {name:"창원직영점", addr:"창원시 성산구 상남동 45", diff:"3.8% 상승", order:6100, price:"49,000,000", date:"2025. 10. 1."}
+  ];
+
+  let currentPage = 1;
+
+  function loadTable() {
+    const tbody = document.getElementById("storeTable");
+    const pageSize = parseInt(document.getElementById("pageSize").value);
+    tbody.innerHTML = "";
+
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+
+    const pageData = sampleData.slice(start, end);
+
+    pageData.forEach((item, idx) => {
+      const row = `
+        <tr class="text-center">
+          <td>${start + idx + 1}</td>
+          <td>${item.name}</td>
+          <td class="text-start">${item.addr}</td>
+          <td>${item.diff}</td>
+          <td>${item.order.toLocaleString()}</td>
+          <td>${item.price}</td>
+          <td>${item.date}</td>
+          <td>
+            <img src="/image/detail.png"
+                 alt="상세보기"
+                 style="width:24px; height:24px; cursor:pointer;">
+          </td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+
+    createPagination();
+  }
+
+  function createPagination() {
+    const pageSize = parseInt(document.getElementById("pageSize").value);
+    const totalPages = Math.ceil(sampleData.length / pageSize);
+    const pagination = document.getElementById("paginationArea");
+
+    let html = `
+      <ul class="pagination pagination-sm">
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+          <a class="page-link" href="#" onclick="movePage(${currentPage - 1})">&lt;</a>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `
+        <li class="page-item ${currentPage === i ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
+        </li>`;
+    }
+
+    html += `
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+          <a class="page-link" href="#" onclick="movePage(${currentPage + 1})">&gt;</a>
+        </li>
+      </ul>
+    `;
+
+    pagination.innerHTML = html;
+  }
+
+  function movePage(page) {
+    currentPage = page;
+    loadTable();
+  }
+
+  document.getElementById("pageSize").addEventListener("change", () => {
+    currentPage = 1;
+    loadTable();
+  });
+
+  loadTable();
+</script>
+
+</body>
+</html>
