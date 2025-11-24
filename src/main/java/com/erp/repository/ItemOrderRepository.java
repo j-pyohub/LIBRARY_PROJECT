@@ -23,4 +23,6 @@ public interface ItemOrderRepository extends JpaRepository<ItemOrder, Long> {
     Page<ItemOrder> findByItemOrderStatus(String status, Pageable pageable);
 
     List<ItemOrder> findByItemOrderStatusAndStoreNo(String status, Store storeNo);
+
+    ItemOrder findByItemOrderNo(long l);
 }

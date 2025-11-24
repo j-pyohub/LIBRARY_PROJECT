@@ -1,10 +1,7 @@
 package com.erp.repository;
 
 import com.erp.dao.ItemDAO;
-import com.erp.repository.entity.ItemOrder;
-import com.erp.repository.entity.ItemOrderDetail;
-import com.erp.repository.entity.Manager;
-import com.erp.repository.entity.Store;
+import com.erp.repository.entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +25,9 @@ class ItemOrderRepositoryTest {
 
     @Autowired
     private ItemOrderDetailRepository repoDetail;
+
+    @Autowired
+    private ItemRepository repoItem;
 
     /* 발주 내역 조회 */
     // 전체 발주 내역 조회

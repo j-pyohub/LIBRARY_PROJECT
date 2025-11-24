@@ -20,7 +20,7 @@
         background:#f8f9fa;
     }
 
-    h3 { margin:0; padding:20px 20px 0 20px; }
+    h3 { margin:0; padding:20px 20px 20px 20px; }
 
     .top-section {
         flex:1;
@@ -78,16 +78,28 @@
 </head>
 
 <body>
+<div>
+    <div class="d-flex align-items-center px-3 mt-3" style="gap: 12px;">
+        <h3 class="fw-bold m-0">발주 제안</h3>
 
-<h3 class="fw-bold">발주 제안</h3>
+        <button class="btn btn-light border dropdown-toggle"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#storeSearchModal"
+                style="min-width:180px;">
+            직영점 선택
+        </button>
+    </div>
 
+</div>
 <div class="top-section">
     <div class="panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-semibold">발주 추천 목록</h5>
-
             <div>
-                <button class="btn btn-outline-secondary btn-sm me-2">발주 제안 내역</button>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal">
+                    제안 내역
+                </button>
                 <button class="btn btn-outline-secondary btn-sm">직영점 발주 내역</button>
             </div>
         </div>
@@ -224,5 +236,137 @@
     </div>
 </div>
 
+<!-- 직영점 검색 모달 -->
+<div class="modal fade" id="storeSearchModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header" style="background:#495057;color:white;">
+                <h5 class="modal-title fw-bold">직영점 검색</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" class="form-control mb-3" placeholder="직영점명 입력">
+
+                <table class="table table-bordered align-middle text-center">
+                    <thead style="background:#e9ecef;">
+                    <tr><th>직영점명</th><th>주소</th><th>선택</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>금천구청점</td><td>서울 금천구 가산동</td>
+                        <td><button class="btn btn-dark btn-sm" data-bs-dismiss="modal">선택</button></td>
+                    </tr>
+                    <tr>
+                        <td>강남역점</td><td>서울 강남구 역삼동</td>
+                        <td><button class="btn btn-dark btn-sm" data-bs-dismiss="modal">선택</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- =========================
+      ▣ 제안 내역 모달 영역
+     ========================= -->
+<div class="modal fade" id="proposalModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">본사 발주 제안 내역</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>제안 일자</th>
+                        <th>품목명</th>
+                        <th>제안 수량</th>
+                        <th>제안 사유</th>
+                        <th>요청자</th>
+                        <th>응답 여부</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>2025.09.19</td>
+                        <td class="fw-bold">페퍼로니 1kg</td>
+                        <td>2 ea</td>
+                        <td>-</td>
+                        <td>홍길동</td>
+                        <td class="text-danger fw-bold">미응답</td>
+                    </tr>
+
+                    <tr>
+                        <td>2025.09.18</td>
+                        <td class="fw-bold">페퍼로니 1kg</td>
+                        <td>1 ea</td>
+                        <td>신제품 출시 일정 테스트 필요</td>
+                        <td>홍길동</td>
+                        <td class="text-danger fw-bold">미응답</td>
+                    </tr>
+
+                    <tr>
+                        <td>2025.09.03</td>
+                        <td class="fw-bold">고구마 10kg 박스</td>
+                        <td>1 ea</td>
+                        <td>-</td>
+                        <td>홍길동</td>
+                        <td class="text-danger fw-bold">미응답</td>
+                    </tr>
+
+                    <tr>
+                        <td>2025.09.03</td>
+                        <td class="fw-bold">계란 30구</td>
+                        <td>3 tray</td>
+                        <td>-</td>
+                        <td>홍길동</td>
+                        <td class="text-danger fw-bold">미응답</td>
+                    </tr>
+
+                    <tr>
+                        <td>2025.08.29</td>
+                        <td class="fw-bold">양파 10kg 자루</td>
+                        <td>1 bag</td>
+                        <td>-</td>
+                        <td>이순신</td>
+                        <td class="text-success fw-bold">응답완료</td>
+                    </tr>
+
+                    <tr>
+                        <td>2025.08.27</td>
+                        <td class="fw-bold">계란 30구</td>
+                        <td>2 tray</td>
+                        <td>-</td>
+                        <td>이순신</td>
+                        <td class="text-success fw-bold">응답완료</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

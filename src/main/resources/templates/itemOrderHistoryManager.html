@@ -44,26 +44,31 @@
    <div class="col-auto">
      <button class="btn btn-dark">조회</button>
    </div>
+   <div>
+     <button class="btn btn-outline-secondary">일괄 승인</button>
+   </div>
  </div>
 
  <table class="table table-bordered align-middle text-center">
    <thead>
      <tr>
+       <th><input type="checkbox"></th>
        <th>요청번호</th><th>직영점</th><th>요청일자</th><th>요일</th>
        <th>요청시각</th><th>품목수</th><th>발주액</th><th>상태</th><th>처리</th>
      </tr>
    </thead>
-   <tbody th:each="order, iState : ${ItemOrder}">
+   <tbody>
      <tr>
-       <td th:text="${order.getItemNo()}">주문번호</td>
-       <td th:text="${order.getStoreName()}">직영점 이름</td>
-       <td th:text="${order.getRequestDate()}">요청 날짜</td>
+       <td><input type="checkbox"></td>
+       <td>주문번호</td>
+       <td>직영점 이름</td>
+       <td>요청 날짜</td>
        <td></td>
        <td></td>
-       <td th:text="${order.getQuantity()}">수량</td>
-       <td th:text="${order.getPrice()}">금액</td>
-       <td th:text="${order.getStatus()}">상태</td>
-       <td><button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>
+       <td>수량</td>
+       <td>금액</td>
+       <td>상태</td>
+       <td><button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#orderDetailCancelModal">상세조회</button></td>
      </tr>
    </tbody>
  </table>
@@ -108,8 +113,9 @@
     </div>
   </div>
 </div>
+
 <!-- 발주 상세 모달 -->
-<div class="modal fade" id="orderDetailModal" tabindex="-1">
+<div class="modal fade" id="orderDetailCancelModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
 
@@ -168,13 +174,12 @@
           <div>총 발주액 : <strong>164,000 원</strong></div>
         </div>
 
-      </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-warning">발주 승인</button>
+          <button class="btn btn-danger">반려</button>
+        </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-outline-warning">발주 목록에 담기</button>
-        <button class="btn btn-danger">요청 취소</button>
       </div>
-
     </div>
   </div>
 </div>
