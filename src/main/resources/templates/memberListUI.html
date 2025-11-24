@@ -74,7 +74,7 @@
     </div>
     <!-- 탭 -->
     <div class="tab-container">
-        <div class="tab-btn active" id="tabHq">본사</div>
+        <div class="tab-btn active" id="tabManager">본사</div>
         <div class="tab-btn" id="tabStore">직영점</div>
     </div>
 
@@ -82,7 +82,7 @@
     <!-- =========================== -->
     <!-- 본사 직원 목록 -->
     <!-- =========================== -->
-    <div id="sectionHq" class="content-section active">
+    <div id="sectionManager" class="content-section active">
 
         <table class="table table-bordered align-middle text-center bg-white">
             <thead class="table-light">
@@ -102,7 +102,7 @@
                 <td>admin01@company.com</td>
                 <td>02-1111-1111</td>
                 <td>
-                    <button type="button" class="btn btn-sm detail-btn">
+                    <button type="button" class="btn btn-sm detail-btn" id="detailManagerBtn">
                         <img src="/image/detail.png" alt="상세보기" width="24" height="24">
                     </button>
                 </td>
@@ -154,7 +154,7 @@
                     </div>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm detail-btn">
+                    <button type="button" class="btn btn-sm detail-btn" id="detailStoreBtn">
                         <img src="/image/detail.png" alt="상세보기" width="24" height="24">
                     </button>
                 </td>
@@ -205,30 +205,40 @@
 <!-- JS: 탭 전환 -->
 <!-- ================================ -->
 <script>
-    const tabHq = document.getElementById("tabHq");
+    const tabManager = document.getElementById("tabManager");
     const tabStore = document.getElementById("tabStore");
-    const sectionHq = document.getElementById("sectionHq");
+    const sectionManager = document.getElementById("sectionManager");
     const sectionStore = document.getElementById("sectionStore");
 
-    tabHq.onclick = () => {
-        tabHq.classList.add("active");
+    tabManager.onclick = () => {
+        tabManager.classList.add("active");
         tabStore.classList.remove("active");
 
-        sectionHq.classList.add("active");
+        sectionManager.classList.add("active");
         sectionStore.classList.remove("active");
     };
 
     tabStore.onclick = () => {
         tabStore.classList.add("active");
-        tabHq.classList.remove("active");
+        tabManager.classList.remove("active");
 
         sectionStore.classList.add("active");
-        sectionHq.classList.remove("active");
+        sectionManager.classList.remove("active");
     };
 
     document.getElementById("addMemeberBtn").addEventListener("click", ()=> {
         window.location.href = "memberAddUI.html"
     })
+
+    document.getElementById("detailManagerBtn").addEventListener("click", ()=> {
+        window.location.href = "managerDetail.html"
+    })
+
+    document.getElementById("detailStoreBtn").addEventListener("click", ()=> {
+        window.location.href = "storeDetail.html"
+    })
+
+
 </script>
 
 </body>
