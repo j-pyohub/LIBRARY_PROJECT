@@ -1,0 +1,114 @@
+<div th:fragment="toolBarFragment">
+    <style>
+        .top-bar {
+            width: 100%;
+            height: 70px;
+            background-color: #c6f8d6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            box-sizing: border-box;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-item {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            background: #d4fbdc;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 6px 15px;
+            white-space: nowrap;
+            color: black;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #c0f0c9;
+        }
+
+        /* hover 시 도로록 열리는 곳 */
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .logo-btn,
+        .company-name-btn,
+        .logout-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: #e6e6e6;
+            cursor: pointer;
+        }
+
+    </style>
+
+    <div class="top-bar">
+        <div class="left-section">
+            <button class="logo-btn">회사 로고</button>
+            <button class="company-name-btn">회사 명</button>
+
+            <div class="menu-item dropdown">
+                <span>매출 ▾</span>
+                <div class="dropdown-menu">
+                    <a href="#">전체 매출</a>
+                    <a href="#">직영점 매출</a>
+                    <a href="#">직영점 주문</a>
+                </div>
+            </div>
+
+            <div class="menu-item dropdown">
+                <span>재고 ▾</span>
+                <div class="dropdown-menu">
+                    <a href="#">품목 조회</a>
+                    <a href="#">재고 현황</a>
+                    <a href="#">발주</a>
+                    <a href="#">발주 내역</a>
+                </div>
+            </div>
+
+            <div class="menu-item dropdown">
+                <span>메뉴 ▾</span>
+                <div class="dropdown-menu">
+                    <a href="#">메뉴 조회</a>
+                    <a href="#">직영점 판매 메뉴</a>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <span>직영점</span>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <span class="store-name">금천구청점</span>
+            <button class="logout-btn">로그아웃</button>
+        </div>
+    </div>
+</div>
