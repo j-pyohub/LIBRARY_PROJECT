@@ -26,7 +26,7 @@ class StoreStockRepositoryTest {
 
 
     @Test
-    void 현재_재고조회() {
+    void getlatestQuantity() {
 
         int latest = getLatestQuantity(1L);
 
@@ -38,7 +38,7 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 입고기록_추가() {
+    void addInboundStockLog() {
 
         int latest = getLatestQuantity(1L);
 
@@ -59,7 +59,7 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 판매기록_추가() {
+    void addSalesStockLog() {
 
         int latest = getLatestQuantity(1L);
 
@@ -80,7 +80,7 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 폐기기록_폐기사유_추가() {
+    void addDisposalStockLogWithReason() {
 
         int latest = getLatestQuantity(1L);
         int 폐기수량 = 2;
@@ -104,7 +104,7 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 직영점_전체_재고변동조회() {
+    void getAllStockChangesByStore() {
 
         Long storeNo = 1L;
         List<StoreStock> result = storeStockRepository.findAllByStoreNo(storeNo);
@@ -115,13 +115,13 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 재고변동_품목명_검색() {
+    void searchStockChangesByItemName() {
 
         Long storeNo = 1L;
         String itemName = "도우";
 
         List<StoreStock> result =
-                storeStockRepository.searchByItemName(storeNo, itemName);
+                storeStockRepository.findByItemName(storeNo, itemName);
 
         System.out.println("=== 품목명 검색 결과 ===");
         result.forEach(System.out::println);
@@ -129,13 +129,13 @@ class StoreStockRepositoryTest {
     }
 
     @Test
-    void 재고변동_품목코드_검색() {
+    void searchStockChangesByItemCode() {
 
         Long storeNo = 1L;
         String itemCode = "A-01";
 
         List<StoreStock> result =
-                storeStockRepository.searchByItemCode(storeNo, itemCode);
+                storeStockRepository.findByItemCode(storeNo, itemCode);
 
         System.out.println("=== 품목코드 검색 결과 ===");
         result.forEach(System.out::println);

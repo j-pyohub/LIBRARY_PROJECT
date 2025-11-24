@@ -15,7 +15,7 @@ class StoreItemRepositoryTest {
     StoreItemRepository storeItemRepository;
 
     @Test
-    void 하한선_수정() {
+    void setStockLimits() {
 
         StoreItem item = storeItemRepository.findByStoreNoAndItemNo(1L, 1L)
                 .get(0);
@@ -32,31 +32,31 @@ class StoreItemRepositoryTest {
 
 
     @Test
-    void 매장번호로_조회() {
+    void findItemsByStoreNo() {
         List<StoreItem> list = storeItemRepository.findByStoreNo(1L);
         list.forEach(System.out::println);
     }
 
     @Test
-    void 매장번호_품목번호로_조회() {
+    void findItemsByStoreNoAndItemNo() {
         List<StoreItem> list = storeItemRepository.findByStoreNoAndItemNo(1L, 1L);
         list.forEach(System.out::println);
     }
 
     @Test
-    void 카테고리로_조회() {
+    void findItemsByCategory() {
         List<StoreItem> list = storeItemRepository.findByCategory(1L, "도우");
         list.forEach(System.out::println);
     }
 
     @Test
-    void 품목명_조회() {
+    void findItemsByItemName() {
         List<StoreItem> list = storeItemRepository.findByItemName(1L, "치즈");
         list.forEach(System.out::println);
     }
 
     @Test
-    void 품목코드_조회() {
+    void findItemsByItemCode() {
         List<StoreItem> list = storeItemRepository.findByItemCode(1L, "DOUGH-");
         list.forEach(System.out::println);
     }
