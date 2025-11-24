@@ -1,174 +1,175 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>직영점 판매상품 조회</title>
+  <title>직영점 판매상품 목록</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body {
-      background-color: #e5e5e5;
-    }
-    .top-bar {
-      background-color: #7be3a4;
-      padding: 8px 16px;
-    }
-    .section-box {
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      padding: 20px;
-    }
-    .table thead th {
-      background-color: #fafafa;
-      font-weight: 600;
-    }
-    .pagination-wrapper {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
+    .page-wrapper { max-width:1500px; margin:auto; }
   </style>
 </head>
 
-<body class="p-3">
+<body class="bg-light">
 
-<div class="border border-secondary" style="max-width: 1200px; margin: 0 auto; background:white;">
+<div class="page-wrapper">
 
+  <!-- 매장명 -->
+  <h4 class="text-center mb-4 mt-3">금천직영점</h4>
 
-  <!-- 상단 메뉴 -->
-  <div class="top-bar d-flex align-items-center">
+  <!-- 뒤로가기(왼쪽) + 검색창(오른쪽) -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
 
-    <div class="btn-group me-3">
-      <button class="btn btn-light btn-sm">회사 로고</button>
-      <button class="btn btn-secondary btn-sm">회사 명</button>
+    <!-- 왼쪽 : 뒤로가기 -->
+    <button class="btn btn-warning btn-sm" onclick="history.back()">뒤로가기</button>
+
+    <!-- 오른쪽 : 검색 -->
+    <div class="d-flex gap-2">
+      <input type="text" class="form-control" style="width:240px;" placeholder="판매상품">
+      <button class="btn btn-primary">검색</button>
     </div>
 
-    <ul class="nav">
-      <li class="nav-item"><a class="nav-link fw-bold text-dark" href="#">매출 ▾</a></li>
-      <li class="nav-item"><a class="nav-link text-dark" href="#">재고 ▾</a></li>
-      <li class="nav-item"><a class="nav-link text-dark" href="#">메뉴 ▾</a></li>
-      <li class="nav-item"><a class="nav-link text-dark" href="#">직영점</a></li>
-    </ul>
-
-    <div class="ms-auto d-flex align-items-center gap-2">
-      <span th:text="${loginUserName}">본사 홍길동</span>
-      <button class="btn btn-outline-primary btn-sm">로그아웃</button>
-    </div>
-  </div>
-
-
-  <!-- 뒤로가기 + 매장명 + 검색 -->
-  <div class="px-3 pt-3">
-
-    <a th:href="@{/store/list}" class="btn btn-warning btn-sm mb-2">뒤로가기</a>
-
-    <div class="text-center fs-5 fw-bold" th:text="${storeName}">
-      금천직영점
-    </div>
-
-    <!-- 검색 -->
-    <div class="d-flex justify-content-end mb-2">
-      <span class="fw-semibold me-2">판매상품명</span>
-      <form th:action="@{/store/sales}" method="get" class="input-group input-group-sm" style="width:230px;">
-        <input type="text" name="keyword" class="form-control" placeholder="검색" th:value="${keyword}">
-        <button class="btn btn-outline-secondary" type="submit">🔍</button>
-      </form>
-    </div>
   </div>
 
 
   <!-- 테이블 -->
-  <div class="px-3 pb-3">
+  <div class="card">
+    <div class="card-body p-0">
 
-    <div class="section-box">
-
-      <table class="table table-hover align-middle mb-3">
-        <thead>
-        <tr class="text-center">
-          <th style="width:6%;">번호</th>
-          <th style="width:14%;">카테고리</th>
-          <th style="width:25%;">판매상품</th>
-          <th style="width:10%;">사이즈</th>
-          <th style="width:10%;">판매수량</th>
-          <th style="width:15%;">매출액</th>
+      <table class="table table-hover mb-0 text-center align-middle" id="dataTable">
+        <thead class="table-light">
+        <tr>
+          <th>번호</th>
+          <th>카테고리</th>
+          <th>판매상품</th>
+          <th>사이즈</th>
+          <th>판매수량</th>
+          <th>매출액</th>
         </tr>
         </thead>
 
-        <tbody>
-        <tr class="text-center" th:each="item, iStat : ${items}">
-          <td th:text="${iStat.index + 1}"></td>
-          <td th:text="${item.category}"></td>
-          <td th:text="${item.name}" class="text-start"></td>
-          <td th:text="${item.size}"></td>
-          <td th:text="${item.count}"></td>
-          <td th:text="${#numbers.formatInteger(item.sales, 0, 'COMMA')}"></td>
-        </tr>
-        </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
-
-
-      <!-- 페이지네이션 -->
-      <div class="pagination-wrapper mb-3">
-
-        <ul class="pagination pagination-sm">
-
-          <!-- 이전 -->
-          <li class="page-item" th:classappend="${page == 1 ? 'disabled' : ''}">
-            <a class="page-link"
-               th:href="@{/store/sales(page=${page - 1}, size=${size}, keyword=${keyword})}">
-              &lt;
-            </a>
-          </li>
-
-          <!-- 페이지 번호 -->
-          <li class="page-item"
-              th:each="p : ${#numbers.sequence(1, totalPages)}"
-              th:classappend="${page == p ? 'active' : ''}">
-            <a class="page-link"
-               th:text="${p}"
-               th:href="@{/store/sales(page=${p}, size=${size}, keyword=${keyword})}">
-            </a>
-          </li>
-
-          <!-- 다음 -->
-          <li class="page-item" th:classappend="${page == totalPages ? 'disabled' : ''}">
-            <a class="page-link"
-               th:href="@{/store/sales(page=${page + 1}, size=${size}, keyword=${keyword})}">
-              &gt;
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-
-      <!-- 페이지 크기 선택 + 수정 버튼 위치 -->
-      <div class="d-flex justify-content-end gap-2">
-
-        <select class="form-select form-select-sm"
-                style="width:80px;"
-                onchange="location.href='?page=1&size=' + this.value + '&keyword=[[${keyword}]]'">
-          <option value="5"  th:selected="${size == 5}">5개</option>
-          <option value="10" th:selected="${size == 10}">10개</option>
-          <option value="20" th:selected="${size == 20}">20개</option>
-        </select>
-
-        <!-- 수정 버튼: 직영점만 보임 -->
-        <a class="btn btn-primary btn-sm"
-           th:if="${role == 'ROLE_STORE'}"
-           th:href="@{/store/sales/edit-list(storeId=${storeId})}">
-          수정
-        </a>
-
-      </div>
 
     </div>
   </div>
 
+
+  <!-- 페이지네이션 + 개수선택 -->
+  <div class="d-flex justify-content-between align-items-center mt-3">
+
+    <!-- 왼쪽 빈 공간 -->
+    <div style="width:80px;"></div>
+
+    <!-- 가운데: 페이지네이션 -->
+    <div class="flex-grow-1 d-flex justify-content-center">
+      <nav>
+        <ul class="pagination mb-0" id="pagination"></ul>
+      </nav>
+    </div>
+
+    <!-- 오른쪽: 개수 선택 -->
+    <div class="d-flex justify-content-end">
+      <select id="rowsPerPage" class="form-select form-select-sm" style="width:80px;">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+
+  </div>
+
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // 샘플 데이터 10개
+  const data = [
+    {no:1, category:"피자", item:"페퍼로니피자", size:"라지", qty:80, price:"800,500"},
+    {no:2, category:"피자", item:"치즈피자", size:"라지", qty:70, price:"678,400"},
+    {no:3, category:"피자", item:"콤비네이션피자", size:"라지", qty:60, price:"719,400"},
+    {no:4, category:"음료", item:"콜라", size:"1.5L", qty:70, price:"126,000"},
+    {no:5, category:"음료", item:"사이다", size:"1.5L", qty:65, price:"120,000"},
+    {no:6, category:"피자", item:"불고기피자", size:"라지", qty:55, price:"650,000"},
+    {no:7, category:"피자", item:"베이컨피자", size:"라지", qty:45, price:"610,000"},
+    {no:8, category:"피자", item:"고구마피자", size:"라지", qty:48, price:"630,000"},
+    {no:9, category:"음료", item:"환타", size:"1.5L", qty:30, price:"90,000"},
+    {no:10, category:"음료", item:"제로콜라", size:"1.5L", qty:40, price:"110,000"}
+  ];
+
+  let currentPage = 1;
+
+  function renderTable() {
+    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const startIdx = (currentPage - 1) * rowsPerPage;
+    const endIdx = startIdx + rowsPerPage;
+
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+
+    data.slice(startIdx, endIdx).forEach(row => {
+      tableBody.innerHTML += `
+        <tr>
+            <td>${row.no}</td>
+            <td>${row.category}</td>
+            <td>${row.item}</td>
+            <td>${row.size}</td>
+            <td>${row.qty}</td>
+            <td>${row.price}</td>
+        </tr>`;
+    });
+
+    renderPagination(rowsPerPage);
+  }
+
+  function renderPagination(rowsPerPage) {
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    // ◀ 이전 버튼
+    pagination.innerHTML += `
+      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="movePage(${currentPage - 1})">&lt;</a>
+      </li>
+    `;
+
+    // 페이지 숫자 버튼
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.innerHTML += `
+        <li class="page-item ${i === currentPage ? "active" : ""}">
+          <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
+        </li>`;
+    }
+
+    // ▶ 다음 버튼
+    pagination.innerHTML += `
+      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="movePage(${currentPage + 1})">&gt;</a>
+      </li>
+    `;
+  }
+
+  function movePage(page) {
+    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    renderTable();
+  }
+
+  document.getElementById("rowsPerPage").addEventListener("change", () => {
+    currentPage = 1;
+    renderTable();
+  });
+
+  renderTable();
+</script>
 
 </body>
 </html>
