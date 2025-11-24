@@ -8,7 +8,11 @@ import com.erp.repository.entity.Store;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
+import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,51 +29,75 @@ class ItemOrderRepositoryTest {
     @Autowired
     private ItemOrderDetailRepository repoDetail;
 
+    /* 발주 내역 조회 */
     // 전체 발주 내역 조회
     @Test
     void getAllItemsOrder() {
-        repoOrder.findAll().iterator().forEachRemaining(System.out::println);
+        repoOrder.findAll(
+                PageRequest.of(0, 8, Sort.by("itemOrderNo").descending())
+        ).forEach(System.out::println);
     }
 
     // 기간 발주 내역 조회
     @Test
     void getItemsOrderByDate(){
-        repoOrder.findByRequestDatetimeBetween(LocalDate.of(2025, 11, 12).atStartOfDay(), LocalDate.of(2025, 11, 13).atStartOfDay()).forEach(System.out::println);
+        repoOrder.findByRequestDatetimeBetween(
+                LocalDate.of(2025, 11, 12).atStartOfDay(),
+                LocalDate.of(2025, 11, 20).atStartOfDay(),
+                PageRequest.of(0, 8, Sort.by("itemOrderNo").descending())
+        ).forEach(System.out::println);
     }
 
     // 요일별 발주 내역 조회
     @Test
     void getItemsOrderByDay(){
         // 일: 1, 월: 2, 화: 3, 수: 4, 목: 5, 금: 6, 토: 7
-        repoOrder.findByRequestDatetimeDay(4).iterator().forEachRemaining(System.out::println);
+        repoOrder.findByRequestDatetimeDay(
+                4,
+                PageRequest.of(0, 8, Sort.by("itemOrderNo").descending())
+        ).forEach(System.out::println);
     }
 
-    // 발주 요청자 별 조회
+    // 발주 요청자(직영점) 별 조회
     @Test
     void getItemOrderByStore(){
-        repoOrder.findByStoreNo(Store.builder().storeNo(2L).build()).iterator().forEachRemaining(System.out::println);
+        repoOrder.findByStoreNo(
+                Store.builder().storeNo(2L).build(),
+                PageRequest.of(0, 8, Sort.by("itemOrderNo").descending())
+        ).forEach(System.out::println);
     }
 
     // 발주 상태별 조회
     @Test
     void getItemOrderByStatus(){
         // status: 승인, 대기, 반려, 취소
-        repoOrder.findByItemOrderStatus("승인").forEach(System.out::println);
+        repoOrder.findByItemOrderStatus(
+                "승인",
+                PageRequest.of(0, 8, Sort.by("itemOrderNo").descending())
+        ).forEach(System.out::println);
     }
 
+    /// //////////////////////////////////////////////////////////////
+
+    /* 발주 상세 조회 모달 */
     // 발주 상세 보기(발주번호에 해당하는)
     @Test
     void getItemOrderDetailByItemOrder(){
-        repoDetail.findByItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
+        repoDetail.findByItemOrderNo(
+                ItemOrder.builder().itemOrderNo(1L).build()
+        ).forEach(System.out::println);
     }
 
     // 발주 요청 취소
     @Test
     void cancelItemOrder(){
-        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(2L).build());
-        System.out.println(orderList);
+        // 대기 중 발주 선택
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo(
+                "대기",
+                Store.builder().storeNo(2L).build() // 직영점 번호 지정
+        );
 
-        // 발주 요청 no 선택
+        // 선택한 발주 요청 번호 데이터 상태 취소 변경
         if(!orderList.isEmpty()){
             orderList.get(0).setItemOrderStatus("취소"); // 상태 변경
             orderList.get(0).setProcessDatetime(new Timestamp(System.currentTimeMillis())); // 처리 시간
@@ -80,10 +108,13 @@ class ItemOrderRepositoryTest {
     // 발주 요청 승인
     @Test
     void approveOrder(){
-        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(3L).build());
-        System.out.println(orderList);
+        // 대기 중 발주 선택
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo(
+                "대기",
+                Store.builder().storeNo(3L).build() // 직영점 번호 지정
+        );
 
-        // 발주 요청 no 선택
+        // 선택한 발주 요청 번호 데이터 상태 승인 변경
         if(!orderList.isEmpty()){
             orderList.get(0).setManagerId(Manager.builder().managerId("galaxy0712").build());
             orderList.get(0).setItemOrderStatus("승인"); // 상태 변경
@@ -95,9 +126,13 @@ class ItemOrderRepositoryTest {
     // 발주 요청 반려
     @Test
     void declineOrder(){
-        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo("대기", Store.builder().storeNo(3L).build());
-        System.out.println(orderList);
+        // 대기 중 발주 선택
+        List<ItemOrder> orderList = repoOrder.findByItemOrderStatusAndStoreNo(
+                "대기",
+                Store.builder().storeNo(3L).build() // 직영점 번호 지정
+        );
 
+        // 선택한 발주 요청 번호 데이터 상태 반려 변경
         if(!orderList.isEmpty()){
             orderList.get(0).setManagerId(Manager.builder().managerId("galaxy0712").build());
             orderList.get(0).setItemOrderStatus("반려");
@@ -107,11 +142,11 @@ class ItemOrderRepositoryTest {
     }
 
 
-    // 발주하기
+    // 발주 요청 생성(관리자)
     @Test
     void makeOrder(){
         ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
-                .storeNo(Store.builder().storeNo(3L).build())
+                .storeNo(Store.builder().storeNo(3L).build()) // 요청한 직영점 정보
                 .totalItem(2)
                 .totalAmount(100000)
                 .itemOrderStatus("대기")
@@ -123,15 +158,14 @@ class ItemOrderRepositoryTest {
     // 승인 목록 조회
     @Test
     void getApprovedOrder(){
-        repoOrder.findByItemOrderStatus("승인").forEach(System.out::println);
+        repoOrder.findByItemOrderStatus("승인", PageRequest.of(0, 8)).forEach(System.out::println);
     }
 
     // 승인 목록 상세 조회
     @Test
     void getApprovedOrderDetail(){
-        ItemOrder order = repoOrder.findByItemOrderStatus("승인").get(0); // itemOrder 번째 선택
+        Page<ItemOrder> order = repoOrder.findByItemOrderStatus("승인", PageRequest.of(0, 8)); // itemOrder 번째 선택
 
-        repoDetail.findByItemOrderNo(order).forEach(System.out::println);
+        repoDetail.findByItemOrderNo(order.iterator().next()).forEach(System.out::println);
     }
-
 }

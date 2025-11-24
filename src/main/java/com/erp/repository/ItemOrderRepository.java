@@ -2,23 +2,25 @@ package com.erp.repository;
 
 import com.erp.repository.entity.ItemOrder;
 import com.erp.repository.entity.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ItemOrderRepository extends CrudRepository<ItemOrder, Long> {
+public interface ItemOrderRepository extends JpaRepository<ItemOrder, Long> {
 
-    List<ItemOrder> findByRequestDatetimeBetween(LocalDateTime requestDatetime, LocalDateTime end);
+    Page<ItemOrder> findByRequestDatetimeBetween(LocalDateTime requestDatetime, LocalDateTime end, Pageable pageable);
 
     @Query("select o from ItemOrder o where function('DAYOFWEEK', o.requestDatetime) = :day")
-    List<ItemOrder> findByRequestDatetimeDay(@Param("day") int day);
+    Page<ItemOrder> findByRequestDatetimeDay(@Param("day") int day, Pageable pageable);
 
-    List<ItemOrder> findByStoreNo(Store storeNo);
+    Page<ItemOrder> findByStoreNo(Store storeNo, Pageable pageable);
 
-    List<ItemOrder> findByItemOrderStatus(String status);
+    Page<ItemOrder> findByItemOrderStatus(String status, Pageable pageable);
 
     List<ItemOrder> findByItemOrderStatusAndStoreNo(String status, Store storeNo);
 }
