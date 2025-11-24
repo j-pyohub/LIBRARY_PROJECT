@@ -1,15 +1,14 @@
 package com.erp.repository;
 
 import com.erp.repository.entity.StoreStock;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
 @Repository
 public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
-
 
     // 1) 직영점 전체 변동 기록 조회
     @Query("""
@@ -19,7 +18,7 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
         WHERE si.storeNo = :storeNo
         ORDER BY ss.storeStockNo DESC
     """)
-    List<StoreStock> findAllByStoreNo(Long storeNo);
+    List<StoreStock> findAllByStoreNo(@Param("storeNo") Long storeNo);
 
     // 2) 직영점 + 품목명 검색
     @Query("""
@@ -31,7 +30,8 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
           AND itm.itemName LIKE %:itemName%
         ORDER BY ss.storeStockNo DESC
     """)
-    List<StoreStock> findByItemName(Long storeNo, String itemName);
+    List<StoreStock> findByItemName(@Param("storeNo") Long storeNo,
+                                    @Param("itemName") String itemName);
 
     // 3) 직영점 + 품목코드 검색
     @Query("""
@@ -43,14 +43,12 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
           AND itm.itemCode LIKE %:itemCode%
         ORDER BY ss.storeStockNo DESC
     """)
-    List<StoreStock> findByItemCode(Long storeNo, String itemCode);
-
+    List<StoreStock> findByItemCode(@Param("storeNo") Long storeNo,
+                                    @Param("itemCode") String itemCode);
 
     // 현재 재고 수량 조회
-
     StoreStock findFirstByStoreItemNoOrderByStoreStockNoDesc(Long storeItemNo);
-
-
 }
+
 
 
