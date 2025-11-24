@@ -1,122 +1,203 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.erp.dao.ItemDAO">
 
-    <!-- ResultMap -->
-    <resultMap id="ItemMap" type="com.erp.repository.entity.Item">
-        <id property="itemNo" column="item_no"/>
-        <result property="itemCode" column="item_code"/>
-        <result property="itemCategory" column="item_category"/>
-        <result property="itemName" column="item_name"/>
+    <!-- 공통 ResultMap -->
+    <resultMap id="ItemMap" type="com.erp.dao.dto.ItemDTO">
+        <id     property="itemNo"         column="item_no"/>
+        <result property="itemCode"       column="item_code"/>
+        <result property="itemCategory"   column="item_category"/>
+        <result property="itemName"       column="item_name"/>
         <result property="ingredientName" column="ingredient_name"/>
-        <result property="stockUnit" column="stock_unit"/>
-        <result property="supplyUnit" column="supply_unit"/>
-        <result property="supplier" column="supplier"/>
-        <result property="itemPrice" column="item_price"/>
-        <result property="convertStock" column="convert_stock"/>
-        <result property="storageType" column="storage_type"/>
+
+        <result property="stockUnit"      column="stock_unit"/>
+        <result property="supplyUnit"     column="supply_unit"/>
+        <result property="convertStock"   column="convert_stock"/>
+
+        <result property="itemPrice"      column="item_price"/>
+        <result property="supplier"       column="supplier"/>
+
+        <result property="storageType"    column="storage_type"/>
         <result property="expirationType" column="expiration_type"/>
-        <result property="expiration" column="expiration"/>
-        <result property="itemImage" column="item_image"/>
-        <result property="note" column="note"/>
-        <result property="inDate" column="in_date"/>
-        <result property="editDate" column="edit_date"/>
-        <result property="delDate" column="del_date"/>
+        <result property="expiration"     column="expiration"/>
+
+        <result property="itemImage"      column="item_image"/>
+        <result property="note"           column="note"/>
+
+        <result property="inDate"         column="in_date"/>
+        <result property="editDate"       column="edit_date"/>
+        <result property="delDate"        column="del_date"/>
     </resultMap>
 
-
-    <insert id="addItem" parameterType="com.erp.repository.entity.Item" useGeneratedKeys="true" keyProperty="itemNo">
-        INSERT INTO ITEM
-        (item_code, item_category, item_name, ingredient_name, stock_unit, supply_unit,
-         supplier, item_price, convert_stock, storage_type, expiration_type, expiration,
-         item_image, note, in_date)
-        VALUES
-            (#{itemCode}, #{itemCategory}, #{itemName}, #{ingredientName}, #{stockUnit}, #{supplyUnit},
-             #{supplier}, #{itemPrice}, #{convertStock}, #{storageType}, #{expirationType}, #{expiration},
-             #{itemImage}, #{note}, NOW())
+    <!-- 1) 등록 -->
+    <insert id="addItem"
+            parameterType="com.erp.dao.dto.ItemDTO"
+            useGeneratedKeys="true" keyProperty="itemNo">
+        INSERT INTO ITEM (
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            stock_unit,
+            supply_unit,
+            convert_stock,
+            item_price,
+            supplier,
+            storage_type,
+            expiration_type,
+            expiration,
+            item_image,
+            note,
+            in_date
+        )
+        VALUES (
+                   #{itemCategory},
+                   #{itemCode},
+                   #{itemName},
+                   #{ingredientName},
+                   #{stockUnit},
+                   #{supplyUnit},
+                   #{convertStock},
+                   #{itemPrice},
+                   #{supplier},
+                   #{storageType},
+                   #{expirationType},
+                   #{expiration},
+                   #{itemImage},
+                   #{note},
+                   NOW()
+               )
     </insert>
 
-
-
-
-    <update id="setItem" parameterType="com.erp.repository.entity.Item">
+    <!-- 2) 수정 -->
+    <update id="setItem" parameterType="com.erp.dao.dto.ItemDTO">
         UPDATE ITEM
         SET
-            item_category = #{itemCategory},
-            item_code = #{itemCode},
-            item_name = #{itemName},
+            item_category   = #{itemCategory},
+            item_code       = #{itemCode},
+            item_name       = #{itemName},
             ingredient_name = #{ingredientName},
-            stock_unit = #{stockUnit},
-            supply_unit = #{supplyUnit},
-            convert_stock = #{convertStock},
-            item_price = #{itemPrice},
-            supplier = #{supplier},
-            storage_type = #{storageType},
+            stock_unit      = #{stockUnit},
+            supply_unit     = #{supplyUnit},
+            convert_stock   = #{convertStock},
+            item_price      = #{itemPrice},
+            supplier        = #{supplier},
+            storage_type    = #{storageType},
             expiration_type = #{expirationType},
-            expiration = #{expiration},
-            item_image = #{itemImage},
-            note = #{note},
-            edit_date = NOW()
+            expiration      = #{expiration},
+            item_image      = #{itemImage},
+            note            = #{note},
+            edit_date       = NOW()
         WHERE item_no = #{itemNo}
     </update>
 
-
-
+    <!-- 3) 삭제(소프트 삭제) -->
     <update id="removeItem">
         UPDATE ITEM
         SET del_date = NOW()
         WHERE item_no = #{itemNo}
     </update>
 
-
+    <!-- 4) 전체 목록 (리스트 화면용) -->
     <select id="getItemList" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            supplier,
+            item_price
         FROM ITEM
         WHERE del_date IS NULL
         ORDER BY item_no DESC
     </select>
 
-
-
+    <!-- 5) 카테고리 검색 -->
     <select id="getByCategory" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            supplier,
+            item_price
         FROM ITEM
         WHERE del_date IS NULL
-          AND item_category LIKE CONCAT('%', #{itemCategory}, '%')
+          AND item_category =#{itemCategory}
     </select>
 
-
+    <!-- 6) 품목명 검색 -->
     <select id="getByItemName" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            supplier,
+            item_price
         FROM ITEM
         WHERE del_date IS NULL
           AND item_name LIKE CONCAT('%', #{itemName}, '%')
     </select>
 
-
-
+    <!-- 7) 품목코드 검색 -->
     <select id="getByItemCode" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            supplier,
+            item_price
         FROM ITEM
         WHERE del_date IS NULL
           AND item_code LIKE CONCAT('%', #{itemCode}, '%')
     </select>
 
-
+    <!-- 8) 재료명 검색 -->
     <select id="getByIngredient" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            supplier,
+            item_price
         FROM ITEM
         WHERE del_date IS NULL
           AND ingredient_name LIKE CONCAT('%', #{ingredientName}, '%')
     </select>
 
-
-
+    <!-- 9) 상세 조회 (상세/수정 화면) -->
     <select id="getItemDetail" resultMap="ItemMap">
-        SELECT *
+        SELECT
+            item_no,
+            item_category,
+            item_code,
+            item_name,
+            ingredient_name,
+            stock_unit,
+            supply_unit,
+            convert_stock,
+            item_price,
+            supplier,
+            storage_type,
+            expiration_type,
+            expiration,
+            item_image,
+            note,
+            in_date,
+            edit_date,
+            del_date
         FROM ITEM
-        WHERE item_no = #{itemNo}
+        WHERE item_no = #{itemNo} AND del_date IS NULL
     </select>
 
 </mapper>

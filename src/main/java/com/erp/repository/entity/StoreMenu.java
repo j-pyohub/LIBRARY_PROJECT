@@ -1,12 +1,14 @@
 package com.erp.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class StoreMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

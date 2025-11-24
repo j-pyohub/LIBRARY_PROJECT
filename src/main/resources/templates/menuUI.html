@@ -9,19 +9,32 @@
     <style>
         .tab-content-area { display: none; }
         .tab-active { display: block; }
+        .custom-btn {
+            background-color: #FFEEAA !important;
+            border-color: #FFEEAA !important;
+            color: #000;
+        }
+        .custom-btn:hover {
+            background-color: #f2da84 !important;
+            border-color: #f2da84 !important;
+        }
+        .custom-container {
+            max-width: 1500px;
+        }
     </style>
 </head>
 
-<body class="bg-light py-4">
-
-<div class="container">
+<body class="bg-light py-3">
+<!--계정별 툴바 다르게-->
+<div th:replace="toolBarStore :: toolBarFragment"></div>
+<div class="container custom-container mt-5">
 
     <!-- 제목 / 버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">메뉴 조회</h2>
         <div>
-            <button class="btn btn-warning me-2">메뉴 등록</button>
-            <button class="btn btn-outline-secondary">직영점별 판매 메뉴 보기</button>
+            <button class="btn btn-warning me-2 custom-btn" id="addMenuBtn" >메뉴 등록</button>
+            <button class="btn custom-btn">직영점별 판매 메뉴 보기</button>
         </div>
     </div>
 
@@ -56,7 +69,7 @@
                 <th>사이즈</th>
                 <th>가격</th>
                 <th>판매 상태</th>
-                <th></th>
+                <th>상세</th>
             </tr>
             </thead>
             <tbody>
@@ -67,7 +80,11 @@
                 <td>라지</td>
                 <td>25,000</td>
                 <td rowspan="2">판매 중</td>
-                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td rowspan="2">
+                    <button type="button" class="btn btn-sm detail-btn">
+                    <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td>미디움</td>
@@ -80,7 +97,11 @@
                 <td>라지</td>
                 <td>23,000</td>
                 <td rowspan="2">판매 중</td>
-                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td rowspan="2">
+                    <button type="button" class="btn btn-sm detail-btn">
+                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td>미디움</td>
@@ -93,7 +114,11 @@
                 <td>라지</td>
                 <td>28,000</td>
                 <td rowspan="2">판매 중</td>
-                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td rowspan="2">
+                    <button type="button" class="btn btn-sm detail-btn">
+                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td>미디움</td>
@@ -106,7 +131,11 @@
                 <td>라지</td>
                 <td>28,000</td>
                 <td rowspan="2">판매 예정</td>
-                <td rowspan="2"><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td rowspan="2">
+                    <button type="button" class="btn btn-sm detail-btn">
+                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td>미디움</td>
@@ -119,7 +148,11 @@
                 <td>라지</td>
                 <td>28,000</td>
                 <td>판매 종료</td>
-                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td>
+                    <button type="button" class="btn btn-sm detail-btn">
+                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
 
             <tr>
@@ -128,7 +161,11 @@
                 <td>미디움</td>
                 <td>20,000</td>
                 <td>판매 종료</td>
-                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td>
+                    <button type="button" class="btn btn-sm detail-btn">
+                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
 
             <tr>
@@ -137,7 +174,11 @@
                 <td>단일</td>
                 <td>26,000</td>
                 <td>판매 예정</td>
-                <td><button class="btn btn-outline-primary btn-sm">상세보기</button></td>
+                <td>
+                    <button type="button" class="btn btn-sm detail-btn">
+                    <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    </button>
+                </td>
             </tr>
 
             </tbody>
@@ -162,11 +203,8 @@
                     <small class="text-muted">23,000원 / 판매 중</small>
                 </div>
             </div>
-
-            <!-- 필요하면 카드 계속 추가 -->
         </div>
     </div>
-
 </div>
 
 <!-- JS -->
@@ -179,6 +217,19 @@
             document.querySelector(`.${tabName}`).classList.add("tab-active");
         });
     });
+
+    document.getElementById("addMenuBtn").addEventListener("click", () => {
+        window.location.href = "menuAddUI.html"
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".detail-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                window.location.href = "menuDetailUI.html";
+            });
+        });
+    });
+
 </script>
 
 </body>

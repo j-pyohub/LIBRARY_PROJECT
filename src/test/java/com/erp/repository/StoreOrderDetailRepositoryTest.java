@@ -12,6 +12,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,6 +45,7 @@ public class StoreOrderDetailRepositoryTest {
     @Transactional
     @Rollback(false)
     void calculateOrderSummaryTest() {
+        //샘플 넣은 거라서 코드가 깁니다..! service에선 예제샘플 넣을 필요 없으니 짧아질 듯..
         Store store = storeRepository.findById(2L)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
         SalesOrder order = new SalesOrder();
@@ -85,4 +87,29 @@ public class StoreOrderDetailRepositoryTest {
 
     }
 
+    @Test
+    @Transactional
+    void getStoreOrderDetailTest() {
+        Long salesOrderNo = 655L;
+        List<StoreOrderDetail> details = storeOrderDetailRepository.getStoreOrderDetail(salesOrderNo);
+
+        StoreOrderDetail d = details.get(0);
+
+        System.out.println("===== [주문 정보] =====");
+        System.out.println("주문번호 : " + d.getSalesOrder().getSalesOrderNo());
+        System.out.println("주문일시 : " + d.getSalesOrder().getSalesOrderDatetime());
+        System.out.println("매장명   : " + d.getSalesOrder().getStore().getStoreName());
+
+        //나중에 dto로 묶어서 뷰 내보내면 됨
+        System.out.println("\n===== [주문 상세 목록] =====");
+        for (StoreOrderDetail detail : details) {
+            System.out.println("상세번호 : " + detail.getStoreOrderDetailNo());
+            System.out.println("메뉴명   : " + detail.getStoreMenu().getMenu().getMenuName());
+            System.out.println("사이즈   : " + detail.getStoreMenu().getMenu().getSize());
+            System.out.println("단가     : " + detail.getMenuPrice());
+            System.out.println("수량     : " + detail.getMenuCount());
+            System.out.println("총금액   : " + detail.getMenuPrice() * detail.getMenuCount());
+            System.out.println("--------------------------------------");
+        }
+    }
 }
