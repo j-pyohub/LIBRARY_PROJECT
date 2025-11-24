@@ -66,14 +66,20 @@
             s.store_no,
             s.store_name,
             s.store_status,
+            s.store_manager_id,
             m.manager_name,
             m.phone_number,
+            m.email,
             s.address,
+            s.latitude,
+            s.longitude,
+            s.store_image,
             s.store_phone_number,
             s.opened_date,
             s.closed_date,
             s.open_time,
-            s.close_time
+            s.close_time,
+            s.menu_stop_role
         from store s
                  join manager m
                       on s.store_manager_id = m.manager_id
@@ -135,14 +141,29 @@
 
     <select id="getStoresByAdmin" resultType="com.erp.dao.dto.StoreDTO">
         select
-            m.manager_id,
+            s.store_no,
+            s.store_manager_id,
             m.email,
             s.store_name,
             s.store_phone_number,
-            m.role
+            s.menu_stop_role
         from manager m
         join store s
         on s.store_manager_id = m.manager_id
+        where m.role = 'ROLE_STORE'
+    </select>
+
+    <select id="getStoresDetailByAdmin" resultType="com.erp.dao.dto.StoreDTO">
+        select
+            s.store_no,
+            s.store_manager_id,
+            m.email,
+            s.store_name,
+            s.store_phone_number,
+            s.menu_stop_role
+        from manager m
+                 join store s
+                      on s.store_manager_id = m.manager_id
         where m.role = 'ROLE_STORE'
     </select>
 </mapper>
