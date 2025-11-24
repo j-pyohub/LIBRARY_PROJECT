@@ -112,4 +112,9 @@ public class StoreDAOTest {
     void getStoresByAdminTest() {
         System.out.println(storeDAO.getStoresByAdmin());
     }
+
+    @Test
+    void getStoreDetail(){
+
+    }
 }

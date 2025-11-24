@@ -36,14 +36,6 @@
             where manager_id = #{managerId}
         </update>
 
-
-
-    <update id="removeManager" parameterType="com.erp.dao.dto.ManagerDTO">
-        update manager
-        set
-            del_date = now()
-        where manager_id = #{managerId}
-    </update>
     <select id="getManagers" resultType="com.erp.dao.dto.ManagerDTO">
         select
             manager_id,
@@ -51,7 +43,17 @@
             manager_name,
             phone_number
         from manager
-        WHERE ROLE = 'role_manager' AND del_date IS null
+        WHERE ROLE = 'ROLE_MANAGER' AND del_date IS null
+    </select>
+
+    <select id="getManagerDetail" resultType="com.erp.dao.dto.ManagerDTO">
+        select
+            manager_id,
+            email,
+            manager_name,
+            phone_number
+        from manager
+        WHERE manager_id=#{managerId} and ROLE = 'ROLE_MANAGER' AND del_date IS null
     </select>
 </mapper>
 

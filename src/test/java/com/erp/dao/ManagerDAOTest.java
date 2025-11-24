@@ -53,4 +53,10 @@ public class ManagerDAOTest {
         System.out.println(managerDAO.getManagers());
 
     }
+
+    @Test
+    void getManagerDetail() {
+        ManagerDTO manager = managerDAO.getManagerDetail("sh000642");
+        System.out.println(manager);
+    }
 }
