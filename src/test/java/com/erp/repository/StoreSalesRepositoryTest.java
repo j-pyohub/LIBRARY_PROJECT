@@ -17,7 +17,7 @@ public class StoreSalesRepositoryTest {
 
     @Test
     public void findBySalesDateBetweenTest() {
-        System.out.println(storeSalesRepository.findBySalesDateBetween(Date.valueOf("2024-01-05"), Date.valueOf("2024-01-07")));
+        System.out.println(storeSalesRepository.findBySalesDateBetween(Date.valueOf("2024-01-09"), Date.valueOf("2024-01-14")));
     }
 
     @Test

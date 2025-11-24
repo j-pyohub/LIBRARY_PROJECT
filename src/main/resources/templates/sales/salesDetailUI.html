@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>직영점 판매상품 목록</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .page-wrapper { max-width:1500px; margin:auto; }
+  </style>
+</head>
+
+<body class="bg-light">
+
+<div class="page-wrapper">
+
+  <!-- 매장명 -->
+  <h4 class="text-center mb-4 mt-3">금천직영점</h4>
+
+  <!-- 뒤로가기(왼쪽) + 검색창(오른쪽) -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <!-- 왼쪽 : 뒤로가기 -->
+    <button class="btn btn-warning btn-sm" onclick="history.back()">뒤로가기</button>
+
+    <!-- 오른쪽 : 검색 -->
+    <div class="d-flex gap-2">
+      <input type="text" class="form-control" style="width:240px;" placeholder="판매상품">
+      <button class="btn btn-primary">검색</button>
+    </div>
+
+  </div>
+
+
+  <!-- 테이블 -->
+  <div class="card">
+    <div class="card-body p-0">
+
+      <table class="table table-hover mb-0 text-center align-middle" id="dataTable">
+        <thead class="table-light">
+        <tr>
+          <th>번호</th>
+          <th>카테고리</th>
+          <th>판매상품</th>
+          <th>사이즈</th>
+          <th>판매수량</th>
+          <th>매출액</th>
+        </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+  <!-- 페이지네이션 + 개수선택 -->
+  <div class="d-flex justify-content-between align-items-center mt-3">
+
+    <!-- 왼쪽 빈 공간 -->
+    <div style="width:80px;"></div>
+
+    <!-- 가운데: 페이지네이션 -->
+    <div class="flex-grow-1 d-flex justify-content-center">
+      <nav>
+        <ul class="pagination mb-0" id="pagination"></ul>
+      </nav>
+    </div>
+
+    <!-- 오른쪽: 개수 선택 -->
+    <div class="d-flex justify-content-end">
+      <select id="rowsPerPage" class="form-select form-select-sm" style="width:80px;">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+
+  </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // 샘플 데이터 10개
+  const data = [
+    {no:1, category:"피자", item:"페퍼로니피자", size:"라지", qty:80, price:"800,500"},
+    {no:2, category:"피자", item:"치즈피자", size:"라지", qty:70, price:"678,400"},
+    {no:3, category:"피자", item:"콤비네이션피자", size:"라지", qty:60, price:"719,400"},
+    {no:4, category:"음료", item:"콜라", size:"1.5L", qty:70, price:"126,000"},
+    {no:5, category:"음료", item:"사이다", size:"1.5L", qty:65, price:"120,000"},
+    {no:6, category:"피자", item:"불고기피자", size:"라지", qty:55, price:"650,000"},
+    {no:7, category:"피자", item:"베이컨피자", size:"라지", qty:45, price:"610,000"},
+    {no:8, category:"피자", item:"고구마피자", size:"라지", qty:48, price:"630,000"},
+    {no:9, category:"음료", item:"환타", size:"1.5L", qty:30, price:"90,000"},
+    {no:10, category:"음료", item:"제로콜라", size:"1.5L", qty:40, price:"110,000"}
+  ];
+
+  let currentPage = 1;
+
+  function renderTable() {
+    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const startIdx = (currentPage - 1) * rowsPerPage;
+    const endIdx = startIdx + rowsPerPage;
+
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+
+    data.slice(startIdx, endIdx).forEach(row => {
+      tableBody.innerHTML += `
+        <tr>
+            <td>${row.no}</td>
+            <td>${row.category}</td>
+            <td>${row.item}</td>
+            <td>${row.size}</td>
+            <td>${row.qty}</td>
+            <td>${row.price}</td>
+        </tr>`;
+    });
+
+    renderPagination(rowsPerPage);
+  }
+
+  function renderPagination(rowsPerPage) {
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    // ◀ 이전 버튼
+    pagination.innerHTML += `
+      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="movePage(${currentPage - 1})">&lt;</a>
+      </li>
+    `;
+
+    // 페이지 숫자 버튼
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.innerHTML += `
+        <li class="page-item ${i === currentPage ? "active" : ""}">
+          <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
+        </li>`;
+    }
+
+    // ▶ 다음 버튼
+    pagination.innerHTML += `
+      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" onclick="movePage(${currentPage + 1})">&gt;</a>
+      </li>
+    `;
+  }
+
+  function movePage(page) {
+    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    renderTable();
+  }
+
+  document.getElementById("rowsPerPage").addEventListener("change", () => {
+    currentPage = 1;
+    renderTable();
+  });
+
+  renderTable();
+</script>
+
+</body>
+</html>
