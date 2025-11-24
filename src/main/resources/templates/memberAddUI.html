@@ -15,6 +15,10 @@
             border-color: #FFEEAA !important;
             color: #000;
         }
+        .custom-btn:hover {
+            background-color: #f2da84 !important;
+            border-color: #f2da84 !important;
+        }
 
         /* 중앙 정렬 + 최대 너비 */
         .page-wrap {
@@ -68,14 +72,14 @@
 
     <!-- 탭 -->
     <div class="tab-container">
-        <div class="tab-btn active" id="tabHead">본사</div>
+        <div class="tab-btn active" id="tabManager">본사</div>
         <div class="tab-btn" id="tabStore">직영점</div>
     </div>
 
     <!-- ====================== -->
     <!-- 본사 등록 -->
     <!-- ====================== -->
-    <div id="formHead" class="form-section active">
+    <div id="formManager" class="form-section active">
         <div class="border p-4 rounded">
 
             <div class="row mb-3">
@@ -197,31 +201,32 @@
     </div>
     <div class="text-center mt-4">
         <button class="btn btn-success custom-btn px-4">등록</button>
+        <button class="btn btn-light px-4" onclick="history.back()">취소</button>
     </div>
 
         <script>
             /* ===========================
                 탭 전환
             =========================== */
-            const tabHead = document.getElementById("tabHead");
+            const tabManager = document.getElementById("tabManager");
             const tabStore = document.getElementById("tabStore");
-            const formHead = document.getElementById("formHead");
+            const formManager = document.getElementById("formManager");
             const formStore = document.getElementById("formStore");
 
-            tabHead.onclick = () => {
-                tabHead.classList.add("active");
+            tabManager.onclick = () => {
+                tabManager.classList.add("active");
                 tabStore.classList.remove("active");
 
-                formHead.classList.add("active");
+                formManager.classList.add("active");
                 formStore.classList.remove("active");
             };
 
             tabStore.onclick = () => {
                 tabStore.classList.add("active");
-                tabHead.classList.remove("active");
+                tabManager.classList.remove("active");
 
                 formStore.classList.add("active");
-                formHead.classList.remove("active");
+                formManager.classList.remove("active");
             };
 
             document.getElementById("storeStatus").addEventListener("change", function () {
