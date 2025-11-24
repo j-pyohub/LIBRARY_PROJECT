@@ -20,7 +20,7 @@ public class ItemDAOTest {
 
     // 1) 새 품목 등록
     @Test
-    void 새_품목_등록() {
+    void addItem() {
 
         ItemDTO item = ItemDTO.builder()
                 .itemCode("TEST-001")
@@ -48,7 +48,7 @@ public class ItemDAOTest {
 
     // 2) 품목 수정
     @Test
-    void 품목_수정() {
+    void setItem() {
         List<ItemDTO> list = itemDAO.getByItemCode("TEST-001");
         assertFalse(list.isEmpty());
 
@@ -106,7 +106,7 @@ public class ItemDAOTest {
 
     // 5) 품목명 검색
     @Test
-    void 품목명_검색() {
+    void getByItemName() {
         List<ItemDTO> list = itemDAO.getByItemName("도우");
 
         System.out.println("▶ getByItemName size = " + list.size());
@@ -117,7 +117,7 @@ public class ItemDAOTest {
 
     // 6) 품목코드 검색
     @Test
-    void 품목코드_검색() {
+    void getByItemCode() {
         List<ItemDTO> list = itemDAO.getByItemCode("DOUGH");
 
         System.out.println("▶ getByItemCode size = " + list.size());
@@ -128,7 +128,7 @@ public class ItemDAOTest {
 
     // 7) 재료명 검색
     @Test
-    void 재료명_검색() {
+    void getByIngredient() {
         List<ItemDTO> list = itemDAO.getByIngredient("페퍼로니");
 
         System.out.println("▶ getByIngredient size = " + list.size());
@@ -139,7 +139,7 @@ public class ItemDAOTest {
 
     // 8) 품목 상세 보기
     @Test
-    void 품목_상세_보기() {
+    void getItemDetail() {
         ItemDTO item = itemDAO.getItemDetail(1L); // 샘플데이터 1번 기준
 
         System.out.println("▶ getItemDetail = " + item);
@@ -148,7 +148,7 @@ public class ItemDAOTest {
 
     // 9) 품목 삭제 (소프트 삭제)
     @Test
-    void 품목_삭제() {
+    void removeItem() {
         List<ItemDTO> list = itemDAO.getByItemCode("EDIT-001");
 
         if (!list.isEmpty()) {
