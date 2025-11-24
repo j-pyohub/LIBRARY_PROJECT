@@ -2,7 +2,7 @@
     <style>
         .top-bar {
             width: 100%;
-            height: 70px;
+            height: 90px;
             background-color: #c6f8d6;
             display: flex;
             justify-content: space-between;
@@ -25,15 +25,16 @@
 
         .menu-item {
             position: relative;
-            font-size: 20px;
+            font-size: 30px;
             cursor: pointer;
+            padding: 80px;
         }
 
         .dropdown-menu {
             display: none;
             position: absolute;
-            top: 30px;
-            left: 0;
+            top: 130px;
+            left: 70px;
             background: #d4fbdc;
             padding: 10px 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -52,7 +53,6 @@
             background-color: #c0f0c9;
         }
 
-        /* hover 시 도로록 열리는 곳 */
         .dropdown:hover .dropdown-menu {
             display: block;
         }
@@ -78,37 +78,50 @@
                 <span>매출 ▾</span>
                 <div class="dropdown-menu">
                     <a href="#">전체 매출</a>
-                    <a href="#">직영점 매출</a>
-                    <a href="#">직영점 주문</a>
+                    <a href="#">직영점별 매출 조회</a>
+                    <a href="#">직영점별 주문 조회</a>
                 </div>
             </div>
 
             <div class="menu-item dropdown">
                 <span>재고 ▾</span>
                 <div class="dropdown-menu">
+                    <a href="#">품목 등록</a>
                     <a href="#">품목 조회</a>
-                    <a href="#">재고 현황</a>
-                    <a href="#">발주</a>
-                    <a href="#">발주 내역</a>
+                    <a href="#">재고 현황 조회</a>
+                    <a href="#">재고 변동 조회</a>
+                    <a href="#">발주 승인 대기</a>
+                    <a href="#">발주 내역 조회</a>
                 </div>
             </div>
 
             <div class="menu-item dropdown">
                 <span>메뉴 ▾</span>
                 <div class="dropdown-menu">
+                    <a href="#">메뉴 등록</a>
                     <a href="#">메뉴 조회</a>
-                    <a href="#">직영점 판매 메뉴</a>
+                    <a href="#">직영점 판매 메뉴 관리</a>
                 </div>
             </div>
 
             <div class="menu-item">
-                <span>직영점</span>
+                <span>직영점 목록</span>
+            </div>
+
+            <div class="menu-item dropdown"
+            <span>관리 ▾</span>
+            <div class="dropdown-menu">
+                <a href="#">직원 등록</a>
+                <a href="#">직원 목록 조회</a>
+                <a href="#">직영점 등록</a>
+                <a href="#">직영점 목록 조회</a>
             </div>
         </div>
-
-        <div class="right-section">
-            <span class="store-name">금천구청점</span>
-            <button class="logout-btn">로그아웃</button>
-        </div>
     </div>
+
+    <div class="right-section">
+        <span class="store-name">금천구청점</span>
+        <button class="logout-btn">로그아웃</button>
+    </div>
+</div>
 </div>
