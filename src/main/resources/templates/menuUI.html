@@ -218,6 +218,15 @@
     document.getElementById("addMenuBtn").addEventListener("click", () => {
         window.location.href = "menuAddUI.html"
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".detail-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                window.location.href = "menuDetailUI.html";
+            });
+        });
+    });
+
 </script>
 
 </body>

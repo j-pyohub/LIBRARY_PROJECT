@@ -39,6 +39,8 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         WHERE
             (:storeName IS NULL OR s.storeName LIKE %:storeName%) AND
             (:menuName IS NULL OR m.menuName LIKE %:menuName%) AND
+            (m.releaseStatus = "출시 중") AND
+            (m.delDate is null) AND
             (:salesStatus IS NULL OR sm.salesStatus = :salesStatus) AND
             (:menuCategory IS NULL OR m.menuCategory = :menuCategory)
     """)
@@ -64,6 +66,8 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         JOIN sm.menu m
     WHERE
         s.storeNo = :storeNo AND
+        (m.releaseStatus = "출시 중") AND
+        (m.delDate is null) AND
         (:menuName IS NULL OR m.menuName LIKE %:menuName%) AND
         (:salesStatus IS NULL OR sm.salesStatus = :salesStatus) AND
         (:menuCategory IS NULL OR m.menuCategory = :menuCategory)

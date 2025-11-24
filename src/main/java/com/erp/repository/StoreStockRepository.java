@@ -31,7 +31,7 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
           AND itm.itemName LIKE %:itemName%
         ORDER BY ss.storeStockNo DESC
     """)
-    List<StoreStock> searchByItemName(Long storeNo, String itemName);
+    List<StoreStock> findByItemName(Long storeNo, String itemName);
 
     // 3) 직영점 + 품목코드 검색
     @Query("""
@@ -43,7 +43,7 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
           AND itm.itemCode LIKE %:itemCode%
         ORDER BY ss.storeStockNo DESC
     """)
-    List<StoreStock> searchByItemCode(Long storeNo, String itemCode);
+    List<StoreStock> findByItemCode(Long storeNo, String itemCode);
 
 
     // 현재 재고 수량 조회
