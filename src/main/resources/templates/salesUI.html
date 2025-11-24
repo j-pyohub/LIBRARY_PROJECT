@@ -37,15 +37,10 @@
 
 <body class="p-2">
 
-<!-- ===========================
-     상단 타이틀
-=========================== -->
 <div class="border border-primary p-2" style="max-width:1200px; margin:0 auto;">
     <div class="fs-4 fw-bold mb-2">메인) 전체 매출 조회(월별)</div>
 
-    <!-- ===========================
-         상단 메뉴 바
-    ============================ -->
+    <!-- 상단 메뉴 바 -->
     <div class="top-bar d-flex align-items-center">
 
         <div class="btn-group me-3">
@@ -74,12 +69,10 @@
         </div>
     </div>
 
-    <!-- ===========================
-         보기 + 차트/목록 토글 + 기간/라디오
-    ============================ -->
+    <!-- 보기 + 기간/라디오 -->
     <div class="mt-3 px-2">
 
-        <!-- 보기 / 차트 / 목록 -->
+        <!-- 보기 -->
         <div class="d-flex align-items-center mb-2">
             <span class="me-2">보기</span>
             <div class="btn-group" role="group">
@@ -116,9 +109,7 @@
         </div>
     </div>
 
-    <!-- ===========================
-         KPI 카드 4개
-    ============================ -->
+    <!-- KPI 카드 -->
     <div class="row g-3 mb-3 px-2">
         <div class="col-md-3">
             <div class="kpi-card">
@@ -149,20 +140,15 @@
         </div>
     </div>
 
-    <!-- ===========================
-         메인 그래프
-    ============================ -->
+    <!-- 메인 그래프 -->
     <div class="section-box mb-4 mx-2">
-        <h6 class="mb-3 fw-bold">전체 매출 추이 (월별)</h6>
+        <h6 class="mb-3 fw-bold">전체 매출 추이</h6>
         <canvas id="mainChart" height="90"></canvas>
     </div>
 
-    <!-- ===========================
-         서브차트 2개 (메인 아래)
-    ============================ -->
+    <!-- 서브 차트 -->
     <div class="row g-3 mb-3 px-2">
 
-        <!-- 지점별 TOP5 -->
         <div class="col-md-6">
             <div class="section-box">
                 <h6 class="fw-bold mb-3">지점별 매출금액 TOP 5</h6>
@@ -170,42 +156,121 @@
             </div>
         </div>
 
-        <!-- 메뉴별 매출 비중 -->
         <div class="col-md-6">
             <div class="section-box">
                 <h6 class="fw-bold mb-3">메뉴별 매출 비중</h6>
                 <canvas id="menuPieChart" height="130"></canvas>
             </div>
         </div>
-
     </div>
 
-</div> <!-- /outer border -->
+</div>
+
 
 <!-- ===========================
-         Chart.js Scripts
+     스크립트
 =========================== -->
 <script>
-    // 메인 월별 그래프 (예시)
-    new Chart(document.getElementById('mainChart'), {
-        type: 'line',
-        data: {
-            labels: ['5월','6월','7월','8월','9월','10월','11월','12월','1월','2월','3월'],
-            datasets: [{
-                label: '매출 액 (원)',
-                data: [380000000, 400000000, 395000000, 360000000, 335000000,
-                    360000000, 345000000, 355000000, 380000000, 410000000, 450000000],
-                borderColor: '#007bff',
-                backgroundColor: 'rgba(0,123,255,0.15)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3
-            }]
+    /* ---------------------------
+       기간별 데이터 정의
+    --------------------------- */
+    const chartData = {
+        day: {
+            labels: ['10/01','10/02','10/03','10/04','10/05','10/06','10/07'],
+            data:   [12, 15, 9, 14, 18, 16, 21],
+            kpi: "전일 대비 매출 성장"
         },
-        options: { responsive: true }
+        week: {
+            labels: [
+                '10/06 ~ 10/12 (W41)',
+                '10/13 ~ 10/19 (W42)',
+                '10/20 ~ 10/26 (W43)',
+                '10/27 ~ 11/02 (W44)'
+            ],
+            data:   [380, 410, 395, 420],
+            kpi: "전주 대비 매출 성장"
+        },
+        month: {
+            labels: ['5월','6월','7월','8월','9월','10월','11월','12월','1월','2월','3월'],
+            data:   [380000000, 400000000, 395000000, 360000000, 335000000,
+                360000000, 345000000, 355000000, 380000000, 410000000, 450000000],
+            kpi: "전월 대비 매출 성장"
+        },
+        year: {
+            labels: ['2021','2022','2023','2024','2025'],
+            data:   [4.2, 4.6, 5.1, 5.8, 6.3],
+            kpi: "전년 대비 매출 성장"
+        }
+    };
+
+
+    /* ---------------------------
+       KPI 카드 4번 텍스트 변경 함수
+    --------------------------- */
+    function updateKpiLabel(type) {
+        const title = document.querySelectorAll('.kpi-title')[3];
+        title.textContent = chartData[type].kpi;
+    }
+
+
+    /* ---------------------------
+       메인 그래프 생성 함수
+    --------------------------- */
+    let mainChart;
+
+    function createMainChart(type) {
+        const canvas = document.getElementById('mainChart');
+        const ctx = canvas.getContext('2d');
+
+        if (mainChart) mainChart.destroy();
+
+        const chartType = (type === 'year') ? 'bar' : 'line';
+
+        mainChart = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: chartData[type].labels,
+                datasets: [{
+                    label: '매출액',
+                    data: chartData[type].data,
+                    borderColor: '#007bff',
+                    backgroundColor: (chartType === 'bar')
+                        ? 'rgba(0,123,255,0.6)'
+                        : 'rgba(0,123,255,0.15)',
+                    borderWidth: 2,
+                    fill: chartType !== 'bar',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: false }
+                }
+            }
+        });
+
+        updateKpiLabel(type);
+    }
+
+    /* ---------------------------
+       초기 로드 → 월별 그래프
+    --------------------------- */
+    createMainChart('month');
+
+    /* ---------------------------
+       라디오 버튼 이벤트
+    --------------------------- */
+    document.querySelectorAll('input[name="period"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            createMainChart(radio.id);
+        });
     });
 
-    // 지점별 TOP 5
+
+    /* ---------------------------
+       서브 차트 (기존 그대로 유지)
+    --------------------------- */
     new Chart(document.getElementById('storeTop5Chart'), {
         type: 'bar',
         data: {
@@ -224,7 +289,6 @@
         }
     });
 
-    // 메뉴별 매출 비중 (피자)
     new Chart(document.getElementById('menuPieChart'), {
         type: 'doughnut',
         data: {
@@ -238,7 +302,7 @@
         },
         options: { responsive: true }
     });
-</script>
 
+</script>
 </body>
 </html>

@@ -15,8 +15,12 @@ public class StoreItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeItemNo;
 
+    @Column(nullable = false)
     private Long itemNo;
+
+    @Column(nullable = false)
     private Long storeNo;
+
     private Integer managerLimit;
     private Integer storeLimit;
 }

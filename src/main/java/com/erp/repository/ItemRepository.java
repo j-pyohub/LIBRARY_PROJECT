@@ -9,11 +9,4 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByItemCode(String itemCode);
-
-    List<Item> findByItemName(String itemName);
-
-    List<Item> findByIngredientName(String ingredientName);
-
-    void deleteById(Long deleteId);
 }

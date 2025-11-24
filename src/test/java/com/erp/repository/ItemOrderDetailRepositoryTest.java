@@ -1,5 +1,6 @@
 package com.erp.repository;
 
+import com.erp.repository.entity.ItemOrder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,7 @@ public class ItemOrderDetailRepositoryTest {
     private ItemOrderDetailRepository repo;
 
     @Test
-    void getAllItemOrderDetails() {
-        repo.findAll().forEach(System.out::println);
+    void getAlItemOrderDetail(){
+        repo.findByItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
     }
 }

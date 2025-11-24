@@ -1,11 +1,13 @@
 package com.erp.repository.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.erp.dao.dto.StoreDTO;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +19,16 @@ import java.util.Date;
 public class SalesOrder {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long salesOrderNo;
-    private long storeNo;
-    private Date salesOrderDateTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no")
+    private Store store;
+    @Column(nullable = false)
+    private LocalDateTime salesOrderDatetime;
+    @Column(nullable = false)
     private Integer salesOrderAmount;
+
+    @OneToMany(mappedBy = "salesOrder", fetch = FetchType.LAZY)
+    private List<StoreOrderDetail> orderDetails = new ArrayList<>();
 }
