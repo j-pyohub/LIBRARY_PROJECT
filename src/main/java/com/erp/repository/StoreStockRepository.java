@@ -48,6 +48,8 @@ public interface StoreStockRepository extends JpaRepository<StoreStock, Long> {
 
     // 현재 재고 수량 조회
     StoreStock findFirstByStoreItemNoOrderByStoreStockNoDesc(Long storeItemNo);
+
+    StoreStock findByStoreItemNo(Long storeItemNo);
 }
 
 
