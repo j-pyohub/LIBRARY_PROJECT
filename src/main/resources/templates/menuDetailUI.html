@@ -53,7 +53,7 @@
     <div class="d-flex gap-2">
       <button class="btn custom-btn">수정</button>
       <button class="btn custom-btn">삭제</button>
-      <button class="btn btn-outline-secondary">목록</button>
+      <button class="btn btn-outline-secondary" id="goToList">목록</button>
     </div>
   </div>
 
@@ -161,6 +161,11 @@
   </div>
 
 </div>
+<script>
+  document.getElementById("goToList").addEventListener("click", () => {
+    window.location.href = "menuUI.html";
+  });
 
+</script>
 </body>
 </html>
