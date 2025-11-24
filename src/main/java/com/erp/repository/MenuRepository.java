@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    List<Menu> findByMenuCategory(String menuCategory);
-    List<Menu> findByReleaseStatus(String releaseStatus);
+
+    List<Menu> findByDelDateIsNull();
+    List<Menu> findByMenuCategoryAndDelDateIsNull(String menuCategory);
+
+    List<Menu> findByReleaseStatusAndDelDateIsNull(String releaseStatus);
 }

@@ -24,17 +24,17 @@ public class MenuRepositoryTest {
 
     @Test
     public void getAllMenu() {
-        System.out.println(menuRepository.findAll());
+        System.out.println(menuRepository.findByDelDateIsNull());
     }
 
     @Test
     public void getMenuByCategory() {
-        System.out.println(menuRepository.findByMenuCategory("음료"));
+        System.out.println(menuRepository.findByMenuCategoryAndDelDateIsNull("음료"));
     }
 
     @Test
     public void getMenuByReleaseStatus() {
-        System.out.println(menuRepository.findByReleaseStatus("출시 예정"));
+        System.out.println(menuRepository.findByReleaseStatusAndDelDateIsNull("출시 예정"));
     }
 
     @Test
