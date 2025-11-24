@@ -197,7 +197,7 @@
             edit_date,
             del_date
         FROM ITEM
-        WHERE item_no = #{itemNo}
+        WHERE item_no = #{itemNo} AND del_date IS NULL
     </select>
 
 </mapper>
