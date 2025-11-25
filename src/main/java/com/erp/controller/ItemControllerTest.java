@@ -11,34 +11,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/manager/item")
 public class ItemControllerTest {
 
-    // 나중에 실제 로직 붙일 때 사용 예정
-    // private final ItemRepository itemRepository;
-
     /** 재고 품목 목록 조회 */
-    @GetMapping("/list")
-    public String itemList(Model model) {
+    @GetMapping("/get")
+    public String itemGet(Model model) {
         model.addAttribute("role", "본사");
-        return "item/itemList";
+        return "item/itemUI";
     }
 
     /** 재고 품목 상세 조회 */
     @GetMapping("/detail")
     public String itemDetail(Model model) {
         model.addAttribute("role", "본사");
-        return "item/itemDetail";
+        return "item/itemDetailUI";
     }
 
     /** 재고 품목 등록 화면 */
-    @GetMapping("/create")
-    public String itemCreate(Model model) {
+    @GetMapping("/add")
+    public String itemAdd(Model model) {
         model.addAttribute("role", "본사");
-        return "item/itemCreate";
+        return "item/itemAddUI";
     }
 
     /** 재고 품목 수정 화면 */
-    @GetMapping("/edit")
-    public String itemEdit(Model model) {
+    @GetMapping("/set")
+    public String itemSet(Model model) {
         model.addAttribute("role", "본사");
-        return "item/itemEdit";
+        return "item/itemSetUI";
     }
 }
