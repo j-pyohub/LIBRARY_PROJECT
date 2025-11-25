@@ -46,6 +46,16 @@
             background-color: #f2da84 !important;
             border-color: #f2da84 !important;
         }
+        .gray-btn {
+            background-color: #D9D9D9 !important;
+            border: #ffffff !important;
+        }
+
+        .gray-btn:hover {
+            background-color: #C9C9C9 !important;
+            border-color: #ffffff !important;
+        }
+
     </style>
 </head>
 
@@ -80,7 +90,7 @@
 
     <div class="text-center mt-4">
         <button class="btn custom-btn px-4" id="managerSetBtn">수정</button>
-        <button class="btn custom-btn px-4" id="managerDelBtn">삭제</button>
+        <button class="btn gray-btn px-4" id="managerDelBtn">삭제</button>
     </div>
     <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -88,8 +98,8 @@
                 <div class="modal-body">
                     <p id="alertMessage" class="fs-5 fw-bold mb-4 text-dark"></p>
                     <div class="d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary px-4 custom-btn" data-bs-dismiss="modal">확인
-                        </button>
+                        <button type="button" class="btn btn-primary px-4 custom-btn" data-bs-dismiss="modal">확인</button>
+                        <button type="button" class="btn btn-primary px-4 gray-btn" data-bs-dismiss="modal">취소</button>
                     </div>
                 </div>
             </div>
