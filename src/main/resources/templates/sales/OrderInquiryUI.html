@@ -3,32 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title>주문 조회</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
   <style>
     body { background-color:#e5e5e5; }
-    .top-bar { background-color:#7be3a4; padding:8px 16px; }
     .section-box { background:#fff; border-radius:10px; border:1px solid #ddd; padding:20px; }
     .table thead th { background-color:#fbfbfb; font-weight:600; }
     .pagination-wrapper { display:flex; justify-content:center; width:100%; }
   </style>
 </head>
+
 <body class="p-3">
 
 <div class="border border-secondary" style="max-width:1200px; margin:0 auto; background:#fff;">
-
-
   <div class="p-3">
     <div class="fs-3 fw-bold mb-3">주문 조회</div>
   </div>
 
+  <!-- 검색 영역 (본사 버전은 직영점 검색 유지) -->
   <div class="px-3 d-flex justify-content-end align-items-center gap-2 mb-2">
     <span class="fw-semibold">주문 일자</span>
-    <input type="date" value="2025-10-01" class="form-control form-control-sm" style="width:150px;">
+    <input id="dateInput" type="date" class="form-control form-control-sm" style="width:150px;">
+
     <span class="fw-semibold ms-3">직영점</span>
-    <input type="text" class="form-control form-control-sm" style="width:180px;">
-    <button class="btn btn-warning btn-sm">검색</button>
-    <button class="btn btn-outline-secondary btn-sm">초기화</button>
+    <input id="storeInput" type="text" class="form-control form-control-sm" style="width:180px;">
+
+    <button id="searchBtn" class="btn btn-warning btn-sm">검색</button>
+    <button id="resetBtn" class="btn btn-outline-secondary btn-sm">초기화</button>
   </div>
 
   <div class="px-3 pb-3">
@@ -44,7 +48,8 @@
           <th></th>
         </tr>
         </thead>
-        <tbody>
+
+        <tbody id="orderTableBody">
 
         <tr class='text-center'>
           <td>10</td>
@@ -52,7 +57,7 @@
           <td>금천구청점</td>
           <td>1개</td>
           <td>30,000원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(10)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="10" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -61,7 +66,7 @@
           <td>가산점</td>
           <td>2개</td>
           <td>32,500원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(9)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="9" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -70,7 +75,7 @@
           <td>독산점</td>
           <td>3개</td>
           <td>35,000원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(8)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="8" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -79,7 +84,7 @@
           <td>신도림점</td>
           <td>4개</td>
           <td>37,500원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(7)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="7" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -88,7 +93,7 @@
           <td>신길점</td>
           <td>5개</td>
           <td>40,000원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(6)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="6" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -97,7 +102,7 @@
           <td>수원점</td>
           <td>1개</td>
           <td>42,500원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(5)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="5" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -106,7 +111,7 @@
           <td>인천점</td>
           <td>2개</td>
           <td>45,000원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(4)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="4" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -115,7 +120,7 @@
           <td>광주점</td>
           <td>3개</td>
           <td>47,500원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(3)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="3" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -124,7 +129,7 @@
           <td>대구점</td>
           <td>4개</td>
           <td>50,000원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(2)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="2" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         <tr class='text-center'>
@@ -133,7 +138,7 @@
           <td>부산점</td>
           <td>5개</td>
           <td>52,500원</td>
-          <td><img src="/image/detail.png" style="width:24px; cursor:pointer;" onclick="openDetailModal(1)"></td>
+          <td><img src="/image/detail.png" class="detailBtn" data-orderno="1" style="width:24px; cursor:pointer;"></td>
         </tr>
 
         </tbody>
@@ -154,7 +159,7 @@
   </div>
 </div>
 
-<!-- Detail Modal -->
+<!-- 상세 모달 -->
 <div class="modal fade" id="orderDetailModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered" style="max-width:520px;">
     <div class="modal-content">
@@ -162,19 +167,32 @@
         <h5 class="modal-title fw-bold">주문 상세보기</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
-        <div class="mb-2"><span class="fw-semibold">주문 일시</span> <span id="detailOrderDate" class="ms-2"></span></div>
-        <div class="mb-3"><span class="fw-semibold">직영점명</span> <span id="detailStoreName" class="ms-2"></span></div>
+        <div class="mb-2">
+          <span class="fw-semibold">주문 일시</span>
+          <span id="detailOrderDate" class="ms-2"></span>
+        </div>
+
+        <div class="mb-3">
+          <span class="fw-semibold">직영점명</span>
+          <span id="detailStoreName" class="ms-2"></span>
+        </div>
 
         <table class="table table-bordered text-center align-middle">
           <thead class="table-light">
-          <tr><th>메뉴</th><th>사이즈</th><th>가격</th><th>수량</th><th>총 금액</th></tr>
+          <tr>
+            <th>메뉴</th><th>사이즈</th><th>가격</th><th>수량</th><th>총 금액</th>
+          </tr>
           </thead>
           <tbody id="detailMenuList"></tbody>
         </table>
 
-        <div class="text-end fw-bold">총 결제 금액 <span id="detailTotalPrice"></span></div>
+        <div class="text-end fw-bold">
+          총 결제 금액 <span id="detailTotalPrice"></span>
+        </div>
       </div>
+
       <div class="modal-footer">
         <button class="btn btn-warning" data-bs-dismiss="modal">닫기</button>
       </div>
@@ -183,9 +201,9 @@
 </div>
 
 <script>
-  // detail data sample
+  /* 샘플 상세 데이터 */
   const sampleDetailData = {};
-  for(let n=1; n<=10; n++){
+  for (let n = 1; n <= 10; n++) {
     sampleDetailData[n] = {
       orderDate: "2025-11-18 13:25:00",
       storeName: "직영점 " + n,
@@ -196,26 +214,37 @@
     };
   }
 
-  let orderModal = new bootstrap.Modal(document.getElementById("orderDetailModal"));
+  const orderModal = new bootstrap.Modal(document.getElementById("orderDetailModal"));
 
-  function openDetailModal(orderNo) {
+  /* 상세 모달 열기 */
+  $(document).on("click", ".detailBtn", function () {
+    const orderNo = $(this).data("orderno");
     const data = sampleDetailData[orderNo];
-    document.getElementById("detailOrderDate").innerText = data.orderDate;
-    document.getElementById("detailStoreName").innerText = data.storeName;
 
-    const list = document.getElementById("detailMenuList");
-    list.innerHTML = "";
+    $("#detailOrderDate").text(data.orderDate);
+    $("#detailStoreName").text(data.storeName);
+
     let total = 0;
+    $("#detailMenuList").empty();
 
     data.menus.forEach(m => {
       const sum = m.price * m.qty;
       total += sum;
-      list.innerHTML += `<tr><td>${m.name}</td><td>${m.size}</td><td>${m.price.toLocaleString()} 원</td><td>${m.qty}</td><td>${sum.toLocaleString()} 원</td></tr>`;
+      $("#detailMenuList").append(`
+        <tr>
+          <td>${m.name}</td>
+          <td>${m.size}</td>
+          <td>${m.price.toLocaleString()} 원</td>
+          <td>${m.qty}</td>
+          <td>${sum.toLocaleString()} 원</td>
+        </tr>
+      `);
     });
 
-    document.getElementById("detailTotalPrice").innerText = total.toLocaleString() + " 원";
+    $("#detailTotalPrice").text(total.toLocaleString() + " 원");
+
     orderModal.show();
-  }
+  });
 </script>
 
 </body>
