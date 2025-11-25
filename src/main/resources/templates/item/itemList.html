@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>재고 품목 조회</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <style>
+        body { background-color: #f5f5f5 !important; }
+
+        .wrapper-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            max-width: 1500px;
+            margin: 40px auto;
+        }
+        .section-inner {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .custom-btn {
+            background-color: #FFEEAA !important;
+            border-color: #FFEEAA !important;
+            color: #000;
+        }
+        .custom-btn:hover {
+            background-color: #f2da84 !important;
+            border-color: #f2da84 !important;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            z-index: 5;
+        }
+        .table-responsive {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 상단 공통 툴바 (본사) -->
+<header th:replace="fragments/toolBarManager :: toolBarManager"></header>
+
+<main class="py-4">
+    <div class="wrapper-box">
+
+        <!-- 제목 + 등록 버튼 -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">재고 품목 조회</h2>
+            <button class="btn custom-btn"
+                    th:onclick="|location.href='@{/manager/item/create}'|">
+                새 품목 등록
+            </button>
+        </div>
+
+        <!-- 검색 영역 -->
+        <div class="section-inner mb-4">
+            <h5 class="fw-bold mb-3">품목 조회</h5>
+
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">카테고리</label>
+                    <select class="form-select">
+                        <option>전체</option>
+                        <option>도우</option>
+                        <option>소스</option>
+                        <option>치즈</option>
+                        <option>토핑</option>
+                        <option>야채</option>
+                        <option>사이드</option>
+                        <option>기타</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">검색 조건</label>
+                    <select class="form-select">
+                        <option>품목명</option>
+                        <option>품목코드</option>
+                        <option>재료명</option>
+                        <option>공급사</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">검색어</label>
+                    <input type="text" class="form-control" placeholder="검색어를 입력하세요">
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-outline-dark w-100">검색</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 목록 테이블 -->
+        <div class="section-inner">
+            <div class="table-responsive">
+                <table class="table table-hover text-center align-middle">
+                    <thead>
+                    <tr>
+                        <th>카테고리</th>
+                        <th>품목코드</th>
+                        <th>품목명</th>
+                        <th>재료명</th>
+                        <th>공급사</th>
+                        <th>공급가격</th>
+                        <th>상세</th> <!-- 각 행 상세보기 아이콘 -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 샘플 데이터 20개 -->
+                    <tr>
+                        <td>도우</td>
+                        <td>DOUGH-M-230G</td>
+                        <td>도우 230g</td>
+                        <td>피자 도우M</td>
+                        <td>신선신선 도우</td>
+                        <td>22,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>도우</td>
+                        <td>DOUGH-L-300G</td>
+                        <td>도우 300g</td>
+                        <td>피자 도우L</td>
+                        <td>신선신선 도우</td>
+                        <td>24,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>소스</td>
+                        <td>SAUCE-3KG-CAN</td>
+                        <td>토마토소스 3kg 캔</td>
+                        <td>토마토소스</td>
+                        <td>신선신선 토마토</td>
+                        <td>30,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>소스</td>
+                        <td>SAUCE-ALFREDO-2KG</td>
+                        <td>알프레도 소스 2kg</td>
+                        <td>알프레도소스</td>
+                        <td>신선신선 소스</td>
+                        <td>32,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>치즈</td>
+                        <td>MOZZ-2.5KG</td>
+                        <td>모짜렐라 2.5kg 블럭</td>
+                        <td>피자 치즈</td>
+                        <td>신선신선 치즈</td>
+                        <td>45,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>치즈</td>
+                        <td>MOZZ-SHRED-1KG</td>
+                        <td>슈레드 모짜렐라 1kg</td>
+                        <td>피자 치즈</td>
+                        <td>신선신선 치즈</td>
+                        <td>19,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>치즈</td>
+                        <td>CHEDDAR-SLICE</td>
+                        <td>체다 치즈 슬라이스</td>
+                        <td>체다치즈</td>
+                        <td>신선신선 치즈</td>
+                        <td>17,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>토핑</td>
+                        <td>PEPPERONI-1KG</td>
+                        <td>페퍼로니 1kg</td>
+                        <td>페퍼로니</td>
+                        <td>신선신선 페퍼로니</td>
+                        <td>45,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>토핑</td>
+                        <td>BACON-1KG</td>
+                        <td>베이컨 1kg</td>
+                        <td>베이컨</td>
+                        <td>신선신선 육가공</td>
+                        <td>38,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>토핑</td>
+                        <td>HAM-1KG</td>
+                        <td>햄 1kg</td>
+                        <td>햄</td>
+                        <td>신선신선 육가공</td>
+                        <td>36,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>야채</td>
+                        <td>ONION-10KG</td>
+                        <td>양파 10kg</td>
+                        <td>양파</td>
+                        <td>신선신선 야채</td>
+                        <td>21,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>야채</td>
+                        <td>GREENPEPPER-5KG</td>
+                        <td>피망 5kg</td>
+                        <td>피망</td>
+                        <td>신선신선 야채</td>
+                        <td>23,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>야채</td>
+                        <td>MUSHROOM-2KG</td>
+                        <td>양송이 2kg</td>
+                        <td>양송이버섯</td>
+                        <td>신선신선 야채</td>
+                        <td>25,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>사이드</td>
+                        <td>PICKLE-3KG</td>
+                        <td>피클 3kg</td>
+                        <td>피클</td>
+                        <td>시콤시콤 피클</td>
+                        <td>15,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>사이드</td>
+                        <td>GARLICDIP-200EA</td>
+                        <td>갈릭디핑소스 200개</td>
+                        <td>갈릭디핑소스</td>
+                        <td>소스소스</td>
+                        <td>18,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>음료</td>
+                        <td>COLA-1.5L</td>
+                        <td>콜라 1.5L x12</td>
+                        <td>콜라</td>
+                        <td>스파클음료</td>
+                        <td>16,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>음료</td>
+                        <td>CIDER-1.5L</td>
+                        <td>사이다 1.5L x12</td>
+                        <td>사이다</td>
+                        <td>스파클음료</td>
+                        <td>16,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>기타</td>
+                        <td>FLOUR-20KG</td>
+                        <td>강력분 20kg</td>
+                        <td>강력분</td>
+                        <td>골드밀가루</td>
+                        <td>29,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>기타</td>
+                        <td>YEAST-500G</td>
+                        <td>이스트 500g</td>
+                        <td>이스트</td>
+                        <td>골드밀가루</td>
+                        <td>8,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>기타</td>
+                        <td>OLIVE-OIL-5L</td>
+                        <td>올리브유 5L</td>
+                        <td>올리브유</td>
+                        <td>올리브팜</td>
+                        <td>55,000</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    th:onclick="|location.href='@{/manager/item/detail}'|">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <nav class="mt-3">
+                <ul class="pagination justify-content-center pagination-sm mb-0">
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
