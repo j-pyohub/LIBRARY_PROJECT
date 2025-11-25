@@ -15,6 +15,16 @@ public class StoreMenuRepositoryTest {
 
 
     @Test
+    void setStoreMenuTest(){
+        Long storeMenuNo = 48L;
+        String salesStatus = "판매중";
+        StoreMenu sm = storeMenuRepository.findById(storeMenuNo).get();
+        sm.setSalesStatus(salesStatus);
+
+        storeMenuRepository.save(sm);
+    }
+
+    @Test
     void addStoreMenuTest(){
 
         Store store = Store.builder()
