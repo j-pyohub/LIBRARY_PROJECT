@@ -1,1 +1,76 @@
-<div>DISPOSE MODAL</div>
+<div th:fragment="modalDispose">
+    <div class="modal fade" id="disposeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">폐기 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- 품목명 -->
+                    <div class="mb-2">
+                        <div class="small text-muted">품목</div>
+                        <div class="fw-semibold" id="disposeItemName">-</div>
+                    </div>
+
+                    <!-- 현재 재고 -->
+                    <div class="mb-2">
+                        <div class="small text-muted">현재 재고</div>
+                        <div class="fw-semibold">
+                            <span id="disposeCurrentQty">0</span>
+                            <span id="disposeUnit">ea</span>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- 폐기 수량 -->
+                    <label class="form-label fw-bold">폐기 수량</label>
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="number" min="0" id="disposeQtyInput" class="form-control">
+                        <span class="input-group-text" id="disposeUnit2">ea</span>
+                    </div>
+
+                    <!-- 공급단위 계산 -->
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="checkSupplyDispose">
+                        <label class="form-check-label small" for="checkSupplyDispose">
+                            공급단위로 계산
+                        </label>
+                    </div>
+
+                    <!-- 공급단위 입력 -->
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text">공급 수량</span>
+                        <input type="number" min="0" class="form-control" id="disposeSupplyCount" disabled>
+                        <span class="input-group-text" id="disposeSupplyUnit">box</span>
+                    </div>
+
+                    <!-- 변환 정보 -->
+                    <div class="small text-muted" id="disposeConvertInfo">
+                        ※ 1 box = 50 ea (예시), 실제 convert_stock 값으로 계산
+                    </div>
+
+                    <hr>
+
+                    <!-- 폐기 사유 -->
+                    <label class="form-label fw-bold">폐기 사유</label>
+                    <textarea id="disposeReason"
+                              class="form-control"
+                              rows="3"
+                              placeholder="폐기 사유를 입력하세요"></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-main btn-sm" id="btnDisposeSubmit">등록</button>
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">닫기</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
