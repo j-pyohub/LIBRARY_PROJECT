@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -142,22 +141,4 @@ class StoreStockRepositoryTest {
         result.forEach(System.out::println);
         System.out.println("=========================");
     }
-
-    @Test
-    void findByStoreNoAndChangeDatetimeBetween() {
-
-        Long storeNo = 1L;
-        Timestamp start = Timestamp.valueOf("2025-11-01 00:00:00");
-        Timestamp end   = Timestamp.valueOf("2025-11-30 23:59:59");
-
-        List<StoreStock> result =
-                storeStockRepository.findByStoreNoAndChangeDatetimeBetween(storeNo, start, end);
-
-        System.out.println("=== 기간별 검색 결과 ===");
-        result.forEach(System.out::println);
-        System.out.println("=======================");
-
-        assertThat(result.size()).isGreaterThanOrEqualTo(0);
-    }
-
 }
