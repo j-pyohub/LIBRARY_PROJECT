@@ -8,6 +8,8 @@ import java.util.List;
 @Mapper
 public interface MenuDAO {
 
+    void setMenu(MenuDTO menu);
+
     void addMenu(MenuDTO menu);
 
     void removeMenu(Long menuNo);
@@ -20,9 +22,7 @@ public interface MenuDAO {
 
     List<MenuDTO> findByMenuCode(String menuCode);
 
-    void updateMenu(MenuDTO menu);
 
-    void insertMenu(MenuDTO menu);
 
 
 

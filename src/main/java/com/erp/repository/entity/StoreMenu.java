@@ -9,6 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class StoreMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,9 @@
 package com.erp.repository;
 
+
+import com.erp.repository.entity.Menu;
+import com.erp.repository.entity.Store;
+import com.erp.repository.entity.StoreMenu;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +13,32 @@ public class StoreMenuRepositoryTest {
     @Autowired
     private StoreMenuRepository storeMenuRepository;
 
+
+    @Test
+    void setStoreMenuTest(){
+        Long storeMenuNo = 48L;
+        String salesStatus = "판매중";
+        StoreMenu sm = storeMenuRepository.findById(storeMenuNo).get();
+        sm.setSalesStatus(salesStatus);
+
+        storeMenuRepository.save(sm);
+    }
+
+    @Test
+    void addStoreMenuTest(){
+
+        Store store = Store.builder()
+                .storeNo(1L)
+                .build();
+
+        Menu menu = Menu.builder()
+                .menuNo(10L)
+                .build();
+
+        StoreMenu sm = StoreMenu.builder().store(store).menu(menu).salesStatus("판매중단").
+                build();
+        System.out.println(storeMenuRepository.save(sm));
+    }
 
     @Test
     void findStoreMenuForStoreTest(){
