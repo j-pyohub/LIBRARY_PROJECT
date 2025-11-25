@@ -3,30 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>메뉴 등록</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <style>
-        .section-box {
+        body {
+            background-color: #f5f5f5 !important;
+        }
+
+        /* 계정등록 화면처럼 전체를 감싸는 큰 흰색 박스 */
+        .wrapper-box {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* 내부 구간(기본정보/레시피정보) 박스 스타일 */
+        .section-inner {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 25px;
             margin-bottom: 30px;
         }
+
         th, td {
             vertical-align: middle !important;
         }
+
         thead th {
             position: sticky;
             top: 0;
             background: #f8f9fa;
             z-index: 5;
         }
+
         .table-responsive {
             max-height: 350px;
             overflow-y: auto;
         }
 
-        /* ▼ 숫자 input 화살표 제거 */
+        /* 숫자 input 화살표 제거 */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -36,34 +59,38 @@
             -moz-appearance: textfield;
         }
 
+        /* 노란 버튼 */
         .custom-btn {
             background-color: #FFEEAA !important;
             border-color: #FFEEAA !important;
             color: #000;
         }
+
         .custom-btn:hover {
             background-color: #f2da84 !important;
             border-color: #f2da84 !important;
         }
     </style>
-
 </head>
 
-<body class="bg-light py-4">
+<body class="py-5">
 
-<div class="container">
+<div class="wrapper-box">
 
-    <!-- 제목 -->
+    <!-- 제목 + 목록버튼 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">메뉴 등록</h2>
-        <button class="btn btn-outline-secondary" onclick="history.back()">뒤로가기</button>
+        <button class="btn btn-outline-secondary" id="menuListBtn">목록</button>
     </div>
 
-    <!-- 기본정보 -->
-    <div class="section-box">
-        <h5 class="fw-bold mb-3">기본 정보</h5>
+    <!-- ===================== -->
+    <!-- 기본 정보 section -->
+    <!-- ===================== -->
+    <div class="section-inner">
 
-        <div class="row g-3">
+        <h5 class="fw-bold mb-4">기본 정보</h5>
+
+        <div class="row g-4">
 
             <div class="col-md-4">
                 <label class="form-label fw-semibold">카테고리</label>
@@ -97,26 +124,28 @@
                 </div>
             </div>
 
-            <!-- 가격 -->
+            <!-- 가격 라지 -->
             <div class="col-md-4 price-large">
                 <label class="form-label fw-semibold">라지 가격</label>
-                <div class="input-group">
+                <div class="input-group input-group-sm w-auto">
                     <input type="number" class="form-control">
                     <span class="input-group-text">원</span>
                 </div>
             </div>
 
+            <!-- 가격 미디움 -->
             <div class="col-md-4 price-medium">
                 <label class="form-label fw-semibold">미디움 가격</label>
-                <div class="input-group">
+                <div class="input-group input-group-sm w-auto">
                     <input type="number" class="form-control">
                     <span class="input-group-text">원</span>
                 </div>
             </div>
 
+            <!-- 가격 단일 -->
             <div class="col-md-4 price-single" style="display:none;">
                 <label class="form-label fw-semibold">판매 가격</label>
-                <div class="input-group">
+                <div class="input-group input-group-sm w-auto">
                     <input type="number" class="form-control">
                     <span class="input-group-text">원</span>
                 </div>
@@ -144,11 +173,13 @@
         </div>
     </div>
 
-    <!-- 레시피 -->
-    <div class="section-box">
+    <!-- ===================== -->
+    <!-- 레시피 section -->
+    <!-- ===================== -->
+    <div class="section-inner">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-bold">레시피(재료) 정보</h5>
-            <button class="btn btn-warning btn-sm custom-btn" data-bs-toggle="modal" data-bs-target="#ingredientModal">
+            <button class="btn btn-sm custom-btn" data-bs-toggle="modal" data-bs-target="#ingredientModal">
                 + 재료 불러오기
             </button>
         </div>
@@ -164,15 +195,23 @@
                 <th>삭제</th>
             </tr>
             </thead>
-
             <tbody id="recipeList"></tbody>
         </table>
     </div>
 
-</div>
+    <!-- ===================== -->
+    <!-- 버튼 영역 -->
+    <!-- ===================== -->
+    <div class="text-center mt-3">
+        <button class="btn custom-btn">등록</button>
+        <button class="btn btn-outline-secondary me-2">초기화</button>
+    </div>
+
+</div> <!-- wrapper-box END -->
+
 
 <!-- ============================= -->
-<!-- ⭐ 재료 불러오기 모달 ⭐ -->
+<!-- 재료 불러오기 모달 -->
 <!-- ============================= -->
 <div class="modal fade" id="ingredientModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -205,8 +244,9 @@
                             <option>재료명</option>
                         </select>
                     </div>
+
                     <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-outline-dark w-20">조회</button>
+                        <button class="btn btn-outline-dark">조회</button>
                     </div>
                 </div>
 
@@ -256,7 +296,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-warning custom-btn" id="modalAddSelected">선택 재료 등록</button>
+                <button class="btn custom-btn" id="modalAddSelected">선택 재료 등록</button>
                 <button class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
             </div>
 
@@ -265,85 +305,86 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
 <script>
-    // =========================
-    // 사이즈 유/무에 따라 정량 전환
-    // =========================
+
+    // 목록 이동
+    $("#menuListBtn").click(() => {
+        location.href = "menuUI.html";
+    });
+
+    // 사이즈 유무 전환
     function updateSize() {
-        const isSize = document.querySelector("input[name='sizeYn']:checked").value === "Y";
+        const isSize = $("input[name='sizeYn']:checked").val() === "Y";
 
-        document.querySelector(".price-large").style.display = isSize ? "block" : "none";
-        document.querySelector(".price-medium").style.display = isSize ? "block" : "none";
-        document.querySelector(".price-single").style.display = isSize ? "none" : "block";
+        $(".price-large").toggle(isSize);
+        $(".price-medium").toggle(isSize);
+        $(".price-single").toggle(!isSize);
 
-        document.querySelectorAll("th.size-option, td.size-option").forEach(el => {
-            el.style.display = isSize ? "table-cell" : "none";
-        });
-
-        document.querySelectorAll("th.qty-single-header, td.qty-single-cell").forEach(el => {
-            el.style.display = isSize ? "none" : "table-cell";
-        });
+        $("th.size-option, td.size-option").toggle(isSize);
+        $("th.qty-single-header, td.qty-single-cell").toggle(!isSize);
     }
-    document.querySelectorAll("input[name='sizeYn']").forEach(r => r.addEventListener("change", updateSize));
+    $("input[name='sizeYn']").on("change", updateSize);
     updateSize();
 
-
-    // =========================
-    // 전체 선택 체크박스
-    // =========================
-    document.getElementById("checkAll").addEventListener("change", function () {
-        const checked = this.checked;
-        document.querySelectorAll(".row-check").forEach(cb => cb.checked = checked);
+    // 전체 선택
+    $("#checkAll").on("change", function () {
+        $(".row-check").prop("checked", $(this).is(":checked"));
     });
 
+    // 선택 재료 등록
+    $("#modalAddSelected").on("click", function () {
 
-    // =========================
-    // 선택 재료 → 레시피 테이블로 추가
-    // =========================
-    document.getElementById("modalAddSelected").addEventListener("click", () => {
-        const selectedRows = document.querySelectorAll(".row-check:checked");
-        const recipeBody = document.getElementById("recipeList");
-        const isSize = document.querySelector("input[name='sizeYn']:checked").value === "Y";
+        const selectedRows = $(".row-check:checked");
+        const recipeBody = $("#recipeList");
+        const isSize = $("input[name='sizeYn']:checked").val() === "Y";
 
-        selectedRows.forEach(row => {
-            const cols = row.closest("tr").children;
-            const name = cols[2].innerText;
-            const unit = cols[4].innerText;
+        selectedRows.each(function () {
 
-            const tr = document.createElement("tr");
+            const row = $(this).closest("tr");
+            const cols = row.children();
+            const name = cols.eq(2).text();
+            const unit = cols.eq(4).text();
+
+            let html = "";
 
             if (isSize) {
-                // 사이즈 있는 경우 → 라지/미디움 칼럼 2개
-                tr.innerHTML = `
-                <td>${name}</td>
-                <td>${unit}</td>
-                <td class="size-option"><input type="number" class="form-control" placeholder="라지"></td>
-                <td class="size-option"><input type="number" class="form-control" placeholder="미디움"></td>
-                <td class="qty-single-cell" style="display:none;"></td>
-                <td><button class="btn btn-outline-danger btn-sm" onclick="this.closest('tr').remove()">삭제</button></td>
-            `;
+                html = `
+                <tr>
+                    <td>${name}</td>
+                    <td>${unit}</td>
+                    <td class="size-option">
+                        <input type="number" class="form-control form-control-sm w-auto" placeholder="라지">
+                    </td>
+                    <td class="size-option">
+                        <input type="number" class="form-control form-control-sm w-auto" placeholder="미디움">
+                    </td>
+                    <td class="qty-single-cell" style="display:none;"></td>
+                    <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
+                </tr>`;
             } else {
-                // 사이즈 없는 경우 → 정량 1개만
-                tr.innerHTML = `
-                <td>${name}</td>
-                <td>${unit}</td>
-                <td class="size-option" style="display:none;"></td>
-                <td class="size-option" style="display:none;"></td>
-                <td class="qty-single-cell"><input type="number" class="form-control" placeholder="정량"></td>
-                <td><button class="btn btn-outline-danger btn-sm" onclick="this.closest('tr').remove()">삭제</button></td>
-            `;
+                html = `
+                <tr>
+                    <td>${name}</td>
+                    <td>${unit}</td>
+                    <td class="size-option" style="display:none;"></td>
+                    <td class="size-option" style="display:none;"></td>
+                    <td class="qty-single-cell">
+                        <input type="number" class="form-control form-control-sm w-auto" placeholder="정량">
+                    </td>
+                    <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
+                </tr>`;
             }
 
-            recipeBody.appendChild(tr);
+            recipeBody.append(html);
         });
 
-        // 모달 닫기
-        bootstrap.Modal.getInstance(document.getElementById("ingredientModal")).hide();
+        $("#ingredientModal").modal("hide");
     });
 
+    // 삭제 버튼
+    $(document).on("click", ".delete-row", function () {
+        $(this).closest("tr").remove();
+    });
 </script>
 
 </body>
