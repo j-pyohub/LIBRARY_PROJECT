@@ -13,6 +13,21 @@ public class MenuTest {
     private MenuDAO menuDAO;
 
     @Test
+    void setMenuTest() {
+        MenuDTO menu = MenuDTO.builder()
+                .menuNo(20L)
+                .menuName("갈릭 디핑 쏘스")
+                .menuCode("SAUCE")
+                .menuExplain("맛있는 소스입니다")
+                .menuImage("https://picsum.photos/300/200")
+                .menuPrice("500")
+                .releaseStatus("출시 예정")
+                .build();
+
+        menuDAO.setMenu(menu);
+    }
+
+    @Test
     void addMenuTest() {
         MenuDTO menu = MenuDTO.builder()
                 .menuName("띠드 피자")
