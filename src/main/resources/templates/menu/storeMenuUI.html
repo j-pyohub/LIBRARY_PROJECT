@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>직영점별 판매 메뉴</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    th.statusChange {
+      width: 90px; /* 원하는 값으로 조절 */
+      white-space: nowrap;
+    }
+    .custom-btn {
+      background-color: #FFEEAA !important;
+      border-color: #FFEEAA !important;
+      color: #000;
+    }
+    .custom-btn:hover {
+      background-color: #f2da84 !important;
+      border-color: #f2da84 !important;
+    }
+  </style>
+
+</head>
+
+<body class="bg-light">
+
+<div class="container py-4">
+
+  <!-- 전체 흰색 박스 -->
+  <div class="bg-white border rounded p-4">
+
+    <!-- 제목 -->
+    <h2 class="fw-bold mb-4">직영점별 판매 메뉴</h2>
+
+    <!-- 검색 영역 -->
+    <div class="border rounded p-3 mb-4">
+
+      <div class="row g-3 align-items-end">
+
+        <div class="col-md-2">
+          <label class="form-label">판매 상태</label>
+          <select class="form-select">
+            <option>전체</option>
+            <option>판매 중</option>
+            <option>판매 중지</option>
+            <option>품절</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">카테고리</label>
+          <select class="form-select">
+            <option>피자</option>
+            <option>사이드디시</option>
+            <option>음료</option>
+          </select>
+        </div>
+
+        <div class="col-md-2"></div>
+
+        <div class="col-md-2">
+          <label class="form-label">검색조건</label>
+          <select class="form-select" id="searchType">
+            <option value="store">직영점</option>
+            <option value="menu">메뉴</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <input type="text" class="form-control" id="searchInput" placeholder="직영점 검색" disabled>
+        </div>
+
+        <div class="col-md-1">
+          <button class="btn custom-btn w-100">검색</button>
+        </div>
+
+
+      </div>
+
+    </div>
+    <div class="text-end pb-1">
+      <button class="btn custom-btn">선택 일괄 변경</button>
+    </div>
+    <!-- 테이블 -->
+    <table class="table table-bordered align-middle text-center">
+      <thead class="table-light">
+      <tr>
+        <th>직영점</th>
+        <th>메뉴 코드</th>
+        <th>메뉴 명</th>
+        <th>사이즈</th>
+        <th>가격</th>
+        <th>판매 상태</th>
+        <th class="statusChange">상태 변경</th>
+        <th>
+          <input type="checkbox" id="checkAll">
+        </th>
+      </tr>
+      </thead>
+
+      <tbody>
+
+      <!-- 샘플 1 -->
+      <tr>
+        <td rowspan="2">대전대동점</td>
+        <td rowspan="2">PEPPERORONI_PIZZA</td>
+        <td rowspan="2">페퍼로니 피자</td>
+
+        <td>라지</td>
+        <td>25,000</td>
+        <td>판매 중</td>
+
+        <td rowspan="2">
+          <button class="btn btn-outline-secondary btn-sm">변경</button>
+        </td>
+        <td rowspan="2">
+          <input type="checkbox" class="row-check">
+        </td>
+      </tr>
+
+      <tr>
+        <td>미디움</td>
+        <td>18,000</td>
+        <td>판매 중</td>
+      </tr>
+
+      <!-- 샘플 2 -->
+      <tr>
+        <td rowspan="2">대전대동점</td>
+        <td rowspan="2">CHEEZE_PIZZA</td>
+        <td rowspan="2">치즈 피자</td>
+
+        <td>라지</td>
+        <td>23,000</td>
+        <td>판매 중</td>
+
+        <td rowspan="2">
+          <button class="btn btn-outline-secondary btn-sm">변경</button>
+        </td>
+        <td rowspan="2">
+          <input type="checkbox" class="row-check">
+        </td>
+      </tr>
+
+      <tr>
+        <td>미디움</td>
+        <td>16,000</td>
+        <td>판매 중</td>
+      </tr>
+
+      </tbody>
+
+    </table>
+
+    <!-- 페이지네이션 -->
+    <div class="d-flex justify-content-center mt-3">
+      <button class="btn btn-light">&lt;</button>
+      <span class="mx-3 fw-bold">1</span>
+      <button class="btn btn-light">&gt;</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // 전체 체크 기능
+  $("#checkAll").on("change", function() {
+    $(".row-check").prop("checked", $(this).is(":checked"));
+  });
+
+    $("#searchType").on("change", function () {
+    const type = $(this).val();
+    const input = $("#searchInput");
+
+    if (type === "store") {
+    input.val("");
+    input.attr("placeholder", "직영점 검색");
+    input.prop("disabled", true);
+
+  } else { // menu 선택
+    input.attr("placeholder", "");
+    input.prop("disabled", false);
+    input.val("");
+  }
+  });
+
+</script>
+
+</body>
+</html>
