@@ -59,7 +59,6 @@
         min-height:0;      /* 핵심 */
         overflow-y:auto;
         overflow-x:hidden;
-        scrollbar-gutter: stable;
     }
 
     .scroll-area::-webkit-scrollbar { width:8px; }
@@ -76,7 +75,6 @@
         overflow:hidden;
         background:white;
         width:100%;
-        table-layout: fixed;
     }
 
     .table-rounded thead {
@@ -93,6 +91,18 @@
     .modal-header { background:#2ca058; color:white; }
     .table thead { background:#2ca058; color:white; }
     .table td { vertical-align:middle; }
+
+
+/* Fix column widths */
+#item_selected table, #item_toOrder table {
+    table-layout: fixed;
+    width: 100%;
+}
+#item_selected th, #item_selected td,
+#item_toOrder th, #item_toOrder td {
+    padding: 12px 18px !important;
+    box-sizing: border-box;
+}
 
 </style>
 </head>
@@ -148,13 +158,15 @@
                 </thead>
                 <tbody>
                     <tr><td>도우 M 230g</td><td>box</td><td><input type="number" class="form-control form-control-sm quantity_box" value="1"></td><td data-price="75000">75,000원</td><td class="text-center"><button class="btn btn-outline-secondary btn-sm remove_btn">삭제</button></td></tr>
+                    <tr><td>도우 M 230g</td><td>box</td><td><input type="number" class="form-control form-control-sm quantity_box" value="1"></td><td data-price="75000">75,000원</td><td class="text-center"><button class="btn btn-outline-secondary btn-sm remove_btn">삭제</button></td></tr>
+                    <tr><td>도우 M 230g</td><td>box</td><td><input type="number" class="form-control form-control-sm quantity_box" value="1"></td><td data-price="75000">75,000원</td><td class="text-center"><button class="btn btn-outline-secondary btn-sm remove_btn">삭제</button></td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-            <div>총 품목수: <strong><span id="total-cnt"></span><label>개</label></strong></div>
-            <div>총 발주액: <strong><span id="total-price"></span><label>원</label></strong></div>
+            <div>총 품목수: <strong>20 개</strong></div>
+            <div>총 발주액: <strong>1,500,000 원</strong></div>
             <button class="btn btn-warning">발주 요청</button>
         </div>
     </div>
@@ -195,8 +207,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>DOUGH-M-230G</td><td>도우 M 230g</td><td>도우</td><td>40</td><td class="text-danger fw-semibold">26</td><td>1 box(20 ea)</td><td data-price="75000">75,000원</td><td class="text-center"><button class="btn btn-warning btn-sm add_btn">담기</button></td></tr>
-                    <tr><td>PEPPERONI-1KG</td><td>페페로니 1kg</td><td>토핑</td><td>2500</td><td class="text-danger fw-semibold">1600</td><td>1 ea(1000 g)</td><td data-price="14900">14,900원</td><td class="text-center"><button class="btn btn-warning btn-sm add_btn">담기</button></td></tr>
+                    <tr><td>DOUGH-M-230G</td><td>도우 M 230g</td><td>도우</td><td>40</td><td class="text-danger fw-semibold">26</td><td>1 box(20 ea)</td><td>75000</td><td class="text-center"><button class="btn btn-warning btn-sm add_btn">담기</button></td></tr>
+                    <tr><td>PEPPERONI-1KG</td><td>페페로니 1kg</td><td>토핑</td><td>2500</td><td class="text-danger fw-semibold">1600</td><td>1 ea(1000 g)</td><td>14900</td><td class="text-center"><button class="btn btn-warning btn-sm add_btn">담기</button></td></tr>
                 </tbody>
             </table>
         </div>
@@ -335,12 +347,9 @@
             .appendTo(qtyTd);
         qtyTd.appendTo(newRow); // 수량
 
-        const unitPrice = parseInt(itemRow.find("td").eq(6).data("price"));
+        const unitPrice = parseInt(itemRow.find("td").eq(6).text());
         const qty = parseInt(oldRow.find("td").eq(2).text());
-        $("<td>")
-            .text((unitPrice * qty).toLocaleString() + "원")
-            .data("price", unitPrice * qty)
-            .appendTo(newRow); // 금액
+        $("<td>").text((unitPrice * qty).toLocaleString() + "원").appendTo(newRow); // 금액
 
         const delTd = $("<td>").addClass("text-center");
         $("<button>")
@@ -370,21 +379,16 @@
             return $(this).find("td").eq(1).text().trim() === name;
         });
 
-        const unitPrice = parseInt(itemRow.find("td").eq(6).data("price"));
+        const unitPrice = parseInt(itemRow.find("td").eq(6).text());
         let qty = parseInt($(this).val());
-
-        // 1개 이하 검사
         if (!qty || qty < 1) {
             qty = 1;
             $(this).val(1);
             alert("수량은 1개 이상이어야 합니다.");
         }
 
-        tr.find("td").eq(3)
-            .text((unitPrice * qty).toLocaleString() + "원")
-            .data("price", unitPrice * qty);
 
-        calcTotal();
+        tr.find("td").eq(3).text((unitPrice * qty).toLocaleString() + "원");
     });
 
     // 품목 현황 영역의 이벤트 등록
@@ -414,10 +418,7 @@
             .appendTo(qtyTd);
         qtyTd.appendTo(newRow); // 수량
 
-        $("<td>")
-            .text(parseInt(itemRow.find("td").eq(6).data("price")).toLocaleString() + "원")
-            .data("price", parseInt(itemRow.find("td").eq(6).data("price")))
-            .appendTo(newRow); // 금액
+        $("<td>").text(parseInt(itemRow.find("td").eq(6).text()).toLocaleString() + "원").appendTo(newRow); // 금액
 
         const delTd = $("<td>").addClass("text-center");
         $("<button>")
@@ -427,36 +428,6 @@
         delTd.appendTo(newRow); // 삭제 버튼
 
         $("#item_selected tbody").append(newRow);
-    });
-
-
-    function calcTotal(){
-        const totalCnt = $("#total-cnt");
-        const totalPrice = $("#total-price");
-
-        let total = 0;
-        target.children().each(function(){
-            total += parseInt($(this).find("td").eq(3).data("price")); // 총 금액 계산
-        });
-        totalPrice
-            .text(total.toLocaleString())
-            .data("price", total);
-
-        totalCnt.text($(target).children().length); // 총 품목 수
-    }
-    // 선택한 품목 최종 결산
-    const target = itemSelected.find("tbody");
-    const observer = new MutationObserver(function(mutations){
-        mutations.forEach(m => {
-            if(m.type === "childList"){
-
-                calcTotal();
-            }
-        });
-    });
-    observer.observe(target[0], {
-        childList: true,
-        subtree: false
     });
 
     // 재고 키워드 검색
@@ -488,8 +459,6 @@
             return $(this).find("td").eq(0).text().trim() === name;
         }).length > 0;
     }
-
-    calcTotal();
 </script>
 
 
