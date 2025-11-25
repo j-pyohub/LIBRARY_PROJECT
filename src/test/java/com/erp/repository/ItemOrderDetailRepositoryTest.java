@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @SpringBootTest
 public class ItemOrderDetailRepositoryTest {
@@ -34,7 +35,7 @@ public class ItemOrderDetailRepositoryTest {
     // 발주 요청 생성(관리자)
     private ItemOrder makeOrder(){
         ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
-                .storeNo(Store.builder().storeNo(3L).build()) // 요청한 직영점 정보
+                .storeNo(Store.builder().storeNo(1L).build()) // 요청한 직영점 정보
                 .totalItem(2)
                 .totalAmount(100000)
                 .itemOrderStatus("대기")
@@ -45,7 +46,7 @@ public class ItemOrderDetailRepositoryTest {
 
     // 주문 상세 입력
     @Test
-    void makeItemOrderDetail(){
+        void makeItemOrderDetail(){
         ItemOrder itemOrder = makeOrder();
         Item item = repoItem.getItemByIngredientName("피자 도우 L");
 
@@ -64,19 +65,24 @@ public class ItemOrderDetailRepositoryTest {
     @Test
     void receiveItemOrderDetail(){
 
-        ItemOrder itemOrder = repoOrder.findByItemOrderNo(58L);
-        ItemOrderDetail orderDetail = repoDetail.findItemOrderDetailByItemOrderDetailNo(itemOrder.getItemOrderNo()); // 아이템 번호 입력
-
+        ItemOrder itemOrder = repoOrder.findByItemOrderNo(24L);
+        List<ItemOrderDetail> orderDetailList = repoDetail.findByItemOrderNo(itemOrder);
+        ItemOrderDetail orderDetail = orderDetailList.get(0); // 아이템 번호 선택
 
         // 재고 수량 변경
-        StoreItem storeItem = repoStoreItem.findByStoreNoAndItemNo(itemOrder.getStoreNo().getStoreNo(), orderDetail.getItemNo().getItemNo()).get(0);
-        StoreStock storeStock = repoStoreStock.findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo()); // 현재 수량 데이터 획득
-        storeStock.setChangeDatetime(new Timestamp(System.currentTimeMillis()));
-        storeStock.setChangeQuantity(orderDetail.getOrderDetailQuantity());
-        storeStock.setChangeReason("입고");
-        storeStock.setCurrentQuantity(storeStock.getChangeQuantity() + orderDetail.getOrderDetailQuantity());
-        storeStock.setDisposalReason(null);
-        repoStoreStock.save(storeStock); // 입고 수량 반영
+        StoreItem storeItem = repoStoreItem.findByStoreNoAndItemNo(itemOrder.getStoreNo().getStoreNo(), orderDetail.getItemNo().getItemNo()).get(0); // 매장 품목 정보 획득
+        StoreStock storeStock = repoStoreStock.findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo()); // 현재 매장 품목의 수량 데이터 획득
+
+        // 재고 변동사항 등록
+        repoStoreStock.save(
+                StoreStock.builder()
+                        .storeItemNo(storeItem.getStoreItemNo())
+                        .changeDatetime(new Timestamp(System.currentTimeMillis()))
+                        .changeQuantity(orderDetail.getOrderDetailQuantity())
+                        .changeReason("입고")
+                        .currentQuantity(storeStock.getCurrentQuantity() + orderDetail.getOrderDetailQuantity())
+                        .build()
+                ); // 입고 수량 반영
 
         // 발주 상세 상태 변경
         orderDetail.setReceiveDatetime(new Timestamp(System.currentTimeMillis()));

@@ -9,5 +9,4 @@ import java.util.List;
 public interface ItemOrderDetailRepository extends JpaRepository<ItemOrderDetail, Long> {
 
     List<ItemOrderDetail> findByItemOrderNo(ItemOrder itemOrderNo);
-    ItemOrderDetail findItemOrderDetailByItemOrderDetailNo(long l);
 }
