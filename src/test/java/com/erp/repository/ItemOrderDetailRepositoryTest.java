@@ -46,7 +46,7 @@ public class ItemOrderDetailRepositoryTest {
 
     // 주문 상세 입력
     @Test
-    void makeItemOrderDetail(){
+        void makeItemOrderDetail(){
         ItemOrder itemOrder = makeOrder();
         Item item = repoItem.getItemByIngredientName("피자 도우 L");
 
