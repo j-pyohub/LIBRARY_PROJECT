@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <title>발주 제안</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
 
 <style>
     html, body {
@@ -46,6 +47,7 @@
         min-height:0;
         overflow-y:auto;
         overflow-x:hidden;
+        scrollbar-gutter: stable;
     }
 
     .table-rounded {
@@ -55,6 +57,7 @@
         overflow:hidden;
         background:white;
         width:100%;
+        table-layout: fixed;
     }
 
     .table-rounded thead {
@@ -82,7 +85,8 @@
     <div class="d-flex align-items-center px-3 mt-3" style="gap: 12px;">
         <h3 class="fw-bold m-0">발주 제안</h3>
 
-        <button class="btn btn-light border dropdown-toggle"
+        <button id="selected_store"
+                class="btn btn-light border dropdown-toggle"
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#storeSearchModal"
@@ -105,54 +109,43 @@
         </div>
 
         <div class="scroll-area">
-            <table class="table table-rounded table-sm align-middle shadow-sm">
+            <table class="table table-rounded table-sm align-middle shadow-sm" id="item-proposal">
                 <thead>
                     <tr>
                         <th>품목명</th>
+                        <th>공급단위</th>
                         <th>수량</th>
-                        <th>단가</th>
+                        <th>금액</th>
                         <th>사유</th>
                         <th class="text-center">삭제</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>페페로니</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <input type="number" class="form-control form-control-sm me-2" style="width:80px;">
-                                <span>ea (1000g)</span>
-                            </div>
-                        </td>
-                        <td>14,900원</td>
+                        <td>페페로니 1kg</td>
+                        <td><span>ea (1000g)</span></td>
+                        <td><input type="number" class="form-control form-control-sm me-2 quantity-box" value="1"></td>
+                        <td data-price="14900">14,900원</td>
                         <td><input type="text" class="form-control form-control-sm"></td>
-                        <td class="text-center"><button class="btn btn-outline-secondary btn-sm">삭제</button></td>
+                        <td class="text-center"><button class="btn btn-outline-secondary btn-sm remove-btn">삭제</button></td>
                     </tr>
                 
 <tr>
-    <td>치즈 믹스</td>
-    <td>
-        <div class="d-flex align-items-center">
-            <input type="number" class="form-control form-control-sm me-2" style="width:80px;" value="3">
-            <span>ea (500g)</span>
-        </div>
-    </td>
-    <td>9,500원</td>
+    <td>치즈 믹스 500g</td>
+    <td> <span>ea (500g)</span> </td>
+    <td><input type="number" class="form-control form-control-sm me-2 quantity-box" value="3"></td>
+    <td data-price="9500">9,500원</td>
     <td><input type="text" class="form-control form-control-sm" value="재고 부족"></td>
-    <td class="text-center"><button class="btn btn-outline-secondary btn-sm">삭제</button></td>
+    <td class="text-center"><button class="btn btn-outline-secondary btn-sm remove-btn">삭제</button></td>
 </tr>
 
 <tr>
-    <td>토마토 소스</td>
-    <td>
-        <div class="d-flex align-items-center">
-            <input type="number" class="form-control form-control-sm me-2" style="width:80px;" value="5">
-            <span>ea (2kg)</span>
-        </div>
-    </td>
-    <td>12,000원</td>
+    <td>토마토 소스 2kg</td>
+    <td><span>ea (2kg)</span></td>
+    <td><input type="number" class="form-control form-control-sm me-2 quantity-box" value="5"></td>
+    <td data-price="12000">12,000원</td>
     <td><input type="text" class="form-control form-control-sm" value="프로모션 필요"></td>
-    <td class="text-center"><button class="btn btn-outline-secondary btn-sm">삭제</button></td>
+    <td class="text-center"><button class="btn btn-outline-secondary btn-sm remove-btn">삭제</button></td>
 </tr>
 </tbody>
             </table>
@@ -160,8 +153,8 @@
 
     
         <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-            <div>총 품목수: <strong>3 개</strong></div>
-            <div>총 발주액: <strong>52,300 원</strong></div>
+            <div>총 품목수: <strong><span id="total-cnt"></span><label>개</label></strong></div>
+            <div>총 발주액: <strong><span id="total-price"></span><label>원</label></strong></div>
             <button class="btn btn-warning">발주 제안</button>
         </div>
 </div></div><div class="bottom-section">
@@ -177,12 +170,12 @@
                 <option>전체</option><option>도우</option><option>소스</option><option>치즈</option>
             </select>
 
-            <input type="text" class="form-control me-2" style="width:200px;" placeholder="검색어 입력">
-            <button class="btn btn-warning">조회</button>
+            <input type="text" class="form-control me-2" style="width:200px;" placeholder="검색어 입력" id="search-input">
+            <button class="btn btn-warning" id="search-btn">조회</button>
         </div>
 
         <div class="scroll-area">
-            <table class="table table-rounded table-hover table-sm align-middle shadow-sm">
+            <table class="table table-rounded table-hover table-sm align-middle shadow-sm" id="item-toOrder">
                 <thead>
                     <tr>
                         <th>품목코드</th>
@@ -203,9 +196,9 @@
                         <td>도우</td>
                         <td>40</td>
                         <td class="text-danger fw-semibold">26</td>
-                        <td>box</td>
-                        <td>75,000원</td>
-                        <td class="text-center"><button class="btn btn-warning btn-sm">담기</button></td>
+                        <td>1 box(20 ea)</td>
+                        <td data-price="75000">75,000원</td>
+                        <td class="text-center"><button class="btn btn-warning btn-sm add-btn">담기</button></td>
                     </tr>
 
 <tr>
@@ -214,9 +207,9 @@
     <td>치즈</td>
     <td>30</td>
     <td class="text-danger fw-semibold">18</td>
-    <td>ea</td>
-    <td>9,500원</td>
-    <td class="text-center"><button class="btn btn-warning btn-sm">담기</button></td>
+    <td>1 ea (500g)</td>
+    <td data-price="9500">9,500원</td>
+    <td class="text-center"><button class="btn btn-warning btn-sm add-btn">담기</button></td>
 </tr>
 
 <tr>
@@ -225,10 +218,21 @@
     <td>소스</td>
     <td>20</td>
     <td>45</td>
-    <td>ea</td>
-    <td>12,000원</td>
-    <td class="text-center"><button class="btn btn-warning btn-sm">담기</button></td>
+    <td>1 ea (2kg)</td>
+    <td data-price="12000">12,000원</td>
+    <td class="text-center"><button class="btn btn-warning btn-sm add-btn">담기</button></td>
 </tr>
+<tr>
+    <td>PEPPERONI-1KG</td>
+    <td>페페로니 1kg</td>
+    <td>토핑</td>
+    <td>2500</td>
+    <td class="text-danger fw-semibold">1600</td>
+    <td>1 ea(1000 g)</td>
+    <td data-price="14900">14,900원</td>
+    <td class="text-center"><button class="btn btn-warning btn-sm add-btn">담기</button></td>
+</tr>
+
 </tbody>
             </table>
         </div>
@@ -249,18 +253,20 @@
             <div class="modal-body">
                 <input type="text" class="form-control mb-3" placeholder="직영점명 입력">
 
-                <table class="table table-bordered align-middle text-center">
+                <table id="store_modal" class="table table-bordered align-middle text-center">
                     <thead style="background:#e9ecef;">
                     <tr><th>직영점명</th><th>주소</th><th>선택</th></tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>금천구청점</td><td>서울 금천구 가산동</td>
-                        <td><button class="btn btn-dark btn-sm" data-bs-dismiss="modal">선택</button></td>
+                        <td class="store_name">금천구청점</td>
+                        <td>서울 금천구 가산동</td>
+                        <td><button class="btn btn-dark btn-sm store_select_btn" data-bs-dismiss="modal">선택</button></td>
                     </tr>
                     <tr>
-                        <td>강남역점</td><td>서울 강남구 역삼동</td>
-                        <td><button class="btn btn-dark btn-sm" data-bs-dismiss="modal">선택</button></td>
+                        <td class="store_name">강남역점</td>
+                        <td>서울 강남구 역삼동</td>
+                        <td><button class="btn btn-dark btn-sm store_select_btn" data-bs-dismiss="modal">선택</button></td>
                     </tr>
                     </tbody>
                 </table>
@@ -367,6 +373,156 @@
     </div>
 </div>
 
+<script>
+    const itemProposal = $("#item-proposal");
+
+    itemProposal.on("click", ".remove-btn", function(){
+        $(this).closest("tr").remove();
+    });
+
+    // 수량 변경 시 발생 이벤트
+    itemProposal.on("input", ".quantity-box", function (){
+        const tr = $(this).closest("tr");
+        const name = tr.find("td").eq(0).text().trim();
+        // 품목 정보 획득
+        const itemRow = $("#item-toOrder tbody tr").filter(function(){
+            return $(this).find("td").eq(1).text().trim() === name;
+        });
+
+        const unitPrice = parseInt(itemRow.find("td").eq(6).data("price"));
+        let qty = parseInt($(this).val());
+
+
+        // 1개 이하 검사
+        if (!qty || qty < 1) {
+            qty = 1;
+            $(this).val(1);
+            alert("수량은 1개 이상이어야 합니다.");
+        }
+
+        tr.find("td").eq(3)
+            .text((unitPrice * qty).toLocaleString() + "원")
+            .data("price", unitPrice * qty);
+
+        calcTotal();
+    });
+
+    // 담기 버튼 이벤트
+    const itemToOrder = $("#item-toOrder");
+    itemToOrder.on("click", ".add-btn", function(){
+        const itemRow = $(this).closest("tr");
+        const itemName = itemRow.find("td").eq(1).text();
+
+        if (hasDuplicate(itemName)) {
+            alert("이미 선택된 품목입니다.");
+            return;
+        }
+
+        const newRow = $("<tr>");
+        $("<td>").text(itemName).appendTo(newRow); // 품목 명
+        $("<td>").text(itemRow.find("td").eq(5).text()).appendTo(newRow); // 공급 단위
+
+        const qtyTd = $("<td>");
+        $("<input>")
+            .attr("type", "number")
+            .addClass("form-control form-control-sm quantity-box")
+            .val(1)
+            .appendTo(qtyTd);
+        qtyTd.appendTo(newRow); // 수량
+
+        $("<td>")
+            .text(parseInt(itemRow.find("td").eq(6).data("price")).toLocaleString() + "원")
+            .data("price", itemRow.find("td").eq(6).data("price"))
+            .appendTo(newRow); // 금액
+
+        const reasonTd = $("<td>");
+        $("<input>")
+            .attr("type", "text")
+            .addClass("form-control form-control-sm")
+            .appendTo(reasonTd);
+        reasonTd.appendTo(newRow);
+
+        const delTd = $("<td>").addClass("text-center");
+        $("<button>")
+            .addClass("btn btn-outline-secondary btn-sm delete-right remove-btn")
+            .text("삭제")
+            .appendTo(delTd);
+        delTd.appendTo(newRow); // 삭제 버튼
+
+        $("#item-proposal tbody").append(newRow);
+    });
+
+    function calcTotal(){
+        const totalCnt = $("#total-cnt");
+        const totalPrice = $("#total-price");
+
+        let total = 0;
+        target.children().each(function(){
+            let price = $(this).find("td").eq(3).data("price");
+            if (isNaN(price)) price = 0;
+
+            total += parseInt(price); // 총 금액 계산
+        });
+        totalPrice
+            .text(total.toLocaleString())
+            .data("price", total);
+
+        totalCnt.text($(target).children().length); // 총 품목 수
+    }
+
+    // 선택한 품목 최종 결산
+    const target = itemProposal.find("tbody");
+
+    const observer = new MutationObserver(function(mutations){
+        mutations.forEach(m => {
+            if(m.type === "childList"){
+                calcTotal();
+            }
+        });
+    });
+
+    observer.observe(target[0], {
+        childList: true,
+        subtree: false
+    });
+
+
+    // 재고 키워드 검색
+    const searchInput = $("#search-input");
+    const searchButton = $("#search-btn");
+
+    searchButton.on("click", function(){
+        const keyword = searchInput.val().trim().toLowerCase();
+        const rows = itemToOrder.find("tbody tr");
+
+        rows.each(function(){
+            const code = $(this).find("td").eq(0).text().trim().toLowerCase();
+            const name = $(this).find("td").eq(1).text().trim().toLowerCase();
+            const category = $(this).find("td").eq(2).text().trim().toLowerCase();
+
+            // 키워드 포함 여부 확인
+            const isMatch =
+                code.includes(keyword) ||
+                name.includes(keyword) ||
+                category.includes(keyword);
+
+            $(this).toggle(isMatch || keyword === "");
+        })
+    });
+
+    $("#store_modal").on("click", ".store_select_btn", function() {
+        const storeName = $(this).closest("tr").find(".store_name").text();
+        $("#selected_store").text(storeName);
+    });
+
+    // 중복 검사
+    function hasDuplicate(name) {
+        return $("#item-proposal tbody tr").filter(function () {
+            return $(this).find("td").eq(0).text().trim() === name;
+        }).length > 0;
+    }
+calcTotal();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
