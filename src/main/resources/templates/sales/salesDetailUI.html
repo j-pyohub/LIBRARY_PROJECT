@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>직영점 판매상품 목록</title>
-
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
     .page-wrapper { max-width:1500px; margin:auto; }
@@ -18,20 +19,19 @@
   <!-- 매장명 -->
   <h4 class="text-center mb-4 mt-3">금천직영점</h4>
 
-  <!-- 뒤로가기(왼쪽) + 검색창(오른쪽) -->
+  <!-- 뒤로가기 + 검색창 -->
   <div class="d-flex justify-content-between align-items-center mb-3">
 
     <!-- 왼쪽 : 뒤로가기 -->
-    <button class="btn btn-warning btn-sm" onclick="history.back()">뒤로가기</button>
+    <button id="btnBack" class="btn btn-warning btn-sm">뒤로가기</button>
 
     <!-- 오른쪽 : 검색 -->
     <div class="d-flex gap-2">
       <input type="text" class="form-control" style="width:240px;" placeholder="판매상품">
-      <button class="btn btn-primary">검색</button>
+      <button id="orderDeatilBtn" class="btn btn-primary">검색</button>
     </div>
 
   </div>
-
 
   <!-- 테이블 -->
   <div class="card">
@@ -48,28 +48,23 @@
           <th>매출액</th>
         </tr>
         </thead>
-
         <tbody id="tableBody"></tbody>
       </table>
 
     </div>
   </div>
 
-
   <!-- 페이지네이션 + 개수선택 -->
   <div class="d-flex justify-content-between align-items-center mt-3">
 
-    <!-- 왼쪽 빈 공간 -->
     <div style="width:80px;"></div>
 
-    <!-- 가운데: 페이지네이션 -->
     <div class="flex-grow-1 d-flex justify-content-center">
       <nav>
         <ul class="pagination mb-0" id="pagination"></ul>
       </nav>
     </div>
 
-    <!-- 오른쪽: 개수 선택 -->
     <div class="d-flex justify-content-end">
       <select id="rowsPerPage" class="form-select form-select-sm" style="width:80px;">
         <option value="5">5</option>
@@ -82,11 +77,17 @@
 
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-  // 샘플 데이터 10개
+  /* ================================
+     뒤로가기 버튼
+  ================================ */
+  $("#btnBack").on("click", function () {
+    history.back();
+  });
+
+  /* ================================
+     샘플 데이터
+  ================================ */
   const data = [
     {no:1, category:"피자", item:"페퍼로니피자", size:"라지", qty:80, price:"800,500"},
     {no:2, category:"피자", item:"치즈피자", size:"라지", qty:70, price:"678,400"},
@@ -102,59 +103,71 @@
 
   let currentPage = 1;
 
+  /* ================================
+     테이블 렌더링
+  ================================ */
   function renderTable() {
-    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const rowsPerPage = Number($("#rowsPerPage").val());
     const startIdx = (currentPage - 1) * rowsPerPage;
     const endIdx = startIdx + rowsPerPage;
 
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
+    const $tbody = $("#tableBody");
+    $tbody.empty();
 
     data.slice(startIdx, endIdx).forEach(row => {
-      tableBody.innerHTML += `
+      $tbody.append(`
         <tr>
-            <td>${row.no}</td>
-            <td>${row.category}</td>
-            <td>${row.item}</td>
-            <td>${row.size}</td>
-            <td>${row.qty}</td>
-            <td>${row.price}</td>
-        </tr>`;
+          <td>${row.no}</td>
+          <td>${row.category}</td>
+          <td>${row.item}</td>
+          <td>${row.size}</td>
+          <td>${row.qty}</td>
+          <td>${row.price}</td>
+        </tr>
+      `);
     });
 
     renderPagination(rowsPerPage);
   }
 
+  /* ================================
+     페이지네이션 렌더링
+  ================================ */
   function renderPagination(rowsPerPage) {
     const totalPages = Math.ceil(data.length / rowsPerPage);
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
+    const $pagination = $("#pagination");
 
-    // ◀ 이전 버튼
-    pagination.innerHTML += `
+    $pagination.empty();
+
+    // 이전
+    $pagination.append(`
       <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
         <a class="page-link" href="#" onclick="movePage(${currentPage - 1})">&lt;</a>
       </li>
-    `;
+    `);
 
-    // 페이지 숫자 버튼
+    // 숫자
     for (let i = 1; i <= totalPages; i++) {
-      pagination.innerHTML += `
-        <li class="page-item ${i === currentPage ? "active" : ""}">
+      $pagination.append(`
+        <li class="page-item ${i === currentPage ? 'active' : ''}">
           <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
-        </li>`;
+        </li>
+      `);
     }
 
-    // ▶ 다음 버튼
-    pagination.innerHTML += `
+    // 다음
+    $pagination.append(`
       <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
         <a class="page-link" href="#" onclick="movePage(${currentPage + 1})">&gt;</a>
       </li>
-    `;
+    `);
   }
 
+  /* ================================
+     페이지 이동
+  ================================ */
   function movePage(page) {
-    const rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
+    const rowsPerPage = Number($("#rowsPerPage").val());
     const totalPages = Math.ceil(data.length / rowsPerPage);
 
     if (page < 1 || page > totalPages) return;
@@ -163,12 +176,21 @@
     renderTable();
   }
 
-  document.getElementById("rowsPerPage").addEventListener("change", () => {
+  /* ================================
+     개수 변경 이벤트
+  ================================ */
+  $("#rowsPerPage").on("change", function() {
     currentPage = 1;
     renderTable();
   });
 
-  renderTable();
+  /* ================================
+     초기 실행
+  ================================ */
+  $(document).ready(function() {
+    renderTable();
+  });
+
 </script>
 
 </body>

@@ -122,7 +122,12 @@
 
         <!-- 지도 + 검색 -->
         <div class="col-5">
-          <div id="map" style="width:100%; height:420px;"></div>
+
+          <!-- 지도 대신 이미지 -->
+          <div style="width:100%; height:420px;">
+            <img src="/image/map_sample.png"
+                 style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+          </div>
 
           <!-- 지도 아래 검색 UI -->
           <div class="search-panel">
@@ -142,6 +147,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div> <!-- /row -->
 
@@ -162,26 +168,22 @@
 
       <div class="modal-body position-relative">
 
-        <!-- ROLE_MANAGER만 보는 버튼 영역 -->
         <div id="managerButtons" class="manager-buttons d-flex gap-2">
           <button type="button" class="btn btn-warning btn-sm">재고 조회</button>
           <button type="button" class="btn btn-warning btn-sm">판매 메뉴 조회</button>
         </div>
 
         <div class="row">
-          <!-- 왼쪽 정보 영역 -->
+          <!-- 왼쪽 -->
           <div class="col-7">
+
             <div class="row mb-3">
               <div class="col-3 modal-label">직영점</div>
               <div class="col-3 modal-label">상태</div>
             </div>
             <div class="row mb-3">
-              <div class="col-3">
-                <div id="mdStoreName" class="pill-box">둔산점</div>
-              </div>
-              <div class="col-3">
-                <div id="mdStatus" class="pill-box">영업중</div>
-              </div>
+              <div class="col-3"><div id="mdStoreName" class="pill-box"></div></div>
+              <div class="col-3"><div id="mdStatus" class="pill-box"></div></div>
             </div>
 
             <div class="row mb-3">
@@ -189,34 +191,20 @@
               <div class="col-3 modal-label">점장 연락처</div>
             </div>
             <div class="row mb-3">
-              <div class="col-3">
-                <div id="mdManagerName" class="pill-box">표수정</div>
-              </div>
-              <div class="col-3">
-                <div id="mdManagerPhone" class="pill-box">010-5169-1244</div>
-              </div>
+              <div class="col-3"><div id="mdManagerName" class="pill-box"></div></div>
+              <div class="col-3"><div id="mdManagerPhone" class="pill-box"></div></div>
             </div>
 
-            <div class="row mb-2">
-              <div class="col-6 modal-label">주소</div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-10">
-                <div id="mdAddress" class="pill-box" style="width:100%;">대전광역시 서구 문정로 170</div>
-              </div>
-            </div>
+            <div class="row mb-2"><div class="col-6 modal-label">주소</div></div>
+            <div class="row mb-3"><div class="col-10"><div id="mdAddress" class="pill-box" style="width:100%;"></div></div></div>
 
             <div class="row mb-2">
               <div class="col-4 modal-label">직영점 전화</div>
               <div class="col-3 modal-label">개점일</div>
             </div>
             <div class="row mb-3">
-              <div class="col-4">
-                <div id="mdStorePhone" class="pill-box">042-1577-1577</div>
-              </div>
-              <div class="col-3">
-                <div id="mdOpenDate" class="pill-box">2025.11.11</div>
-              </div>
+              <div class="col-4"><div id="mdStorePhone" class="pill-box"></div></div>
+              <div class="col-3"><div id="mdOpenDate" class="pill-box"></div></div>
             </div>
 
             <div class="row mb-2">
@@ -224,26 +212,22 @@
               <div class="col-3 modal-label">폐점일</div>
             </div>
             <div class="row mb-1">
-              <div class="col-4">
-                <div id="mdBizTime" class="pill-box">11:00 - 22:00</div>
-              </div>
-              <div class="col-3">
-                <div id="mdCloseDate" class="pill-box">-</div>
-              </div>
+              <div class="col-4"><div id="mdBizTime" class="pill-box"></div></div>
+              <div class="col-3"><div id="mdCloseDate" class="pill-box"></div></div>
             </div>
 
           </div>
 
-          <!-- 오른쪽 매출 + 이미지 영역 -->
+          <!-- 오른쪽 -->
           <div class="col-5">
             <div class="d-flex justify-content-between mb-2">
               <div class="text-center">
                 <div class="modal-label">저번달 매출</div>
-                <div id="mdPrevSales" class="fs-5 fw-bold">6,000,000</div>
+                <div id="mdPrevSales" class="fs-5 fw-bold"></div>
               </div>
               <div class="text-center">
                 <div class="modal-label">이번달 매출</div>
-                <div id="mdThisSales" class="fs-5 fw-bold">4,000,000</div>
+                <div id="mdThisSales" class="fs-5 fw-bold"></div>
               </div>
             </div>
 
@@ -264,73 +248,62 @@
 </div>
 
 <script>
-  // 로그인한 사용자의 권한 (본사=ROLE_MANAGER, 직영점=ROLE_STORE)
-  // 실제 서비스에서는 서버에서 값 내려주면 됨.
   var role = "ROLE_MANAGER";
 
-  // 직영점 샘플 데이터
   var stores = [
-    {no:1, name:"용문점",  region:"대전광역시 서구 도산로 335",      manager:"최정문", status:"영업중",
+    {no:1, name:"용문점", region:"대전광역시 서구 도산로 335", manager:"최정문", status:"영업중",
       managerPhone:"010-0000-0001", storePhone:"042-111-1111", openDate:"2023.01.01",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:8000000, thisSales:6000000},
-    {no:2, name:"유천점",  region:"대전광역시 중구 계백로1606",      manager:"홍길동", status:"영업중",
+    {no:2, name:"유천점", region:"대전광역시 중구 계백로1606", manager:"홍길동", status:"영업중",
       managerPhone:"010-0000-0002", storePhone:"042-222-2222", openDate:"2023.02.01",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:7500000, thisSales:6200000},
-    {no:3, name:"송촌점",  region:"대전광역시 대덕구 계족산로 25",    manager:"김재욱", status:"영업중",
+    {no:3, name:"송촌점", region:"대전광역시 대덕구 계족산로 25", manager:"김재욱", status:"영업중",
       managerPhone:"010-0000-0003", storePhone:"042-333-3333", openDate:"2023.03.01",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:7200000, thisSales:5800000},
-    {no:4, name:"신탄진점",region:"대전광역시 대덕구 신탄진로 800-1", manager:"홍길동", status:"영업중",
+    {no:4, name:"신탄진점", region:"대전광역시 대덕구 신탄진로 800-1", manager:"홍길동", status:"영업중",
       managerPhone:"010-0000-0004", storePhone:"042-444-4444", openDate:"2023.03.15",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:6500000, thisSales:6100000},
-    {no:5, name:"가오점",  region:"대전광역시 동구 은어송로 75",      manager:"이순신", status:"영업중",
+    {no:5, name:"가오점", region:"대전광역시 동구 은어송로 75", manager:"이순신", status:"영업중",
       managerPhone:"010-0000-0005", storePhone:"042-555-5555", openDate:"2023.04.01",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:6100000, thisSales:5900000},
-    {no:6, name:"대전대동점",region:"대전광역시 동구 계족로 194-37",  manager:"배성윤", status:"영업중",
+    {no:6, name:"대전대동점", region:"대전광역시 동구 계족로 194-37", manager:"배성윤", status:"영업중",
       managerPhone:"010-0000-0006", storePhone:"042-666-6666", openDate:"2023.04.10",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:6400000, thisSales:6050000},
-    {no:7, name:"대전도안점",region:"대전광역시 서구 도안동로 31번길 11-15", manager:"이재웅", status:"폐업",
-      managerPhone:"010-0000-0007", storePhone:"042-777-7777", openDate:"2023.05.01",
+    {no:7, name:"대전도안점", region:"대전광역시 서구 도안동로 31번길 11-15", manager:"이재웅",
+      status:"폐업", managerPhone:"010-0000-0007", storePhone:"042-777-7777", openDate:"2023.05.01",
       bizTime:"11:00 - 22:00", closeDate:"2024.01.31", prevSales:3000000, thisSales:0},
-    {no:8, name:"대전월평점",region:"대전광역시 서구 월평로 69",      manager:"정윤찬", status:"영업중",
-      managerPhone:"010-0000-0008", storePhone:"042-888-8888", openDate:"2023.06.01",
-      bizTime:"11:00 - 22:00", closeDate:"-", prevSales:7000000, thisSales:6500000},
-    {no:9, name:"둔산점",  region:"대전광역시 서구 문정로 170",      manager:"표수정", status:"영업중",
+    {no:8, name:"대전월평점", region:"대전광역시 서구 월평로 69", manager:"정윤찬",
+      status:"영업중", managerPhone:"010-0000-0008", storePhone:"042-888-8888",
+      openDate:"2023.06.01", bizTime:"11:00 - 22:00", closeDate:"-", prevSales:7000000, thisSales:6500000},
+    {no:9, name:"둔산점", region:"대전광역시 서구 문정로 170", manager:"표수정", status:"영업중",
       managerPhone:"010-5169-1244", storePhone:"042-1577-1577", openDate:"2025.11.11",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:6000000, thisSales:4000000},
-    {no:10,name:"대덕점",  region:"대전광역시 유성구 와룡로 3",      manager:"함은숙", status:"영업중",
+    {no:10, name:"대덕점", region:"대전광역시 유성구 와룡로 3", manager:"함은숙", status:"영업중",
       managerPhone:"010-0000-0010", storePhone:"042-999-9999", openDate:"2023.07.01",
       bizTime:"11:00 - 22:00", closeDate:"-", prevSales:6800000, thisSales:6300000}
   ];
 
-  // 테이블 채우기
   function renderTable(data) {
     var tbody = document.getElementById("storeTable");
     tbody.innerHTML = "";
-    for (var i = 0; i < data.length; i++) {
-      var s = data[i];
+
+    data.forEach(s => {
       var tr = document.createElement("tr");
       tr.className = "text-center";
       tr.innerHTML =
-              "<td>" + s.no + "</td>" +
-              "<td>" + s.name + "</td>" +
-              "<td class='text-start'>" + s.region + "</td>" +
-              "<td>" + s.manager + "</td>" +
-              "<td>" + s.status + "</td>" +
-              "<td><img src='/image/detail.png' class='detail-btn' onclick='openStoreDetail(" + s.no + ")'></td>";
+              `<td>${s.no}</td>
+         <td>${s.name}</td>
+         <td class='text-start'>${s.region}</td>
+         <td>${s.manager}</td>
+         <td>${s.status}</td>
+         <td><img src='/image/detail.png' class='detail-btn' onclick='openStoreDetail(${s.no})'></td>`;
       tbody.appendChild(tr);
-    }
+    });
   }
 
-  // 모달 열기
   function openStoreDetail(storeNo) {
-    var s = null;
-    for (var i = 0; i < stores.length; i++) {
-      if (stores[i].no === storeNo) {
-        s = stores[i];
-        break;
-      }
-    }
-    if (!s) { return; }
+    var s = stores.find(st => st.no === storeNo);
+    if (!s) return;
 
     document.getElementById("mdStoreName").innerText = s.name;
     document.getElementById("mdStatus").innerText = s.status;
@@ -344,62 +317,36 @@
     document.getElementById("mdPrevSales").innerText = s.prevSales.toLocaleString();
     document.getElementById("mdThisSales").innerText = s.thisSales.toLocaleString();
 
-    // ROLE_MANAGER 여부에 따라 버튼 표시/숨김
     var btnArea = document.getElementById("managerButtons");
-    if (role === "ROLE_MANAGER") {
-      btnArea.style.display = "flex";
-    } else {
-      btnArea.style.display = "none";
-    }
+    btnArea.style.display = role === "ROLE_MANAGER" ? "flex" : "none";
 
-    var modal = new bootstrap.Modal(document.getElementById("storeDetailModal"));
-    modal.show();
+    new bootstrap.Modal(document.getElementById("storeDetailModal")).show();
   }
 
-  // 간단 검색 (이름/지역/점장명/상태에서 문자열 포함 여부)
   function searchStore() {
     var type = document.getElementById("searchType").value;
     var keyword = document.getElementById("searchKeyword").value.trim();
+
     if (keyword === "") {
       renderTable(stores);
       return;
     }
 
-    var result = [];
-    for (var i = 0; i < stores.length; i++) {
-      var s = stores[i];
-      var target = "";
-
-      if (type === "all") {
-        target = s.name + " " + s.region + " " + s.manager + " " + s.status;
-      } else if (type === "region") {
-        target = s.region;
-      } else if (type === "name") {
-        target = s.name;
-      } else if (type === "manager") {
-        target = s.manager;
-      } else if (type === "status") {
-        target = s.status;
-      }
-
-      if (target.indexOf(keyword) !== -1) {
-        result.push(s);
-      }
-    }
+    var result = stores.filter(s => {
+      if (type === "all")
+        return (s.name + s.region + s.manager + s.status).includes(keyword);
+      if (type === "region") return s.region.includes(keyword);
+      if (type === "name") return s.name.includes(keyword);
+      if (type === "manager") return s.manager.includes(keyword);
+      if (type === "status") return s.status.includes(keyword);
+    });
 
     renderTable(result);
   }
 
-  // 카카오 지도 초기화 (샘플 중심만 잡아둠)
-  var mapContainer = document.getElementById('map');
-  var mapOption = {
-    center: new kakao.maps.LatLng(36.3504, 127.3845), // 대전 시청 근처
-    level: 5
+  window.onload = function () {
+    renderTable(stores);  // 검색 안 눌러도 전체 보이게
   };
-  var map = new kakao.maps.Map(mapContainer, mapOption);
-
-  // 초기 테이블 렌더링
-  renderTable(stores);
 </script>
 
 </body>

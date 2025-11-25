@@ -19,7 +19,7 @@ public class MenuIngredient {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_no", nullable = false)
-    private Item item;   // ← 여기 Item 타입 매핑됨
+    private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_no", nullable = false)
