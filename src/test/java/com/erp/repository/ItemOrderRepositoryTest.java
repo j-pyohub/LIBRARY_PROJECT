@@ -144,7 +144,7 @@ class ItemOrderRepositoryTest {
 
     // 발주 요청 생성(관리자)
     @Test
-    void makeOrder(){
+    void makeItemOrder(){
         ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
                 .storeNo(Store.builder().storeNo(3L).build()) // 요청한 직영점 정보
                 .totalItem(2)
