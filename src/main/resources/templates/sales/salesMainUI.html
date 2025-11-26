@@ -313,7 +313,6 @@
     $("input[name='period']").on("change", function(){
         const id = $(this).attr("id");
         updatePeriodInputs(id);
-        updateKpiTitle(id);
     });
 
     /* 메인 차트 */
@@ -347,6 +346,7 @@
     $("#getSalesBtn").on("click", function(){
 
         const type = $("input[name='period']:checked").attr("id");
+        updateKpiTitle(type);
         let s = $("#startInput").val();
         let e = $("#endInput").val();
 
