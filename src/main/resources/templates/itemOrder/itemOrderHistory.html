@@ -5,8 +5,10 @@
 <title>발주 내역</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
- body { background:#f8f9fa; font-family:"Noto Sans KR",sans-serif; }
+ body { background:#f8f9fa; font-family:"Noto Sans KR",sans-serif;
+   max-width: 1500px;}
 
 
  .card-box { background:#fff; border-radius:12px; padding:20px; border:1px solid #dee2e6;}
@@ -55,29 +57,49 @@
    </thead>
    <tbody>
      <tr>
+       <td>1</td>
+       <td>독산점</td>
+       <td>2025-11-25</td>
        <td></td>
        <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
+       <td>6</td>
+       <td>630,000</td>
        <td style="color: green;" class="req_status">승인</td>
+       <td class="receive_status">입고대기</td>
        <td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>
      </tr>
      <tr>
+       <td>2</td>
+       <td>강남점</td>
+       <td>2025-11-25</td>
        <td></td>
        <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
+       <td>4</td>
+       <td>430,000</td>
        <td style="color: red;" class="req_status">대기</td>
+       <td></td>
        <td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailCancelModal">상세조회</button></td>
      </tr>
    </tbody>
  </table>
+
+  <!-- ▼ 페이지네이션 추가 -->
+  <nav class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled">
+        <a class="page-link">이전</a>
+      </li>
+
+      <li class="page-item active"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+      <li class="page-item">
+        <a class="page-link" href="#">다음</a>
+      </li>
+    </ul>
+  </nav>
+  <!-- ▲ 페이지네이션 끝 -->
 
 </div>
 
@@ -147,7 +169,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-outline-secondary">전체 입고처리</button>
+        <button class="btn btn-outline-secondary" id="receive_all_btn">전체 입고처리</button>
       </div>
 
     </div>
@@ -234,7 +256,11 @@
     $("#orderDetailCancelModal").modal("hide");
 
   });
+
+  $("#receive_all_btn").on("click", function(){
+    selectedRow.find(".receive_status").text("입고완료");
+    $("#orderDetailModal").modal("hide");
+  });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
