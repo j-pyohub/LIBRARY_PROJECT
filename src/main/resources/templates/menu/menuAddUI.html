@@ -55,6 +55,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
         input[type=number] {
             -moz-appearance: textfield;
         }
@@ -187,6 +188,7 @@
         <table class="table text-center align-middle">
             <thead class="table-light">
             <tr>
+                <th>품목코드</th>
                 <th>재료명</th>
                 <th>단위</th>
                 <th class="size-option">라지 정량</th>
@@ -204,7 +206,7 @@
     <!-- ===================== -->
     <div class="text-center mt-3">
         <button class="btn custom-btn">등록</button>
-        <button class="btn btn-outline-secondary me-2">초기화</button>
+        <button class="btn btn-outline-secondary me-2" id="resetBtn">초기화</button>
     </div>
 
 </div> <!-- wrapper-box END -->
@@ -225,7 +227,9 @@
             <div class="modal-body">
 
                 <!-- 검색 -->
-                <div class="row g-3 mb-3">
+                <div class="row g-3 mb-3 align-items-end">
+
+                    <!-- 카테고리 -->
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">카테고리</label>
                         <select class="form-select">
@@ -237,19 +241,29 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3">
+                    <!-- 검색조건 -->
+                    <div class="col-md-2">
                         <label class="form-label fw-semibold">검색조건</label>
-                        <select class="form-select">
-                            <option>품목코드</option>
-                            <option>재료명</option>
+                        <select class="form-select" id="searchType">
+                            <option value="code">품목코드</option>
+                            <option value="name">재료명</option>
                         </select>
                     </div>
 
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-outline-dark">조회</button>
+                    <!-- 검색 input + 버튼 (딱 붙게) -->
+                    <!-- 검색 input + 버튼 (딱 붙게) -->
+                    <!-- 검색 input + 버튼 (딱 붙게) -->
+                    <div class="col-md-5 d-flex align-items-end">
+
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control" >
+                            <button class="btn custom-btn px-4" type="button">
+                                검색
+                            </button>
+                        </div>
+
                     </div>
                 </div>
-
                 <!-- 테이블 -->
                 <div class="table-responsive">
                     <table class="table table-hover text-center align-middle">
@@ -323,6 +337,7 @@
         $("th.size-option, td.size-option").toggle(isSize);
         $("th.qty-single-header, td.qty-single-cell").toggle(!isSize);
     }
+
     $("input[name='sizeYn']").on("change", updateSize);
     updateSize();
 
@@ -342,37 +357,46 @@
 
             const row = $(this).closest("tr");
             const cols = row.children();
-            const name = cols.eq(2).text();
-            const unit = cols.eq(4).text();
+
+            const code = cols.eq(1).text();   // 품목코드
+            const name = cols.eq(2).text();   // 재료명
+            const unit = cols.eq(4).text();   // 단위
 
             let html = "";
 
             if (isSize) {
                 html = `
-                <tr>
-                    <td>${name}</td>
-                    <td>${unit}</td>
-                    <td class="size-option">
-                        <input type="number" class="form-control form-control-sm w-auto" placeholder="라지">
-                    </td>
-                    <td class="size-option">
-                        <input type="number" class="form-control form-control-sm w-auto" placeholder="미디움">
-                    </td>
-                    <td class="qty-single-cell" style="display:none;"></td>
-                    <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
-                </tr>`;
+            <tr>
+                <td>${code}</td>
+                <td>${name}</td>
+                <td>${unit}</td>
+
+                <td class="size-option text-center">
+                    <input type="number" class="form-control form-control-sm w-auto d-inline-block text-center">
+                </td>
+                <td class="size-option text-center">
+                    <input type="number" class="form-control form-control-sm w-auto d-inline-block text-center">
+                </td>
+
+                <td class="qty-single-cell" style="display:none;"></td>
+                <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
+            </tr>`;
             } else {
                 html = `
-                <tr>
-                    <td>${name}</td>
-                    <td>${unit}</td>
-                    <td class="size-option" style="display:none;"></td>
-                    <td class="size-option" style="display:none;"></td>
-                    <td class="qty-single-cell">
-                        <input type="number" class="form-control form-control-sm w-auto" placeholder="정량">
-                    </td>
-                    <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
-                </tr>`;
+            <tr>
+                <td>${code}</td>
+                <td>${name}</td>
+                <td>${unit}</td>
+
+                <td class="size-option" style="display:none;"></td>
+                <td class="size-option" style="display:none;"></td>
+
+                <td class="qty-single-cell text-center">
+                    <input type="number" class="form-control form-control-sm w-auto d-inline-block text-center">
+                </td>
+
+                <td><button class="btn btn-outline-danger btn-sm delete-row">삭제</button></td>
+            </tr>`;
             }
 
             recipeBody.append(html);
@@ -381,10 +405,22 @@
         $("#ingredientModal").modal("hide");
     });
 
+
     // 삭제 버튼
     $(document).on("click", ".delete-row", function () {
         $(this).closest("tr").remove();
     });
+
+
+    $("#resetBtn").click(() => {
+        $("input[type='text'], input[type='number'], input[type='file']").val("");
+        $("textarea").val("");
+        $("select").prop("selectedIndex", 0);
+        $("input[name='sizeYn'][value='Y']").prop("checked", true);
+        updateSize();
+        $("#recipeList").empty();
+    });
+
 </script>
 
 </body>
