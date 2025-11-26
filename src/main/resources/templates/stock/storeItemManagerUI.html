@@ -43,6 +43,16 @@
 
         .w-search{max-width:420px}
         #storeSearchModal .modal-body._hideUntilReady { visibility: hidden; }
+
+        .stock-storebar { white-space: nowrap; }
+        .w-220 { width: 220px; }
+        .form-control.w-auto { min-width: 0; }
+
+        @media (max-width: 576px) {
+            .w-220 { width: 180px; }
+        }
+
+
     </style>
 </head>
 <body>
@@ -51,7 +61,6 @@
 <div class="layout-container py-4 px-3">
     <div class="d-flex align-items-center justify-content-between mb-2">
         <h3 class="fw-bold mb-0">재고 조회 : 본사</h3>
-        <div class="hint-note">하한선 미만: <span class="low">빨간 굵은 글씨</span></div>
     </div>
 
     <div class="card p-3 mb-3 shadow-sm border-0">
@@ -79,15 +88,16 @@
                 </div>
             </div>
 
-            <div class="col d-flex justify-content-end align-items-center gap-2">
+            <div class="col d-flex justify-content-end align-items-center gap-2 flex-nowrap stock-storebar">
                 <span class="fw-bold small">직영점</span>
-                <input id="storeSearchKeyword" class="form-control form-control-sm" style="max-width:220px" placeholder="직영점명">
+                <input id="storeSearchKeyword"
+                       class="form-control form-control-sm w-auto w-220 input-store"
+                       placeholder="직영점명">
                 <button type="button" class="btn btn-sm btn-main px-3" id="btnOpenStoreSearch">검색</button>
             </div>
-        </div>
-    </div>
 
-    <div class="card shadow-sm border-0 position-relative">
+
+            <div class="card shadow-sm border-0 position-relative">
         <div id="storeNoticeOverlay" class="d-flex">
             <div class="overlay-card">
                 <i class="bi bi-shop fs-1 mb-2"></i>
