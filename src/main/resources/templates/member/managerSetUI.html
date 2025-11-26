@@ -76,8 +76,13 @@
   </div>
   <div class="text-center mt-4">
     <button class="btn btn-success custom-btn px-4">저장</button>
-    <button class="btn btn-light px-4" onclick="history.back()">취소</button>
+    <button class="btn btn-light px-4" id="cancelBtn">취소</button>
   </div>
 </div>
+<script>
+  $("#cancelBtn").click(() => {
+    history.back()
+  });
+</script>
 </body>
 </html>

@@ -203,11 +203,11 @@
     </div>
     <div class="text-center mt-4">
         <button class="btn btn-success custom-btn px-4">등록</button>
-        <button class="btn btn-light px-4" onclick="history.back()">취소</button>
+        <button class="btn btn-light px-4" id="cancelBtn">취소</button>
     </div>
 
     <script>
-        $("#tabManager").on("click", function () {
+        $("#tabManager").click(() => {
             $("#tabManager").addClass("active");
             $("#tabStore").removeClass("active");
 
@@ -215,7 +215,7 @@
             $("#formStore").removeClass("active");
         });
 
-        $("#tabStore").on("click", function () {
+        $("#tabStore").click(() => {
             $("#tabStore").addClass("active");
             $("#tabManager").removeClass("active");
 
@@ -223,7 +223,7 @@
             $("#formManager").removeClass("active");
         });
 
-        $("#storeStatus").on("change", function () {
+        $("#storeStatus").change(() => {
             const value = $(this).val();
 
             if (value === "폐업") {
@@ -231,6 +231,9 @@
             } else {
                 $("#closeDateRow").css("display", "none");
             }
+        });
+        $("#cancelBtn").click(() => {
+            history.back()
         });
 
     </script>

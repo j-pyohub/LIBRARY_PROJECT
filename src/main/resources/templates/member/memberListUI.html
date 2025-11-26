@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>직원 목록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <style>
         body {
             background-color: #fafafa;
@@ -87,36 +89,37 @@
         <table class="table table-bordered align-middle text-center bg-white">
             <thead class="table-light">
             <tr>
-                <th>부서</th>
+                <th>이름</th>
                 <th>아이디</th>
                 <th>이메일</th>
                 <th>연락처</th>
-                <th>상세</th>
+                <th>정보 수정</th>
             </tr>
             </thead>
 
             <tbody>
             <tr>
-                <td>관리팀</td>
+                <td>홍길동</td>
                 <td>admin01</td>
                 <td>admin01@company.com</td>
                 <td>02-1111-1111</td>
                 <td>
-                    <button type="button" class="btn btn-sm detail-btn" id="detailManagerBtn">
-                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    <button type="button" class="btn btn-sm btn-outline-secondary managerSetbtn">
+                        수정
                     </button>
                 </td>
             </tr>
 
             <tr>
-                <td>재무팀</td>
+                <td>김진사</td>
                 <td>finance01</td>
                 <td>finance01@company.com</td>
                 <td>02-2222-2222</td>
                 <td>
-                    <button type="button" class="btn btn-sm detail-btn">
-                        <img src="/image/detail.png" alt="상세보기" width="24" height="24">
+                    <button type="button" class="btn btn-sm btn-outline-secondary managerSetbtn">
+                        수정
                     </button>
+
                 </td>
             </tr>
             </tbody>
@@ -205,7 +208,7 @@
 <!-- JS: 탭 전환 -->
 <!-- ================================ -->
 <script>
-    $("#tabManager").on("click", function () {
+    $("#tabManager").click(() => {
         $("#tabManager").addClass("active");
         $("#tabStore").removeClass("active");
 
@@ -213,7 +216,7 @@
         $("#sectionStore").removeClass("active");
     });
 
-    $("#tabStore").on("click", function () {
+    $("#tabStore").click(() => {
         $("#tabStore").addClass("active");
         $("#tabManager").removeClass("active");
 
@@ -226,8 +229,8 @@
         location.href = "memberAddUI.html"
     })
 
-    $("#detailManagerBtn").click(() => {
-        location.href = "managerDetail.html"
+    $(".managerSetbtn").click(() => {
+        location.href = "managerSetUI.html"
     })
 
     $("#detailStoreBtn").click(() => {

@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>직영점 판매 메뉴</title>
+    <title>직영점별 판매 메뉴</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -72,7 +72,7 @@
     <div class="bg-white border rounded p-4">
 
         <!-- 제목 -->
-        <h2 class="fw-bold mb-4">###(지점명) 판매 메뉴</h2>
+        <h2 class="fw-bold mb-4">직영점별 판매 메뉴</h2>
 
         <!-- 🔥 검색 영역 복구됨 -->
         <div class="border rounded p-3 mb-4">
@@ -101,10 +101,20 @@
                     </select>
                 </div>
 
+                <div class="col-md-2"></div>
+
                 <!-- 검색조건 -->
+                <div class="col-md-2">
+                    <label class="form-label">검색조건</label>
+                    <select class="form-select" id="searchType">
+                        <option value="store">직영점</option>
+                        <option value="menu">메뉴</option>
+                    </select>
+                </div>
+
+                <!-- 검색 input -->
                 <div class="col-md-3">
-                    <label class="form-label">메뉴 검색</label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="searchInput" placeholder="직영점 검색" disabled>
                 </div>
 
                 <!-- 검색 버튼 -->
@@ -123,9 +133,12 @@
 
         <!-- 테이블 -->
         <div class="scroll-area">
-            <table class="table align-middle text-center table-fixed-header">
+            <table class="table table-bordered align-middle text-center table-fixed-header">
+                <div class="thead-line"></div>
                 <thead class="table-light">
+
                 <tr>
+                    <th>직영점</th>
                     <th>메뉴 코드</th>
                     <th>메뉴 명</th>
                     <th>사이즈</th>
@@ -141,6 +154,7 @@
 
                 <!-- 2사이즈 -->
                 <tr>
+                    <td rowspan="2">대전점</td>
                     <td rowspan="2">PEPPERONI_PIZZA</td>
                     <td rowspan="2">페퍼로니 피자</td>
 
@@ -163,6 +177,7 @@
                 </tr>
 
                 <tr>
+                    <td>대전점</td>
                     <td>BECONCHEDDARCHEEZE_PIZZA</td>
                     <td>베이컨 체다치즈 피자</td>
 
@@ -180,6 +195,7 @@
 
                 <!-- 1 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">BULGOGI_PIZZA</td>
                     <td rowspan="2">불고기 피자</td>
                     <td>라지</td>
@@ -200,6 +216,7 @@
 
                 <!-- 2 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">POTATO_PIZZA</td>
                     <td rowspan="2">포테이토 피자</td>
                     <td>라지</td>
@@ -220,6 +237,7 @@
 
                 <!-- 3 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">SUPER_SUPREME</td>
                     <td rowspan="2">슈퍼슈프림 피자</td>
                     <td>라지</td>
@@ -240,6 +258,7 @@
 
                 <!-- 4 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">SWEET_POTATO</td>
                     <td rowspan="2">고구마 피자</td>
                     <td>라지</td>
@@ -260,6 +279,7 @@
 
                 <!-- 5 (단일) -->
                 <tr>
+                    <td>대전대동점</td>
                     <td>GARLIC_BREAD</td>
                     <td>갈릭 브레드</td>
                     <td>단일</td>
@@ -275,6 +295,7 @@
 
                 <!-- 6 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">MEAT_PIZZA</td>
                     <td rowspan="2">미트 피자</td>
                     <td>라지</td>
@@ -295,6 +316,7 @@
 
                 <!-- 7 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">BACON_PIZZA</td>
                     <td rowspan="2">베이컨 피자</td>
                     <td>라지</td>
@@ -315,6 +337,7 @@
 
                 <!-- 8 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">BBQ_CHICKEN</td>
                     <td rowspan="2">BBQ 치킨 피자</td>
                     <td>라지</td>
@@ -335,6 +358,7 @@
 
                 <!-- 9 (단일) -->
                 <tr>
+                    <td>대전대동점</td>
                     <td>COCA_COLA</td>
                     <td>코카콜라 1.25L</td>
                     <td>단일</td>
@@ -350,6 +374,7 @@
 
                 <!-- 10 (단일) -->
                 <tr>
+                    <td>대전대동점</td>
                     <td>SPRITE</td>
                     <td>스프라이트 1.25L</td>
                     <td>단일</td>
@@ -365,6 +390,7 @@
 
                 <!-- 11 -->
                 <tr>
+                    <td rowspan="2">대전대동점</td>
                     <td rowspan="2">DELUXE_PIZZA</td>
                     <td rowspan="2">디럭스 피자</td>
                     <td>라지</td>
@@ -385,6 +411,7 @@
 
                 <!-- 12 (단일) -->
                 <tr>
+                    <td>대전대동점</td>
                     <td>CHEESE_BREAD</td>
                     <td>치즈 브레드</td>
                     <td>단일</td>
@@ -416,6 +443,13 @@
             </div>
 
             <div class="modal-body">
+                <!-- 직영점 -->
+                <div class="row mb-2">
+                    <label class="col-3 fw-semibold">직영점</label>
+                    <div class="col"><span id="storeName" class="badge bg-light text-dark border px-3 py-2"></span>
+                    </div>
+                </div>
+
                 <!-- 메뉴명 -->
                 <div class="row mb-2">
                     <label class="col-3 fw-semibold">메뉴 명</label>
@@ -475,7 +509,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn custom-btn" id="saveBtn">저장</button>
+                    <button class="btn btn-warning" id="saveBtn">저장</button>
                     <button class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                 </div>
             </div>
@@ -510,19 +544,39 @@
 
   // 선택 일괄 변경 버튼 - model/controller 안 나뉘어 있음
     $(document).on("click", "#statusSetAllBtn", function () {
+
         const checkedRows = $(".row-check:checked");
+
         if (checkedRows.length === 0) {
             showAlert("선택된 항목이 없습니다.");
             return;
         }
+
+        let storeSet = new Set();
         let menuSet = new Set();
+
         // 선택한 모든 행 정보 수집
         checkedRows.each(function () {
             const row = $(this).closest("tr");
+
             // rowspan이 있는 경우 (라지 행)
-            const menu = row.find("td").eq(1).text().trim() || row.prev().find("td").eq(1).text().trim();
+            const store = row.find("td").eq(0).text().trim() || row.prev().find("td").eq(0).text().trim();
+            const menu = row.find("td").eq(2).text().trim() || row.prev().find("td").eq(2).text().trim();
+
+            storeSet.add(store);
             menuSet.add(menu);
         });
+
+        /* -----------------------------------
+            직영점 문구 설정
+        ----------------------------------- */
+        let storeText = "";
+        if (storeSet.size === 1) {
+            storeText = Array.from(storeSet)[0];
+        } else {
+            const arr = Array.from(storeSet);
+            storeText = `${arr[0]} 외 ${storeSet.size - 1}건`;
+        }
 
         /* -----------------------------------
             메뉴명 문구 설정
@@ -536,6 +590,7 @@
         }
 
         // 모달 세팅
+        $("#storeName").text(storeText);
         $("#menuName").text(menuText);
 
         // 🔥 개별 사이즈 모두 숨기기
@@ -553,8 +608,9 @@
     /* -----------------------------------
        1) 단일/복수 사이즈 모달 제어
     ------------------------------------*/
-    const openStatusModal = (menu, sizeMap) => {
+    const openStatusModal = (store, menu, sizeMap) => {
 
+        $("#storeName").text(store);
         $("#menuName").text(menu);
 
         // 🔥 모든 행 숨김
@@ -588,23 +644,40 @@
 
         const row = $(this).closest("tr");
 
-        const menu = row.find("td").eq(1).text().trim();
+        const store = row.find("td").eq(0).text().trim();
+        const menu = row.find("td").eq(2).text().trim();
 
-        const size = row.find("td").eq(2).text().trim();
+        const size = row.find("td").eq(3).text().trim();
         let sizeMap = {};
 
         // 두 줄짜리(라지/미디움)
         if (size === "라지") {
-            sizeMap["L"] = row.find("td").eq(4).text().trim();
-            sizeMap["M"] = row.next().find("td").eq(1).text().trim();
+            sizeMap["L"] = row.find("td").eq(5).text().trim();
+            sizeMap["M"] = row.next().find("td").eq(2).text().trim();
         }
         // 단일
         else {
-            sizeMap["ONE"] = row.find("td").eq(4).text().trim();
+            sizeMap["ONE"] = row.find("td").eq(5).text().trim();
         }
 
-        openStatusModal(menu, sizeMap);
+        openStatusModal(store, menu, sizeMap);
     });
+
+
+    /* -----------------------------------
+       3) 검색 조건 변경
+    ------------------------------------*/
+  $("#searchType").on("change", function(){
+      const type = $(this).val();
+      const input = $("#searchInput");
+
+      if (type === "store") {
+          input.val("").attr("placeholder", "직영점 검색").prop("disabled", true);
+      } else {
+          input.val("").attr("placeholder", "").prop("disabled", false);
+      }
+  });
+
 
   /* -----------------------------------
      4) 전체 체크박스
