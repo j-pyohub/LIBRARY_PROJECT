@@ -205,7 +205,7 @@
 <!-- JS: 탭 전환 -->
 <!-- ================================ -->
 <script>
-    $("#tabManager").on("click", function () {
+    $("#tabManager").click(() => {
         $("#tabManager").addClass("active");
         $("#tabStore").removeClass("active");
 
@@ -213,7 +213,7 @@
         $("#sectionStore").removeClass("active");
     });
 
-    $("#tabStore").on("click", function () {
+    $("#tabStore").click(() => {
         $("#tabStore").addClass("active");
         $("#tabManager").removeClass("active");
 
