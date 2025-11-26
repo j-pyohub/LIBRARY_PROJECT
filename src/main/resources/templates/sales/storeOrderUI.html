@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 조회 (직영점)</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body { background-color:#e5e5e5; }
+        .section-box { background:#fff; border:1px solid #ddd; border-radius:10px; padding:20px; }
+        .table thead th { background:#fbfbfb; font-weight:600; }
+        .pagination-wrapper { display:flex; justify-content:center; }
+    </style>
+</head>
+<body class="p-3">
+
+<div class="border border-secondary" style="max-width:1200px; margin:0 auto; background:#fff;">
+
+    <!-- 제목 -->
+    <div class="p-3">
+        <div class="fs-3 fw-bold mb-3">주문 조회</div>
+    </div>
+
+    <!-- 조회 영역 (직영점은 날짜만, 버튼명은 조회/초기화) -->
+    <div class="px-3 d-flex justify-content-end align-items-center gap-2 mb-2">
+        <span class="fw-semibold">주문 일자</span>
+        <input id="orderDate" type="date" class="form-control form-control-sm" style="width:150px;">
+        <button id="searchBtn" class="btn btn-warning btn-sm">조회</button>
+        <button id="resetBtn" class="btn btn-outline-secondary btn-sm">초기화</button>
+    </div>
+
+    <!-- 리스트 -->
+    <div class="px-3 pb-3">
+        <div class="section-box">
+
+            <table class="table table-hover align-middle mb-3">
+                <thead>
+                <tr class="text-center">
+                    <th>주문 번호</th>
+                    <th>주문 일시</th>
+                    <th>직영점</th>
+                    <th>총 판매 메뉴</th>
+                    <th>총 판매 금액</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="orderTableBody"></tbody>
+            </table>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination-wrapper mb-3">
+                <ul id="pagination" class="pagination pagination-sm mb-0">
+                    <!-- 자바스크립트에서 생성 -->
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 상세 Modal (본사와 동일 UI) -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:520px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">주문 상세보기</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <span class="fw-semibold">주문 일시</span>
+                    <span id="detailOrderDate" class="ms-2"></span>
+                </div>
+                <div class="mb-3">
+                    <span class="fw-semibold">직영점명</span>
+                    <span id="detailStoreName" class="ms-2"></span>
+                </div>
+
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>메뉴</th><th>사이즈</th><th>가격</th><th>수량</th><th>총 금액</th>
+                    </tr>
+                    </thead>
+                    <tbody id="detailMenuList"></tbody>
+                </table>
+
+                <div class="text-end fw-bold">
+                    총 결제 금액 <span id="detailTotalPrice"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ==========================
+       샘플 데이터 (모두 가산점)
+    ========================== */
+    const orders = [
+        { no:10, datetime:"2025-11-18 13:20:00", store:"가산점", menuCount:1, totalPrice:30000 },
+        { no:9,  datetime:"2025-11-18 13:21:00", store:"가산점", menuCount:2, totalPrice:32500 },
+        { no:8,  datetime:"2025-11-18 13:22:00", store:"가산점", menuCount:3, totalPrice:35000 },
+        { no:7,  datetime:"2025-11-18 13:23:00", store:"가산점", menuCount:4, totalPrice:37500 },
+        { no:6,  datetime:"2025-11-18 13:24:00", store:"가산점", menuCount:5, totalPrice:40000 },
+        { no:5,  datetime:"2025-11-18 13:25:00", store:"가산점", menuCount:1, totalPrice:42500 },
+        { no:4,  datetime:"2025-11-18 13:26:00", store:"가산점", menuCount:2, totalPrice:45000 },
+        { no:3,  datetime:"2025-11-18 13:27:00", store:"가산점", menuCount:3, totalPrice:47500 },
+        { no:2,  datetime:"2025-11-18 13:28:00", store:"가산점", menuCount:4, totalPrice:50000 },
+        { no:1,  datetime:"2025-11-18 13:29:00", store:"가산점", menuCount:5, totalPrice:52500 }
+    ];
+
+    // 각 주문의 메뉴 상세(샘플) – 키는 주문번호
+    const orderDetails = {};
+    orders.forEach(function(o){
+        orderDetails[o.no] = {
+            orderDate: o.datetime,
+            storeName: o.store,
+            menus: [
+                { name:"페퍼로니 피자", size:"라지", price:25000, qty:1 },
+                { name:"치즈 피자",     size:"미디움", price:15000, qty:1 }
+            ]
+        };
+    });
+
+    /* ==========================
+       페이지네이션 + 테이블 렌더링
+    ========================== */
+    let currentPage = 1;
+    const pageSize = 5; // 한 페이지 5개
+
+    function renderTable(){
+        const $tbody = $("#orderTableBody");
+        $tbody.empty();
+
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = orders.slice(start, end);
+
+        pageData.forEach(function(o){
+            const rowHtml =
+                "<tr class='text-center'>" +
+                "<td>" + o.no + "</td>" +
+                "<td>" + o.datetime + "</td>" +
+                "<td>" + o.store + "</td>" +
+                "<td>" + o.menuCount + "개</td>" +
+                "<td>" + o.totalPrice.toLocaleString() + "원</td>" +
+                "<td><img src='/image/detail.png' class='detail-btn' " +
+                "data-order-no='" + o.no + "' style='width:24px; cursor:pointer;'></td>" +
+                "</tr>";
+            $tbody.append(rowHtml);
+        });
+    }
+
+    function renderPagination(){
+        const $pagination = $("#pagination");
+        $pagination.empty();
+
+        const totalPages = Math.ceil(orders.length / pageSize);
+
+        // « (첫 페이지)
+        $pagination.append(
+            "<li class='page-item " + (currentPage === 1 ? "disabled" : "") + "'>" +
+            "<a class='page-link page-first' href='#'>&laquo;</a></li>"
+        );
+
+        // < (이전)
+        $pagination.append(
+            "<li class='page-item " + (currentPage === 1 ? "disabled" : "") + "'>" +
+            "<a class='page-link page-prev' href='#'>&lt;</a></li>"
+        );
+
+        // 번호
+        for (let i = 1; i <= totalPages; i++){
+            $pagination.append(
+                "<li class='page-item " + (currentPage === i ? "active" : "") + "'>" +
+                "<a class='page-link page-num' data-page='" + i + "' href='#'>" + i + "</a></li>"
+            );
+        }
+
+        // > (다음)
+        $pagination.append(
+            "<li class='page-item " + (currentPage === totalPages ? "disabled" : "") + "'>" +
+            "<a class='page-link page-next' href='#'>&gt;</a></li>"
+        );
+
+        // » (끝 페이지)
+        $pagination.append(
+            "<li class='page-item " + (currentPage === totalPages ? "disabled" : "") + "'>" +
+            "<a class='page-link page-last' href='#'>&raquo;</a></li>"
+        );
+    }
+
+    function refresh(){
+        renderTable();
+        renderPagination();
+    }
+
+    /* ==========================
+       상세 모달
+    ========================== */
+    const orderModal = new bootstrap.Modal(document.getElementById("orderDetailModal"));
+
+    function openDetailModal(orderNo){
+        const data = orderDetails[orderNo];
+        if (!data) return;
+
+        $("#detailOrderDate").text(data.orderDate);
+        $("#detailStoreName").text(data.storeName);
+
+        const $list = $("#detailMenuList");
+        $list.empty();
+
+        let total = 0;
+        data.menus.forEach(function(m){
+            const sum = m.price * m.qty;
+            total += sum;
+            const tr =
+                "<tr>" +
+                "<td>" + m.name + "</td>" +
+                "<td>" + m.size + "</td>" +
+                "<td>" + m.price.toLocaleString() + " 원</td>" +
+                "<td>" + m.qty + "</td>" +
+                "<td>" + sum.toLocaleString() + " 원</td>" +
+                "</tr>";
+            $list.append(tr);
+        });
+
+        $("#detailTotalPrice").text(total.toLocaleString() + " 원");
+        orderModal.show();
+    }
+
+    /* ==========================
+       이벤트 바인딩 (jQuery)
+    ========================== */
+    $(document).ready(function(){
+
+        // 초기 목록 + 페이지
+        refresh();
+
+        // 상세 아이콘 클릭 (동적 요소라 document에 위임)
+        $(document).on("click", ".detail-btn", function (e){
+            e.preventDefault();
+            const orderNo = $(this).data("orderNo");
+            openDetailModal(orderNo);
+        });
+
+        // 페이지네이션 클릭
+        $(document).on("click", ".page-num", function (e){
+            e.preventDefault();
+            currentPage = Number($(this).data("page"));
+            refresh();
+        });
+
+        $(document).on("click", ".page-first", function (e){
+            e.preventDefault();
+            if (currentPage !== 1){
+                currentPage = 1;
+                refresh();
+            }
+        });
+
+        $(document).on("click", ".page-prev", function (e){
+            e.preventDefault();
+            if (currentPage > 1){
+                currentPage--;
+                refresh();
+            }
+        });
+
+        $(document).on("click", ".page-next", function (e){
+            e.preventDefault();
+            const totalPages = Math.ceil(orders.length / pageSize);
+            if (currentPage < totalPages){
+                currentPage++;
+                refresh();
+            }
+        });
+
+        $(document).on("click", ".page-last", function (e){
+            e.preventDefault();
+            const totalPages = Math.ceil(orders.length / pageSize);
+            if (currentPage !== totalPages){
+                currentPage = totalPages;
+                refresh();
+            }
+        });
+
+        // 조회 버튼 (추후 실제 검색 로직 연결)
+        $("#searchBtn").on("click", function (){
+            // 나중에 주문 일자 + 직영점번호로 조회하는 로직 연결
+            // 지금은 프론트 샘플이라 동작 없음
+            alert("조회 버튼 클릭 (직영점 버전) - 나중에 백엔드 연동");
+        });
+
+        // 초기화 버튼
+        $("#resetBtn").on("click", function (){
+            $("#orderDate").val("");
+            currentPage = 1;
+            refresh();
+        });
+
+    });
+</script>
+
+</body>
+</html>
