@@ -4,27 +4,30 @@
   <meta charset="UTF-8">
   <title>매출관리 SPA (직영점)</title>
 
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <style>
     body { background-color:#fdfdfd; }
+    .max-1500 { max-width:1500px; margin:0 auto; }
     .kpi-card { background:#fff; border:1px solid #ccc; border-radius:10px; padding:18px; text-align:center; }
     .kpi-title { font-size:14px; }
     .kpi-value { font-size:22px; font-weight:600; }
     .section-box { background:#fff; border:1px solid #ddd; border-radius:10px; padding:20px; }
+    .w-150 { width:150px; }
+    .w-120 { width:120px; }
+    .detail-btn { width:24px; cursor:pointer; }
     #listPage { display:none; }
   </style>
+
 </head>
-
 <body class="p-2">
-<div class="border border-primary p-2" style="max-width:1500px;margin:0 auto;">
 
-  <!-- 보기 -->
+<!-- 전체 Layout -->
+<div class="border border-primary p-2 max-1500">
+
+  <!-- 보기 버튼 -->
   <div class="mt-3 px-2">
     <div class="d-flex align-items-center mb-2">
       <span class="me-2">보기</span>
@@ -49,17 +52,14 @@
           <input type="radio" name="period" id="day" class="form-check-input">
           <span>일별</span>
         </label>
-
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="week" class="form-check-input">
           <span>주별</span>
         </label>
-
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="month" class="form-check-input" checked>
           <span>월별</span>
         </label>
-
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="year" class="form-check-input">
           <span>연별</span>
@@ -69,13 +69,11 @@
       <!-- 조회기간 -->
       <div class="d-flex align-items-center gap-2">
         <span class="fw-semibold">조회기간</span>
-
         <div id="periodInputs" class="d-flex align-items-center gap-2">
-          <input id="startInput" type="month" class="form-control form-control-sm" style="width:150px;">
+          <input id="startInput" type="month" class="form-control form-control-sm w-150">
           <span>~</span>
-          <input id="endInput" type="month" class="form-control form-control-sm" style="width:150px;">
+          <input id="endInput" type="month" class="form-control form-control-sm w-150">
         </div>
-
         <button id="getSalesBtn" class="btn btn-primary btn-sm">조회</button>
       </div>
     </div>
@@ -122,7 +120,6 @@
           <canvas id="storeSalesTop5Chart" height="130"></canvas>
         </div>
       </div>
-
       <div class="col-md-6">
         <div class="section-box">
           <h6 class="fw-bold mb-3">메뉴별 매출 비중</h6>
@@ -130,26 +127,25 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <!-- ===============================
-       LIST PAGE (직영점)
+       LIST PAGE
   =============================== -->
   <div id="listPage">
 
-    <!-- 조회기간 -->
     <div class="px-3 pt-3">
       <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
 
         <span class="fw-semibold me-1">조회기간</span>
-        <input id="listStartDate" type="date" class="form-control form-control-sm" style="width:150px;">
+        <input id="listStartDate" type="date" class="form-control form-control-sm w-150">
         <span>~</span>
-        <input id="listEndDate" type="date" class="form-control form-control-sm" style="width:150px;">
+        <input id="listEndDate" type="date" class="form-control form-control-sm w-150">
         <button id="listSearchBtn" class="btn btn-primary btn-sm">조회</button>
       </div>
     </div>
 
-    <!-- 리스트 -->
     <div class="px-3 pb-3">
       <div class="section-box">
 
@@ -170,7 +166,7 @@
         <div class="d-flex justify-content-center mb-3" id="paginationArea"></div>
 
         <div class="d-flex justify-content-end">
-          <select id="pageSize" class="form-select form-select-sm" style="width:80px;">
+          <select id="pageSize" class="form-select form-select-sm w-120">
             <option value="5" selected>5개</option>
             <option value="10">10개</option>
           </select>
@@ -178,10 +174,14 @@
 
       </div>
     </div>
+
   </div>
+
 </div>
 
-<!-- SCRIPT -->
+<!-- ===============================
+     JS SCRIPT (ONCLICK 제거)
+=============================== -->
 <script>
 
   /* 보기 버튼 */
@@ -189,8 +189,10 @@
   $("#listBtn").click(showList);
 
   function updateModeButtons(mode){
-    $("#chartBtn").toggleClass("btn-warning",mode==="chart").toggleClass("btn-outline-secondary",mode!=="chart");
-    $("#listBtn").toggleClass("btn-warning",mode==="list").toggleClass("btn-outline-secondary",mode!=="list");
+    $("#chartBtn").toggleClass("btn-warning",mode==="chart")
+            .toggleClass("btn-outline-secondary",mode!=="chart");
+    $("#listBtn").toggleClass("btn-warning",mode==="list")
+            .toggleClass("btn-outline-secondary",mode!=="list");
   }
 
   function showChart(){
@@ -205,55 +207,48 @@
     updateModeButtons("list");
   }
 
-  /* 초기 실행 */
   $(document).ready(function(){
     showChart();
     updatePeriodInputs("month");
     $(".kpi-value").hide();
   });
 
-  /* 기간 input 교체 */
+  /* 기간 input 생성 함수 */
   function updatePeriodInputs(type){
     const box = $("#periodInputs");
 
-    if(type==="day"){
-      box.html(`
-                <input id="startInput" type="date" class="form-control form-control-sm" style="width:150px;">
-                <span>~</span>
-                <input id="endInput" type="date" class="form-control form-control-sm" style="width:150px;">
-            `);
-    }
-    if(type==="week"){
-      box.html(`
-                <input id="startInput" type="week" class="form-control form-control-sm" style="width:150px;">
-                <span>~</span>
-                <input id="endInput" type="week" class="form-control form-control-sm" style="width:150px;">
-            `);
-    }
-    if(type==="month"){
-      box.html(`
-                <input id="startInput" type="month" class="form-control form-control-sm" style="width:150px;">
-                <span>~</span>
-                <input id="endInput" type="month" class="form-control form-control-sm" style="width:150px;">
-            `);
-    }
-    if(type==="year"){
-      box.html(`
-                <input id="startInput" type="number" class="form-control form-control-sm" placeholder="연도" style="width:120px;">
-                <span>~</span>
-                <input id="endInput" type="number" class="form-control form-control-sm" placeholder="연도" style="width:120px;">
-            `);
-    }
+    const tpl = {
+      day: `
+        <input id="startInput" type="date" class="form-control form-control-sm w-150">
+        <span>~</span>
+        <input id="endInput" type="date" class="form-control form-control-sm w-150">
+      `,
+      week: `
+        <input id="startInput" type="week" class="form-control form-control-sm w-150">
+        <span>~</span>
+        <input id="endInput" type="week" class="form-control form-control-sm w-150">
+      `,
+      month: `
+        <input id="startInput" type="month" class="form-control form-control-sm w-150">
+        <span>~</span>
+        <input id="endInput" type="month" class="form-control form-control-sm w-150">
+      `,
+      year: `
+        <input id="startInput" type="number" class="form-control form-control-sm w-120" placeholder="연도">
+        <span>~</span>
+        <input id="endInput" type="number" class="form-control form-control-sm w-120" placeholder="연도">
+      `
+    };
 
+    box.html(tpl[type]);
     applyMinMax();
   }
 
   $("input[name='period']").change(function(){
     updatePeriodInputs($(this).attr("id"));
-
     const id = $(this).attr("id");
-    const t = $(".kpi-compare");
 
+    const t = $(".kpi-compare");
     if(id==="day") t.text("전일 대비 매출 성장");
     if(id==="week") t.text("전주 대비 매출 성장");
     if(id==="month") t.text("전월 대비 매출 성장");
@@ -266,57 +261,35 @@
     e.on("change",()=>s.attr("max",e.val()));
   }
 
-  /* ====================== 조회 버튼 ===================== */
+  /* ======================
+     조회 버튼 (메인 차트)
+  ====================== */
   $("#getSalesBtn").click(function(){
-
     const type = $("input[name='period']:checked").attr("id");
     let s = $("#startInput").val();
     let e = $("#endInput").val();
 
-    if(!s && !e){ alert("조회기간 중 최소 하나는 입력해야 합니다."); return; }
-
-    let start = s;
-    let end = e;
+    if(!s && !e){
+      alert("조회기간 중 최소 하나는 입력해야 합니다.");
+      return;
+    }
 
     const today = new Date();
     const y = today.getFullYear();
     const m = String(today.getMonth()+1).padStart(2,"0");
     const d = String(today.getDate()).padStart(2,"0");
 
-    if(!start){
-      if(type==="day"||type==="week") start="2000-01-01";
-      if(type==="month") start="2000-01";
-      if(type==="year") start="2000";
-    }
-    if(!end){
-      if(type==="day"||type==="week") end=`${y}-${m}-${d}`;
-      if(type==="month") end=`${y}-${m}`;
-      if(type==="year") end=`${y}`;
-    }
+    let start = s || (type==="year" ? "2000" : "2000-01-01");
+    let end   = e || (type==="year" ? `${y}` : `${y}-${m}-${d}`);
 
     /* 라벨 생성 */
     let labels = [];
 
     if(type==="day"){
       let cur = new Date(start), last = new Date(end);
-      while(cur<=last){
+      while(cur <= last){
         labels.push(`${cur.getMonth()+1}/${cur.getDate()}`);
         cur.setDate(cur.getDate()+1);
-      }
-    }
-
-    if(type==="week"){
-      const [sy, sw] = start.split("-W").map(Number);
-      const [ey, ew] = end.split("-W").map(Number);
-
-      for(let yy=sy; yy<=ey; yy++){
-        const minW = yy===sy ? sw : 1;
-        const maxW = yy===ey ? ew : 53;
-
-        for(let w=minW; w<=maxW; w++){
-          const info = getWeekRange(`${yy}-W${String(w).padStart(2,"0")}`);
-          labels.push(`${info.start}~${info.end} (${info.label})`);
-        }
       }
     }
 
@@ -324,7 +297,7 @@
       let [sy, sm] = start.split("-").map(Number);
       let [ey, em] = end.split("-").map(Number);
 
-      while(sy<ey || (sy===ey && sm<=em)){
+      while(sy < ey || (sy===ey && sm <= em)){
         labels.push(`${sy}-${String(sm).padStart(2,"0")}`);
         sm++;
         if(sm>12){ sy++; sm=1; }
@@ -332,7 +305,7 @@
     }
 
     if(type==="year"){
-      for(let yy=Number(start); yy<=Number(end); yy++){
+      for(let yy = Number(start); yy <= Number(end); yy++){
         labels.push(String(yy));
       }
     }
@@ -341,26 +314,6 @@
     createMainChart(labels);
   });
 
-  function getWeekRange(weekString){
-    const [year, w] = weekString.split("-W").map(Number);
-    let simple = new Date(year, 0, 1 + (w - 1) * 7);
-    let dow = simple.getDay();
-    let start = new Date(simple);
-
-    if(dow<=4) start.setDate(simple.getDate()-dow+1);
-    else start.setDate(simple.getDate()+(8-dow));
-
-    let end = new Date(start);
-    end.setDate(start.getDate()+6);
-
-    return {
-      start:`${start.getMonth()+1}/${start.getDate()}`,
-      end:`${end.getMonth()+1}/${end.getDate()}`,
-      label:`W${String(w).padStart(2,"0")}`
-    };
-  }
-
-  /* 메인 차트 */
   let mainChart;
   function createMainChart(labels){
     const ctx = $("#mainChart")[0].getContext("2d");
@@ -382,7 +335,9 @@
     });
   }
 
-  /* 서브 차트 */
+  /* ======================
+     서브 차트
+  ====================== */
   new Chart($("#storeSalesTop5Chart"),{
     type:'bar',
     data:{
@@ -407,9 +362,9 @@
     }
   });
 
-  /* =============================
-     리스트 데이터 (직영점)
-  ============================= */
+  /* ======================
+     리스트 테이블
+  ====================== */
   const storeSample = [
     { diff:"5.3% 상승", order:233, price:"3,200,000", date:"2025-10-01" },
     { diff:"1.3% 하락", order:190, price:"2,800,000", date:"2025-09-30" },
@@ -425,26 +380,23 @@
   function loadStoreTable(){
     const tbody = $("#storeTable");
     const pageSize = Number($("#pageSize").val());
+
     tbody.empty();
 
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-
-    const pageData = storeSample.slice(start, end);
+    const start = (currentPage-1)*pageSize;
+    const pageData = storeSample.slice(start, start + pageSize);
 
     pageData.forEach((item, idx)=>{
       tbody.append(`
-                <tr class="text-center">
-                    <td>${start + idx + 1}</td>
-                    <td>${item.diff}</td>
-                    <td>${item.order}</td>
-                    <td>${item.price}</td>
-                    <td>${item.date}</td>
-                    <td>
-                        <img src="/image/detail.png" class="detail-btn" style="width:24px;cursor:pointer;">
-                    </td>
-                </tr>
-            `);
+        <tr class="text-center">
+          <td>${start + idx + 1}</td>
+          <td>${item.diff}</td>
+          <td>${item.order}</td>
+          <td>${item.price}</td>
+          <td>${item.date}</td>
+          <td><img src="/image/detail.png" class="detail-btn"></td>
+        </tr>
+      `);
     });
 
     createPagination();
@@ -453,44 +405,33 @@
   function createPagination(){
     const pageSize = Number($("#pageSize").val());
     const totalPages = Math.ceil(storeSample.length / pageSize);
-    const area = $("#paginationArea");
 
     let html = `<ul class="pagination pagination-sm">`;
 
-    html += `
-        <li class="page-item ${currentPage===1?"disabled":""}">
-            <a class="page-link" href="#" onclick="movePage(${currentPage-1})">&lt;</a>
-        </li>`;
-
-    for(let i=1;i<=totalPages;i++){
+    for(let p=1; p<=totalPages; p++){
       html += `
-            <li class="page-item ${i===currentPage?"active":""}">
-                <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
-            </li>`;
+        <li class="page-item ${p===currentPage?"active":""}">
+          <a class="page-link page-move" data-page="${p}" href="#">${p}</a>
+        </li>`;
     }
 
-    html += `
-        <li class="page-item ${currentPage===totalPages?"disabled":""}">
-            <a class="page-link" href="#" onclick="movePage(${currentPage+1})">&gt;</a>
-        </li>
-        </ul>`;
-
-    area.html(html);
+    html += `</ul>`;
+    $("#paginationArea").html(html);
   }
 
-  function movePage(p){
-    currentPage = p;
+  $(document).on("click",".page-move",function(e){
+    e.preventDefault();
+    currentPage = Number($(this).data("page"));
     loadStoreTable();
-  }
+  });
 
   $("#pageSize").change(function(){
-    currentPage = 1;
+    currentPage=1;
     loadStoreTable();
   });
 
   loadStoreTable();
 
-  /* 상세페이지 이동 (직영점) */
   $(document).on("click",".detail-btn",function(){
     location.href = "salesDetailUI.html";
   });
