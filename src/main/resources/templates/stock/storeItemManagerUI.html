@@ -42,6 +42,7 @@
         }
 
         .w-search{max-width:420px}
+        #storeSearchModal .modal-body._hideUntilReady { visibility: hidden; }
     </style>
 </head>
 <body>
@@ -255,24 +256,24 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ===== 전역 =====
-    let limitModalInstance = null;
-    let storeSearchModalInstance = null;
 
-    // (직영점 모달) 페이징 상태
-    const STORE_ROWS_PER_PAGE = 5;
-    let $storeRows = $();
-    let storeTotalPages = 1;
-    let storeCurrentPage = 1;
+        // ===== 전역 =====
+        let limitModalInstance = null;
+        let storeSearchModalInstance = null;
 
-    // (하한선 모달) 예시 환산
-    const LIMIT_CONVERT_STOCK = 50;
+        // (직영점 모달) 페이징 상태
+        const STORE_ROWS_PER_PAGE = 5;
+        let $allStoreRows = $();       // 테이블의 모든 행
+        let $filteredStoreRows = $();  // 검색으로 필터링된 행
+        let storeTotalPages = 1;
+        let storeCurrentPage = 1;
 
-    // ===== 하한선 모달 열기 (⚙ 아이콘) =====
-    function openLimitModal(el){
+        const LIMIT_CONVERT_STOCK = 50;
+
+        function openLimitModal(el){
         const $row = $(el).closest('tr');
         const storeName = $row.data('storename') || '';
-        const itemName  = $row.data('itemname') || '';
+        const itemName  = $row.data('itemname')  || '';
         const limit     = $row.data('limit')     || 0;
         const unit      = $row.data('unit')      || 'ea';
 
@@ -287,40 +288,54 @@
         $('#limitConvertInfo').text('※ 1 box = ' + LIMIT_CONVERT_STOCK + ' ' + unit + ' (예시)');
 
         if(!limitModalInstance){
-            limitModalInstance = new bootstrap.Modal(document.getElementById('limitModal'));
-        }
+        limitModalInstance = new bootstrap.Modal(document.getElementById('limitModal'));
+    }
         limitModalInstance.show();
     }
 
-    // ===== 현재 재고 < 하한선 → 빨간 굵은 글씨 =====
-    function markLowRows(){
+        function markLowRows(){
         $('#stockTableBody tr').each(function(){
             const cur = Number($(this).data('currentqty')) || 0;
             const lim = Number($(this).data('limit')) || 0;
-            // 현재 재고 셀(6번째 컬럼, 0-index 5)
             const $cell = $(this).children().eq(5);
             if(cur < lim){ $cell.addClass('text-danger fw-bold'); }
             else{ $cell.removeClass('text-danger fw-bold'); }
         });
     }
 
-    // ===== 직영점 선택 여부 오버레이 =====
-    function applyStoreVisibility(){
+        function applyStoreVisibility(){
         const v = $.trim($('#storeSearchKeyword').val());
-        if(v){ $('#storeNoticeOverlay').hide(); }
-        else { $('#storeNoticeOverlay').css('display','flex'); }
+        const $ov = $('#storeNoticeOverlay');
+        if(v){ $ov.removeClass('d-flex').addClass('d-none'); }
+        else { $ov.removeClass('d-none').addClass('d-flex'); }
     }
 
-    // ===== 직영점 모달: 페이징 유틸 =====
-    function collectVisibleStoreRows(){
-        $storeRows = $('#storeSearchTableBody tr:visible');
-        storeTotalPages = Math.max(1, Math.ceil($storeRows.length / STORE_ROWS_PER_PAGE));
-        storeCurrentPage = 1;
+        // ====== 핵심: "행 스냅샷 & 필터"는 DOM을 안 보이게 한 상태에서 준비 ======
+        function snapshotAllRows(){
+        $allStoreRows = $('#storeSearchTableBody tr');
+        // 일단 모두 숨겨놓고 시작 (깜빡임 방지)
+        $allStoreRows.hide();
     }
-    function buildStorePager(){
-        collectVisibleStoreRows();
+
+        function applyStoreFilter(keyword){
+        const kw = (keyword || '').trim();
+        if(!kw){
+        $filteredStoreRows = $allStoreRows;   // 전체가 대상
+    }else{
+        $filteredStoreRows = $allStoreRows.filter(function(){
+        const name = $(this).find('td').first().text();
+        return name.indexOf(kw) !== -1;
+    });
+    }
+        // 필터 대상 외 나머지는 확실히 숨김
+        $allStoreRows.not($filteredStoreRows).hide();
+    }
+
+        function buildStorePager(){
+        const total = $filteredStoreRows.length;
+        storeTotalPages = Math.max(1, Math.ceil(total / STORE_ROWS_PER_PAGE));
+
         const $pager = $('#storePager').empty();
-        // « ‹ 1..N › »
         $pager.append(li('first','&laquo;'));
         $pager.append(li('prev','&lt;'));
         for(let i=1;i<=storeTotalPages;i++){ $pager.append(li(String(i), String(i))); }
@@ -328,128 +343,133 @@
         $pager.append(li('last','&raquo;'));
 
         function li(data,text){
-            return $('<li class="page-item"><a class="page-link" href="#"></a></li>')
-                .find('a').attr('data-page', data).html(text).end();
-        }
+        return $('<li class="page-item"><a class="page-link" href="#"></a></li>')
+        .find('a').attr('data-page', data).html(text).end();
     }
-    function showStorePage(page){
+    }
+
+        function showStorePage(page){
         storeCurrentPage = page;
-        $storeRows.hide();
-        const s = (page-1) * STORE_ROWS_PER_PAGE;
+        // 먼저 전부 숨김 → 필요한 5개만 show()
+        $allStoreRows.hide();
+
+        const s = (page - 1) * STORE_ROWS_PER_PAGE;
         const e = s + STORE_ROWS_PER_PAGE;
-        $storeRows.slice(s, e).show();
+        $filteredStoreRows.slice(s, e).show();
     }
-    function paintStorePager(){
+
+        function paintStorePager(){
         const $pager = $('#storePager');
         $pager.find('.page-item').removeClass('active disabled');
         $pager.find(`a[data-page="${storeCurrentPage}"]`).parent().addClass('active');
         if(storeCurrentPage === 1){
-            disable('first'); disable('prev');
-        }
+        disable('first'); disable('prev');
+    }
         if(storeCurrentPage === storeTotalPages){
-            disable('last'); disable('next');
-        }
+        disable('last'); disable('next');
+    }
         function disable(key){ $pager.find(`a[data-page="${key}"]`).parent().addClass('disabled'); }
     }
 
-    // ===== 모달 최초 표시 딜레이 제거: show 이전에 미리 구성 + show 시 1회 재보정 =====
-    function prepareStoreModalFirstView(){
-        $('#storeSearchTableBody tr').show();
+        // ===== 모달 오픈 전 준비(깜빡임 제거 루틴) =====
+        function prepareStoreModalFirstView(){
+        // 1) 모든 행 스냅샷 + 숨김
+        snapshotAllRows();
+
+        // 2) 검색어 동기화해서 필터 확정
+        const kw = $('#storeSearchInput').val() || '';
+        applyStoreFilter(kw);
+
+        // 3) 페이저/페이지 계산
         buildStorePager();
         showStorePage(1);
         paintStorePager();
     }
 
-    // ===== 이벤트 바인딩 =====
-    $(function(){
-        // 첫 진입
+        // ===== 이벤트 바인딩 =====
+        $(function(){
         markLowRows();
         applyStoreVisibility();
 
-        // 상세보기 버튼
         $(document).on('click', '.detail-btn', function(){
-            window.location.href = '../item/itemDetailUI.html';
-        });
+        window.location.href = '../item/itemDetailUI.html';
+    });
 
-        // 검색 초기화(직영점 값은 "유지")
         $('#btnResetFilter').on('click', function(){
-            $('#categorySelect').val('');
-            $('#searchTypeSelect').val('ITEM_NAME');
-            $('#searchKeyword').val('');
-            // 직영점 검색어는 건드리지 않음 → 오버레이도 그대로 유지
-            markLowRows();
-        });
+        $('#categorySelect').val('');
+        $('#searchTypeSelect').val('ITEM_NAME');
+        $('#searchKeyword').val('');
+        markLowRows();
+    });
 
-        // 직영점 모달 열기
+        // 모달 열기
         $('#btnOpenStoreSearch').on('click', function(){
-            if(!storeSearchModalInstance){
-                storeSearchModalInstance = new bootstrap.Modal(document.getElementById('storeSearchModal'));
-            }
-            // 메인 검색어 → 모달 검색창에 동기화
-            $('#storeSearchInput').val($('#storeSearchKeyword').val() || '');
-            // 첫 프레임 전에 즉시 페이징 구성 (딜레이 제거)
-            prepareStoreModalFirstView();
-            storeSearchModalInstance.show();
-        });
+        if(!storeSearchModalInstance){
+        storeSearchModalInstance = new bootstrap.Modal(document.getElementById('storeSearchModal'));
+    }
+        // 메인 값 → 모달 검색창으로
+        $('#storeSearchInput').val($('#storeSearchKeyword').val() || '');
 
-        // 모달가시화 직전/직후 보정(환경별 렌더 타이밍 차이 대비)
-        $(document).on('show.bs.modal', '#storeSearchModal', function(){
-            prepareStoreModalFirstView();
-        });
+        // ⬇⬇ 모달 표시 전에 모든 계산/DOM 상태를 끝내버림
+        prepareStoreModalFirstView();
+
+        storeSearchModalInstance.show();
+    });
+
+        // (환경별 타이밍 차 대비) 표시 직후에도 한 번 더 보정 가능하지만,
+        // 이제는 처음부터 안 보이던 상태라 깜빡임이 발생하지 않습니다.
         $(document).on('shown.bs.modal', '#storeSearchModal', function(){
-            // 혹시 레이아웃 계산이 늦은 환경에서 한 번 더 보정
-            prepareStoreModalFirstView();
-        });
+        // 보수용 재호출(무해)
+        prepareStoreModalFirstView();
+    });
 
-        // 모달 내부: 직영점명 검색
+        // 모달 내부: 검색 실행
         $(document).on('click', '#btnSearchStoreExec', function(){
-            const kw = $.trim($('#storeSearchInput').val());
-            $('#storeSearchTableBody tr').each(function(){
-                const storeName = $(this).find('td').first().text();
-                $(this).toggle(!kw || storeName.indexOf(kw) !== -1);
-            });
-            buildStorePager(); showStorePage(1); paintStorePager();
-        });
+        snapshotAllRows();                      // 전체 스냅샷 최신화
+        applyStoreFilter($('#storeSearchInput').val());
+        buildStorePager(); showStorePage(1); paintStorePager();
+    });
 
         // 모달 내부: 검색 초기화
         $(document).on('click', '#btnSearchStoreReset', function(){
-            $('#storeSearchInput').val('');
-            $('#storeSearchTableBody tr').show();
-            buildStorePager(); showStorePage(1); paintStorePager();
-        });
+        $('#storeSearchInput').val('');
+        snapshotAllRows();
+        applyStoreFilter('');                   // 전체 대상
+        buildStorePager(); showStorePage(1); paintStorePager();
+    });
 
-        // 모달 내부: 페이지네이션 클릭
+        // 모달 내부: 페이지네이션
         $(document).on('click', '#storePager a.page-link', function(e){
-            e.preventDefault();
-            const act = $(this).data('page');
-            const $li = $(this).parent();
-            if($li.hasClass('disabled') || $li.hasClass('active')) return;
+        e.preventDefault();
+        const act = $(this).data('page');
+        const $li = $(this).parent();
+        if($li.hasClass('disabled') || $li.hasClass('active')) return;
 
-            if(act === 'first') showStorePage(1);
-            else if(act === 'prev') showStorePage(Math.max(1, storeCurrentPage - 1));
-            else if(act === 'next') showStorePage(Math.min(storeTotalPages, storeCurrentPage + 1));
-            else if(act === 'last') showStorePage(storeTotalPages);
-            else {
-                const n = parseInt(act, 10);
-                if(!isNaN(n)) showStorePage(n);
-            }
-            paintStorePager();
-        });
+        if(act === 'first') showStorePage(1);
+        else if(act === 'prev') showStorePage(Math.max(1, storeCurrentPage - 1));
+        else if(act === 'next') showStorePage(Math.min(storeTotalPages, storeCurrentPage + 1));
+        else if(act === 'last') showStorePage(storeTotalPages);
+        else {
+        const n = parseInt(act, 10);
+        if(!isNaN(n)) showStorePage(n);
+    }
+        paintStorePager();
+    });
 
-        // 모달 내부: 직영점 선택
+        // 모달 내부: 직영점 선택 → 오버레이 해제 + 모달 닫기
         $(document).on('click', '.btn-select-store', function(){
-            const store = $(this).data('store') || '';
-            $('#storeSearchKeyword').val(store).trigger('change'); // 메인 입력 반영
-            applyStoreVisibility(); // 오버레이 즉시 해제
-            if(storeSearchModalInstance){
-                storeSearchModalInstance.hide();
-            }
-        });
+        const store = $(this).data('store') || '';
+        $('#storeSearchKeyword').val(store).trigger('input');
+        applyStoreVisibility();
+        storeSearchModalInstance?.hide();
+    });
 
-        // 메인 화면에서 직영점 텍스트 변경 시 오버레이 동기화
+        // 메인 인풋 변경 시 오버레이 동기화
         $('#storeSearchKeyword').on('input change', applyStoreVisibility);
     });
 </script>
+
+
 
 </body>
 </html>
