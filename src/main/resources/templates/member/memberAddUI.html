@@ -203,7 +203,7 @@
     </div>
     <div class="text-center mt-4">
         <button class="btn btn-success custom-btn px-4">등록</button>
-        <button class="btn btn-light px-4" onclick="history.back()">취소</button>
+        <button class="btn btn-light px-4" id="cancelBtn">취소</button>
     </div>
 
     <script>
@@ -231,6 +231,9 @@
             } else {
                 $("#closeDateRow").css("display", "none");
             }
+        });
+        $("#cancelBtn").click(() => {
+            history.back()
         });
 
     </script>
