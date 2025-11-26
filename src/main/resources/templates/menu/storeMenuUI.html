@@ -542,7 +542,7 @@
     $("#alertModal").modal("show");
   }
 
-  // 선택 일괄 변경 버튼
+  // 선택 일괄 변경 버튼 - model/controller 안 나뉘어 있음
     $(document).on("click", "#statusSetAllBtn", function () {
 
         const checkedRows = $(".row-check:checked");
@@ -667,7 +667,7 @@
     /* -----------------------------------
        3) 검색 조건 변경
     ------------------------------------*/
-    $("#searchType").change(function () {
+    $("#searchType").change(() => {
         const type = $(this).val();
         const input = $("#searchInput");
 
@@ -682,7 +682,7 @@
     /* -----------------------------------
        4) 전체 체크박스
     ------------------------------------*/
-    $("#checkAll").change(function () {
+    $("#checkAll").change(() => {
         $(".row-check").prop("checked", $(this).is(":checked"));
     });
 

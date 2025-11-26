@@ -327,12 +327,12 @@
     updateSize();
 
     // 전체 선택
-    $("#checkAll").on("change", function () {
+    $("#checkAll").change(() => {
         $(".row-check").prop("checked", $(this).is(":checked"));
     });
 
     // 재료 추가
-    $("#modalAddSelected").on("click", function () {
+    $("#modalAddSelected").click(() => {
         const selectedRows = $(".row-check:checked");
         const recipeBody = $("#recipeList");
         const isSize = $("input[name='sizeYn']:checked").val() === "Y";
