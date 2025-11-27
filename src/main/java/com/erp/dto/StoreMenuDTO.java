@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoreSellingMenuDTO {
+public class StoreMenuDTO {
     private Long storeMenuNo;
     private String storeName;
     private String menuCode;
