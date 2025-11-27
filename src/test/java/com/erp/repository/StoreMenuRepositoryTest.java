@@ -7,6 +7,8 @@ import com.erp.repository.entity.StoreMenu;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @SpringBootTest
 public class StoreMenuRepositoryTest {
@@ -42,28 +44,33 @@ public class StoreMenuRepositoryTest {
 
     @Test
     void findStoreMenuForStoreTest(){
-        System.out.println(storeMenuRepository.findStoreMenuForStore(1L,null,null,null));
+        Pageable pageable = PageRequest.of(0, 10);
+        System.out.println(storeMenuRepository.findStoreMenuForStore(1L,null,null,null,pageable).getContent());
     }
 
     @Test
     void findSellingMenuByMenuNameTest(){
-        System.out.println(storeMenuRepository.findStoreMenu(null,"치즈",null,null));
+        Pageable pageable = PageRequest.of(1, 10);
+        System.out.println(storeMenuRepository.findStoreMenu(null,"피자",null,null,pageable).getContent());
     }
 
 
     @Test
     void findSellingMenuByStoreNameAndSalesStatusTest() {
-        System.out.println(storeMenuRepository.findStoreMenu("가산",null,"품절",null));
+        Pageable pageable = PageRequest.of(0, 10);
+        System.out.println(storeMenuRepository.findStoreMenu("가산1호점",null,"판매중",null,pageable).getContent());
     }
 
     @Test
     void findSellingMenuByStoreNameAndMenuCategoryTest() {
-        System.out.println(storeMenuRepository.findStoreMenu("가산",null,null,"피자"));
+        Pageable pageable = PageRequest.of(0, 10);
+        System.out.println(storeMenuRepository.findStoreMenu("가산1호점",null,null,"피자",pageable).getContent());
     }
 
     @Test
     void findSellingMenuByStoreNameTest(){
-        System.out.println(storeMenuRepository.findStoreMenu("가산",null,null,null));
+        Pageable pageable = PageRequest.of(0, 10);
+        System.out.println(storeMenuRepository.findStoreMenu("가산1호점",null,null,null,pageable).getContent());
     }
 
     @Test
