@@ -22,11 +22,7 @@ public interface MenuDAO {
 
     List<MenuDTO> getMenuByCategoryAndReleaseStatus(String menuCategory, String releaseStatus);
 
+    List<MenuDTO> getMenuByMenuCode(String menuCode);
 
-    List<MenuDTO> findByMenuCode(String menuCode);
-
-
-
-
-
+    MenuDTO getMenuByMenuNo(Long menuNo);
 }

@@ -1,7 +1,10 @@
 package com.erp.service;
 
+import com.erp.dto.MenuRatioDTO;
 import com.erp.dto.SalesChartDTO;
+import com.erp.dto.StoreDailyMenuSalesDTO;
 import com.erp.dto.TotalStoreSalesDTO;
+import com.erp.repository.StoreOrderDetailRepository;
 import com.erp.repository.StoreSalesRepository;
 import com.erp.repository.entity.StoreSales;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.*;
@@ -16,9 +20,41 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SalesService {
+public class SalesChartService {
 
     private final StoreSalesRepository storeSalesRepository;
+    private final StoreOrderDetailRepository storeOrderDetailRepository;
+
+    public List<MenuRatioDTO> getMenuRatio() {
+
+        // 최근 30일 구간
+        LocalDate end = LocalDate.now();
+        LocalDate start = end.minusDays(30);
+
+        LocalDateTime startDt = start.atStartOfDay();
+        LocalDateTime endDt   = end.atTime(23, 59, 59);
+        // LocalDate 거치는 방법말고 바로 LocalDateTime 가능은 하다
+        // 그렇게 하려면 UI에서 들어온거 연 월 일 분해해서 넣는 과정필요 더 복잡
+
+
+        List<StoreDailyMenuSalesDTO> list =   storeOrderDetailRepository.findDailyMenuSales(startDt, endDt);
+
+        // 메뉴별 매출 합계 계산
+        Map<String, Integer> grouped = new HashMap<>();
+
+        for (StoreDailyMenuSalesDTO dto : list) {
+            String menuName = dto.getMenuName();
+            int amount = dto.getTotalPrice();
+
+            grouped.put(menuName, grouped.getOrDefault(menuName, 0) + amount);
+        }
+
+        // Map → DTO 리스트 변환
+        return grouped.entrySet().stream()
+                .map(e -> new MenuRatioDTO(e.getKey(), e.getValue()))
+                .sorted((a, b) -> b.getSalesAmount() - a.getSalesAmount()) // 매출 내림차순
+                .toList();
+    }
 
     @Transactional
     public List<TotalStoreSalesDTO> getTotalStoreSales() {
@@ -77,13 +113,6 @@ public class SalesService {
                 .values(values)
                 .build();
     }
-
-
-
-
-
-
-
 
     private Map<String, Integer> groupByDay(List<StoreSales> list) {
         return list.stream()
