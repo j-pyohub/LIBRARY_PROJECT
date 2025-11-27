@@ -1,6 +1,6 @@
 package com.erp.dao;
 
-import com.erp.dao.dto.ManagerDTO;
+import com.erp.dto.ManagerDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

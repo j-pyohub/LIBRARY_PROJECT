@@ -1,7 +1,7 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.SalesOrderDTO;
-import com.erp.repository.dto.StoreDailyMenuSalesDTO;
+import com.erp.dto.SalesOrderDTO;
+import com.erp.dto.StoreDailyMenuSalesDTO;
 import com.erp.repository.entity.SalesOrder;
 import com.erp.repository.entity.StoreOrderDetail;
 import org.apache.ibatis.annotations.Param;

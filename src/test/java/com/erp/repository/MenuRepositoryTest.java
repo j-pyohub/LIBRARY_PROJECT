@@ -1,7 +1,7 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.MenuDTO;
-import com.erp.repository.dto.MenuIngredientDTO;
+import com.erp.dto.MenuDTO;
+import com.erp.dto.MenuIngredientDTO;
 import com.erp.repository.entity.Menu;
 import com.erp.repository.entity.MenuIngredient;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ public class MenuRepositoryTest {
                         })
                         .toList();
 
-        MenuDTO dto = MenuDTO.builder()
+        com.erp.dto.MenuDTO.MenuDTO dto = MenuDTO.MenuDTO.builder()
                 .menuNo(menu.getMenuNo())
                 .menuName(menu.getMenuName())
                 .menuCode(menu.getMenuCode())

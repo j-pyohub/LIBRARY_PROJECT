@@ -1,8 +1,6 @@
-package com.erp.repository.dto;
+package com.erp.dto;
 
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

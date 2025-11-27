@@ -1,29 +1,24 @@
-package com.erp.dao.dto;
+ package com.erp.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @ToString
-@Getter
-@Setter
-@Builder
-public class StoreDTO {
+public class StoreDetailDTO {
     private long storeNo;
     private String storeName;
     private String storeStatus;
-    private String storeManagerId;
     private String managerName;
-    private String email;
+    private String phoneNumber;
     private String address;
     private String storePhoneNumber;
     private String openedDate;
     private String closedDate;
     private String openTime;
     private String closeTime;
-    private String latitude;
-    private String longitude;
-    private String storeImage;
-    private String menuStopRole;
 }
