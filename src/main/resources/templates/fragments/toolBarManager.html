@@ -1,4 +1,8 @@
-<div th:fragment="toolBarManager">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
     <style>
         .top-bar {
             width: 100%;
@@ -66,9 +70,11 @@
             background-color: #e6e6e6;
             cursor: pointer;
         }
-
     </style>
+</head>
 
+<body>
+<div th:fragment="toolBarFragment">
     <div class="top-bar">
         <div class="left-section">
             <button class="logo-btn">회사 로고</button>
@@ -115,3 +121,5 @@
         </div>
     </div>
 </div>
+</body>
+</html>
