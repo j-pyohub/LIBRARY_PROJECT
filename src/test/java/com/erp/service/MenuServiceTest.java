@@ -12,6 +12,7 @@ public class MenuServiceTest {
 
     @Test
     public void getAllMenuTest(){
-        menuService.getAllMenu();
+        System.out.println(menuService.getAllMenu());
+
     }
 }

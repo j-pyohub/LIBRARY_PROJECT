@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @SpringBootTest
 @Transactional
@@ -17,11 +18,11 @@ public class StoreSalesRepositoryTest {
 
     @Test
     public void findBySalesDateBetweenTest() {
-        System.out.println(storeSalesRepository.findBySalesDateBetween(Date.valueOf("2024-01-09"), Date.valueOf("2024-01-14")));
+        System.out.println(storeSalesRepository.findBySalesDateBetween(LocalDate.of(2024,1,9), LocalDate.of(2024,1,14)));
     }
 
     @Test
     public void findByStore_StoreNoAndSalesDateBetweenTest() {
-        System.out.println(storeSalesRepository.findByStore_StoreNoAndSalesDateBetween(1L, Date.valueOf("2025-12-27"), Date.valueOf("2025-12-30")));
+        System.out.println(storeSalesRepository.findByStore_StoreNoAndSalesDateBetween(1L, LocalDate.of(2025,12,27), LocalDate.of(2025,12,30)));
     }
 }

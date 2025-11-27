@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuService {
     private final MenuRepository menuRepository;
-    private MenuDAO menuDAO;
+    private final MenuDAO menuDAO;
 
     //메뉴 조회
     public List<MenuDTO> getAllMenu() {
