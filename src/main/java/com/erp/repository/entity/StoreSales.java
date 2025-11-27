@@ -3,6 +3,7 @@ package com.erp.repository.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class StoreSales {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_no")
     private Store store;
-    private Date salesDate;
+    private LocalDate salesDate;
     private Integer salesPrice;
 
 }

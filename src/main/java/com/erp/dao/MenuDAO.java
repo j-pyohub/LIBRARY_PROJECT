@@ -20,6 +20,9 @@ public interface MenuDAO {
 
     List<MenuDTO> getMenuByReleaseStatus(String releaseStatus);
 
+    List<MenuDTO> getMenuByCategoryAndReleaseStatus(String menuCategory, String releaseStatus);
+
+
     List<MenuDTO> findByMenuCode(String menuCode);
 
 

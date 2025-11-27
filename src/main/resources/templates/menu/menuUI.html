@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>메뉴 조회</title>
@@ -10,6 +10,7 @@
         .menuBox {
             cursor: pointer;
         }
+
         .tab-content-area {
             display: none;
         }
@@ -66,14 +67,13 @@
 
 <body class="bg-light py-3">
 <!--계정별 툴바 다르게-->
-<div th:replace="fragments/toolBarStore :: toolBarFragment"></div>
 <div class="container custom-container mt-5">
     <div class="bg-white border rounded p-4">
         <!-- 제목 / 버튼 -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">메뉴 조회</h2>
             <div>
-<!--                직영점 로그인 시에는 메뉴등록버튼 안 보이게 / 직영점별 판매 메뉴 보기 -> 판매 메뉴 보기-->
+                <!--                직영점 로그인 시에는 메뉴등록버튼 안 보이게 / 직영점별 판매 메뉴 보기 -> 판매 메뉴 보기-->
                 <button class="btn btn-warning me-2 custom-btn" id="menuAddBtn">메뉴 등록</button>
                 <button class="btn custom-btn" id="storeMenuBtn">직영점별 판매 메뉴 보기</button>
             </div>
@@ -89,6 +89,16 @@
                     <option value="side">사이드디시</option>
                     <option value="drink">음료</option>
                     <option value="etc">기타</option>
+                </select>
+            </div>
+
+            <div class="me-4">
+                <label class="fw-semibold me-2">출시 상태</label>
+                <select class="form-select d-inline-block w-auto" name="category">
+                    <option value="">전체</option>
+                    <option value="commingSoon">출시 예정</option>
+                    <option value="now">출시 중</option>
+                    <option value="end">출시 중단</option>
                 </select>
             </div>
 
@@ -114,122 +124,7 @@
                     <th>상세</th>
                 </tr>
                 </thead>
-                <tbody>
-
-                <tr>
-                    <td rowspan="2">피자</td>
-                    <td rowspan="2">PEPPERONI_PIZZA</td>
-                    <td rowspan="2">페퍼로니 피자</td>
-                    <td>라지</td>
-                    <td>25,000</td>
-                    <td rowspan="2">출시 중</td>
-                    <td rowspan="2">
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>미디움</td>
-                    <td>18,000</td>
-                </tr>
-
-                <tr>
-                    <td rowspan="2">피자</td>
-                    <td rowspan="2">CHEEZE_PIZZA</td>
-                    <td rowspan="2">치즈 피자</td>
-                    <td>라지</td>
-                    <td>23,000</td>
-                    <td rowspan="2">출시 중</td>
-                    <td rowspan="2">
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>미디움</td>
-                    <td>16,000</td>
-                </tr>
-
-                <tr>
-                    <td rowspan="2">피자</td>
-                    <td rowspan="2">BULGOGI_PIZZA</td>
-                    <td rowspan="2">불고기 피자</td>
-                    <td>라지</td>
-                    <td>28,000</td>
-                    <td rowspan="2">출시 중</td>
-                    <td rowspan="2">
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>미디움</td>
-                    <td>20,000</td>
-                </tr>
-
-                <tr>
-                    <td rowspan="2">피자</td>
-                    <td rowspan="2">POTATO_PIZZA</td>
-                    <td rowspan="2">포테이토 피자</td>
-                    <td>라지</td>
-                    <td>28,000</td>
-                    <td rowspan="2">출시 예정</td>
-                    <td rowspan="2">
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>미디움</td>
-                    <td>20,000</td>
-                </tr>
-
-                <tr>
-                    <td>피자</td>
-                    <td>SUPERSUPREME_PIZZA</td>
-                    <td>슈퍼슈프림 피자</td>
-                    <td>라지</td>
-                    <td>28,000</td>
-                    <td>출시 종료</td>
-                    <td>
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>피자</td>
-                    <td>SWEETPOTATO_PIZZA</td>
-                    <td>고구마 피자</td>
-                    <td>미디움</td>
-                    <td>20,000</td>
-                    <td>출시 종료</td>
-                    <td>
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>피자</td>
-                    <td>BACONCHEDDARCHEEZE_PIZZA</td>
-                    <td>베이컨 체다치즈 피자</td>
-                    <td>단일</td>
-                    <td>26,000</td>
-                    <td>출시 예정</td>
-                    <td>
-                        <button type="button" class="btn btn-sm detailBtn">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                        </button>
-                    </td>
-                </tr>
-
+                <tbody id="menuListBody">
                 </tbody>
             </table>
         </div>
@@ -258,21 +153,68 @@
     </div>
 </div>
 <script>
-    $("#storeMenuBtn").click(() => {
-        //지금은 본사 기준. 직영점 로그인 시, storeMenuUI.html로 이동하게 해야 함
-        location.href = "storeMenuManagerUI.html"
-    });
-    $(".detailBtn").click(() => {
-        location.href = "menuDetailUI.html"
-    });
-    $(".menuBox").click(() => {
-        location.href = "menuDetailUI.html"
-    });
-    $("#menuAddBtn").click(() => {
-        location.href = "menuAddUI.html"
-    })
-
     $(document).ready(function () {
+        loadMenuList();
+
+        function loadMenuList() {
+            fetch("http://localhost:5432/menuList")
+                .then(res => res.json())
+                .then(menuList => renderMenuList(menuList));
+        }
+
+        function groupByMenuCode(menuList) {
+            const groups = {};
+            menuList.forEach(menu => {
+                if (!groups[menu.menuCode]) {
+                    groups[menu.menuCode] = [];
+                }
+                groups[menu.menuCode].push(menu);
+            });
+            return groups;
+        }
+
+        function renderMenuList(menuList) {
+            const tbody = document.querySelector("#menuListBody");
+            let html = "";
+
+            const grouped = groupByMenuCode(menuList);
+
+            Object.values(grouped).forEach(group => {
+                const first = group[0];
+                const rowspan = group.length;
+
+                html += `
+            <tr>
+
+                <td rowspan="${rowspan}">${first.menuCategory}</td>
+                <td rowspan="${rowspan}">${first.menuCode}</td>
+                <td rowspan="${rowspan}">${first.menuName}</td>
+
+                <td>${first.size}</td>
+                <td>${first.menuPrice}</td>
+
+                <td>${first.releaseStatus}</td>
+                <td rowspan="${rowspan}">
+                    <button type="button" class="btn btn-sm detailBtn" data-menu-no="${first.menuNo}">
+                        <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
+                    </button>
+                </td>
+            </tr>
+            `;
+                for (let i = 1; i < group.length; i++) {
+                    html += `
+                <tr>
+                    <td>${group[i].size}</td>
+                    <td>${group[i].menuPrice}</td>
+                    <td>${group[i].releaseStatus}</td>
+                </tr>
+                `;
+                }
+            });
+
+            tbody.innerHTML = html;
+        }
+
 
         $("[data-tab]").on("click", function () {
             const tabName = $(this).data("tab");
@@ -285,9 +227,22 @@
             $("[data-tab]").removeClass("btn-dark").addClass("btn-outline-dark");
             $(this).removeClass("btn-outline-dark").addClass("btn-dark");
         });
-
     });
 
+    $("#storeMenuBtn").click(() => {
+        //지금은 본사 기준. 직영점 로그인 시, storeMenuUI.html로 이동하게 해야 함
+        location.href = "storeMenuManagerUI.html"
+    });
+    $(".detailBtn").click(() => {
+        const menuNo = $(this).data("menuNo");
+        location.href = `/menu/detail?menuNo=${menuNo}`;
+    });
+    $(".menuBox").click(() => {
+        location.href = "menuDetailUI.html"
+    });
+    $("#menuAddBtn").click(() => {
+        location.href = "menuAddUI.html"
+    })
 
 </script>
 
