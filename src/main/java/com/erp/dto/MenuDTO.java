@@ -27,4 +27,6 @@ public class MenuDTO {
     private Timestamp delDate;
 
     private List<MenuIngredientDTO> ingredients;
+    private List<MenuDTO> sizeList;   // 같은 코드의 메뉴(L/M/단일)를 모두 포함
+    private boolean hasSize;
 }

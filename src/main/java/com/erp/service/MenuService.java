@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,37 +42,86 @@ public class MenuService {
         return menuDAO.getMenuByCategoryAndReleaseStatus(menuCategory, releaseStatus);
     }
 
+    //메뉴 코드 조회
+    public List<MenuDTO> getMenuByMenuCode(String menuCode) {
+        return  menuDAO.getMenuByMenuCode(menuCode);
+    }
+
+    public MenuDTO getMenuByMenuNo(Long menuNo) {
+        return menuDAO.getMenuByMenuNo(menuNo);
+    }
+
     //상세조회
     @Transactional
     public MenuDTO getMenuDetail(Long menuNo) {
-        Menu menu = menuRepository.findById(menuNo)
-                .orElseThrow(() -> new NoMenuException("없는 메뉴입니다."));
-        List<MenuIngredient> menuIngredient = menuIngredientRepository.findByMenu_MenuNo(menuNo);
 
-        List<MenuIngredientDTO> menuIngredientDTOList = menuIngredient.stream()
-                .map(i -> {
-                    MenuIngredientDTO dto = new MenuIngredientDTO();
-                    dto.setItemNo(i.getItem().getItemNo());
-                    dto.setMenuNo(menuNo);
-                    dto.setIngredientName(i.getItem().getIngredientName());
-                    dto.setStockUnit(i.getItem().getStockUnit());
-                    dto.setQuantity(i.getIngredientQuantity());
-                    return dto;
-                }).toList();
+        // 1) 단일 메뉴 조회
+        MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
+        if (menu == null) throw new NoMenuException("없는 메뉴입니다.");
 
-        MenuDTO menuDTO = MenuDTO.builder()
-                .menuNo(menu.getMenuNo())
-                .menuName(menu.getMenuName())
-                .menuCode(menu.getMenuCode())
-                .menuCategory(menu.getMenuCategory())
-                .size(menu.getSize())
-                .releaseStatus(menu.getReleaseStatus())
-                .menuExplain(menu.getMenuExplain())
-                .menuImage(menu.getMenuImage())
-                .menuPrice(menu.getMenuPrice())
-                .ingredients(menuIngredientDTOList)
-                .build();
+        // 2) 코드로 전체 사이즈 메뉴 조회 (L/M/단일)
+        List<MenuDTO> sizeList = menuDAO.getMenuByMenuCode(menu.getMenuCode());
+        boolean hasSize = sizeList.size() > 1;
 
-        return menuDTO;
+        // 3) 재료를 사이즈별로 정리하여 하나의 리스트로 병합
+        List<MenuIngredientDTO> mergedIngredients = getIngredientDTOList(sizeList);
+
+        // 4) DTO에 담기
+        menu.setSizeList(sizeList);
+        menu.setIngredients(mergedIngredients);
+        menu.setHasSize(hasSize);
+
+        return menu;
     }
+
+
+    // ⭐ 최종 — L/M/단일 사이즈 전체를 받아서 재료를 합치는 메서드
+    private List<MenuIngredientDTO> getIngredientDTOList(List<MenuDTO> sizeList) {
+
+        Map<Long, MenuIngredientDTO> merged = new HashMap<>();
+
+        for (MenuDTO m : sizeList) {
+            String size = m.getSize();
+            List<MenuIngredientDTO> ingList =
+                    menuIngredientRepository.findByMenu_MenuNo(m.getMenuNo())
+                            .stream()
+                            .map(i -> {
+                                MenuIngredientDTO dto = new MenuIngredientDTO();
+                                dto.setItemNo(i.getItem().getItemNo());
+                                dto.setMenuNo(m.getMenuNo());
+                                dto.setIngredientName(i.getItem().getIngredientName());
+                                dto.setStockUnit(i.getItem().getStockUnit());
+
+                                if ("라지".equals(size)) dto.setQuantityLarge(i.getIngredientQuantity());
+                                else if ("미디움".equals(size)) dto.setQuantityMedium(i.getIngredientQuantity());
+                                else dto.setQuantity(i.getIngredientQuantity());
+
+                                return dto;
+                            })
+                            .toList();
+
+            for (MenuIngredientDTO ing : ingList) {
+
+                Long itemNo = ing.getItemNo();
+                MenuIngredientDTO base = merged.getOrDefault(itemNo, new MenuIngredientDTO());
+
+                base.setItemNo(itemNo);
+                base.setIngredientName(ing.getIngredientName());
+                base.setStockUnit(ing.getStockUnit());
+
+                if (ing.getQuantityLarge() != null)
+                    base.setQuantityLarge(ing.getQuantityLarge());
+
+                if (ing.getQuantityMedium() != null)
+                    base.setQuantityMedium(ing.getQuantityMedium());
+
+                if (ing.getQuantity() != null)
+                    base.setQuantity(ing.getQuantity());
+
+                merged.put(itemNo, base);
+            }
+        }
+        return new ArrayList<>(merged.values());
+    }
+
 }
