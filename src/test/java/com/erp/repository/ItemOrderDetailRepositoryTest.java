@@ -29,7 +29,7 @@ public class ItemOrderDetailRepositoryTest {
 
     @Test
     void getAlItemOrderDetail(){
-        repoDetail.findByItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
+        repoDetail.findByItemOrderNo_ItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
     }
 
     // 발주 요청 생성(관리자)
@@ -66,7 +66,7 @@ public class ItemOrderDetailRepositoryTest {
     void receiveItemOrderDetail(){
 
         ItemOrder itemOrder = repoOrder.findByItemOrderNo(24L);
-        List<ItemOrderDetail> orderDetailList = repoDetail.findByItemOrderNo(itemOrder);
+        List<ItemOrderDetail> orderDetailList = repoDetail.findByItemOrderNo_ItemOrderNo(itemOrder);
         ItemOrderDetail orderDetail = orderDetailList.get(0); // 아이템 번호 선택
 
         // 재고 수량 변경

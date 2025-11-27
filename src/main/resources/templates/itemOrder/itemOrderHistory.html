@@ -11,6 +11,9 @@
    max-width: 1500px;}
 
 
+ table{
+   table-layout: fixed;
+ }
  .card-box { background:#fff; border-radius:12px; padding:20px; border:1px solid #dee2e6;}
  .table thead { background:#e9ecef; font-weight:600;}
 </style>
@@ -48,7 +51,7 @@
    </div>
  </div>
 
- <table class="table table-bordered align-middle text-center">
+ <table class="table table-bordered align-middle text-center" id="item_order_list">
    <thead>
      <tr>
        <th>요청번호</th><th>직영점</th><th>요청일자</th><th>요일</th>
@@ -84,18 +87,22 @@
  </table>
 
   <!-- ▼ 페이지네이션 추가 -->
-  <nav class="mt-3">
-    <ul class="pagination justify-content-center">
+  <nav>
+    <ul class="pagination justify-content-center" id="pagination">
       <li class="page-item disabled">
-        <a class="page-link">이전</a>
+        <a class="page-link" data-page="prev">이전</a>
       </li>
-
-      <li class="page-item active"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-
+      <li class="page-item active">
+        <a class="page-link" data-page="1">1</a>
+      </li>
       <li class="page-item">
-        <a class="page-link" href="#">다음</a>
+        <a class="page-link" data-page="2">2</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" data-page="3">3</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" data-page="next">다음</a>
       </li>
     </ul>
   </nav>
@@ -246,6 +253,48 @@
   </div>
 </div>
 <script>
+  $(document).on("click", "#pagination .page-link", function () {
+    const page = $(this).data("page");  // data-page 값 가져오기
+
+    // 숫자일 경우
+    if (!isNaN(page)) {
+      loadPage(page);
+    }
+
+    // 이전/다음
+    if (page === "prev") {
+      const current = $("#pagination .active a").data("page");
+      if (current > 1) loadPage(current - 1);
+    }
+
+    if (page === "next") {
+      const current = $("#pagination .active a").data("page");
+      loadPage(current + 1);
+    }
+  });
+
+  function updatePaginationUI(page, totalPages) {
+    const pag = $("#pagination");
+    pag.find(".page-item").removeClass("active");
+
+    // 현재 페이지 활성화
+    pag.find(`a[data-page='${page}']`).closest(".page-item").addClass("active");
+
+    // 이전 버튼 비활성화
+    if (page == 1) {
+      pag.find("a[data-page='prev']").closest(".page-item").addClass("disabled");
+    } else {
+      pag.find("a[data-page='prev']").closest(".page-item").removeClass("disabled");
+    }
+
+    // 다음 버튼 비활성화
+    if (page == totalPages) {
+      pag.find("a[data-page='next']").closest(".page-item").addClass("disabled");
+    } else {
+      pag.find("a[data-page='next']").closest(".page-item").removeClass("disabled");
+    }
+  }
+
   let selectedRow = null;
   $(".detail_btn").on("click", function(){
     selectedRow = $(this).closest("tr");
@@ -261,6 +310,49 @@
     selectedRow.find(".receive_status").text("입고완료");
     $("#orderDetailModal").modal("hide");
   });
+
+  const itemOrderTable = $("#item_order_list");
+
+  function loadPage(pageNo){
+    fetch(`http://127.0.0.1:5432/itemOrder/itemOrderList/${pageNo-1}`)
+        .then(response => response.json())
+        .then(data => {
+          loadItemOrderTable(data);
+          updatePaginationUI(data.pageNo, data.totalPages);
+        })
+        .catch(err => console.error(err));
+  }
+
+  function loadItemOrderTable(data){
+    const tbody = itemOrderTable.find("tbody");
+    tbody.empty();
+
+
+
+    data.list.forEach(item=>{
+      const date = new Date(item.requestDate);
+      const row = `
+                <tr>
+                    <td>${item.itemOrderNo}</td>
+                    <td>${item.storeNo}</td>
+                    <td>${""+date.getFullYear() +"-"+ (date.getMonth()+1)+"-"+ date.getDate()}</td>
+                    <td></td>
+                    <td></td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price.toLocaleString()} 원</td>
+                     <td style="color: green;" class="req_status">${item.orderStatus}</td>
+                     <td class="receive_status">${item.receiveStatus}</td>
+                     <td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>
+                </tr>
+            `;
+      tbody.append(row);
+    });
+  }
+
+  $(window).on("load", function(){
+    loadPage(1);
+  });
+
 </script>
 </body>
 </html>

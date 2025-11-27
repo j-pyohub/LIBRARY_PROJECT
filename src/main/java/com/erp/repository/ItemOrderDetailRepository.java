@@ -5,11 +5,15 @@ import com.erp.repository.entity.ItemOrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ItemOrderDetailRepository extends JpaRepository<ItemOrderDetail, Long> {
 
-    List<ItemOrderDetail> findByItemOrderNo(ItemOrder itemOrderNo);
+    List<ItemOrderDetail> findByItemOrderNo_ItemOrderNo(ItemOrder itemOrderNo);
 
-    boolean existsByItemOrderNoAndReceiveDatetimeIsNull(long itemOrderNo);
+    boolean existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(Long itemOrderNo);
+
+
+//    boolean existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(Long itemOrderNo);
 }

@@ -83,7 +83,7 @@ class ItemOrderRepositoryTest {
     // 발주 상세 보기(발주번호에 해당하는)
     @Test
     void getItemOrderDetailByItemOrder(){
-        repoDetail.findByItemOrderNo(
+        repoDetail.findByItemOrderNo_ItemOrderNo(
                 ItemOrder.builder().itemOrderNo(1L).build()
         ).forEach(System.out::println);
     }
@@ -166,6 +166,6 @@ class ItemOrderRepositoryTest {
     void getApprovedOrderDetail(){
         Page<ItemOrder> order = repoOrder.findByItemOrderStatus("승인", PageRequest.of(0, 8)); // itemOrder 번째 선택
 
-        repoDetail.findByItemOrderNo(order.iterator().next()).forEach(System.out::println);
+        repoDetail.findByItemOrderNo_ItemOrderNo(order.iterator().next()).forEach(System.out::println);
     }
 }

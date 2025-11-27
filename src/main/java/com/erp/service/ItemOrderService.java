@@ -3,11 +3,16 @@ package com.erp.service;
 import com.erp.repository.*;
 import com.erp.dto.ItemOrderDTO;
 import com.erp.repository.entity.Item;
+import com.erp.repository.entity.ItemOrder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +32,44 @@ public class ItemOrderService {
         return itemOrder;
     }
 
-    public List<ItemOrderDTO> getItemOrderList(Integer pageNo) {
+    public Page<ItemOrderDTO> getItemOrderList(Integer pageNo) {
+
+        Page<ItemOrder> page = repoOrder.findAll(PageRequest.of(pageNo, 8));
+
+        return page.map(itemOrder -> {
+            ItemOrderDTO itemOrderDTO = ItemOrderDTO.toDTO(itemOrder);
+            boolean isReceive = orderDetailRepo.existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(0L);
+            itemOrderDTO.setReceiveStatus(isReceive ? "입고대기" : "입고완료");
+            return itemOrderDTO;
+        });
+    }
+
+    public List<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
         List<ItemOrderDTO> itemOrderList = new ArrayList<>();
 
-        repoOrder.findAll().forEach((order) -> {
+        repoOrder.findByRequestDatetimeBetween(startDate.atStartOfDay(), endDate.atStartOfDay(), PageRequest.of(pageNo, 8)).forEach((order) -> {
             ItemOrderDTO itemOrderDTO = ItemOrderDTO.toDTO(order);
 
-            itemOrderDTO.setStoreName(order.getStoreNo().getStoreName());
-            boolean isReceive = orderDetailRepo.existsByItemOrderNoAndReceiveDatetimeIsNull(1L));
-            itemOrderDTO.setReceiveStatus(isReceive ? "입고대기" : "입고완료");
+//            boolean isReceive = orderDetailRepo.existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(0L);
+//            itemOrderDTO.setReceiveStatus(isReceive ? "입고대기" : "입고완료");
 
             itemOrderList.add(itemOrderDTO);
         });
+        return itemOrderList;
     }
+
+    public List<ItemOrderDTO> getItemOrderListByDay(Integer pageNo, Integer day){
+        // 일: 1, 월: 2, 화: 3, 수: 4, 목: 5, 금: 6, 토: 7
+        List<ItemOrderDTO> itemOrderList = new ArrayList<>();
+        repoOrder.findByRequestDatetimeDay(
+                day,
+                PageRequest.of(pageNo, 10, Sort.by("itemOrderNo").descending())
+        ).forEach(itemOrder -> {
+            itemOrderList.add(ItemOrderDTO.toDTO(itemOrder));
+        });
+
+        return itemOrderList;
+    }
+
+
 }
