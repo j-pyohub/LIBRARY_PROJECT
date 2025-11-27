@@ -1,6 +1,6 @@
 package com.erp.repository;
 
-import com.erp.dto.StoreSellingMenuDTO;
+import com.erp.dto.StoreMenuDTO;
 import com.erp.repository.entity.StoreMenu;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,7 +24,7 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
 
 
         @Query("""
-        SELECT new com.erp.dto.StoreSellingMenuDTO(
+        SELECT new com.erp.dto.StoreMenuDTO(
             sm.storeMenuNo,
             s.storeName,
             m.menuCode,
@@ -37,14 +37,14 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
             JOIN sm.store s
             JOIN sm.menu m
         WHERE
-            (:storeName IS NULL OR s.storeName LIKE %:storeName%) AND
+            (:storeName IS NULL OR s.storeName = :storeName) AND
             (:menuName IS NULL OR m.menuName LIKE %:menuName%) AND
             (m.releaseStatus = "출시 중") AND
             (m.delDate is null) AND
             (:salesStatus IS NULL OR sm.salesStatus = :salesStatus) AND
             (:menuCategory IS NULL OR m.menuCategory = :menuCategory)
     """)
-        List<StoreSellingMenuDTO> findStoreMenu(
+        List<StoreMenuDTO> findStoreMenu(
                 @Param("storeName") String storeName,
                 @Param("menuName") String menuName,
                 @Param("salesStatus") String salesStatus,
@@ -52,7 +52,7 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         );
 
         @Query("""
-    SELECT new com.erp.dto.StoreSellingMenuDTO(
+    SELECT new com.erp.dto.StoreMenuDTO(
         sm.storeMenuNo,
         s.storeName,
         m.menuCode,
@@ -72,7 +72,7 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         (:salesStatus IS NULL OR sm.salesStatus = :salesStatus) AND
         (:menuCategory IS NULL OR m.menuCategory = :menuCategory)
 """)
-        List<StoreSellingMenuDTO> findStoreMenuForStore(
+        List<StoreMenuDTO> findStoreMenuForStore(
                 @Param("storeNo") Long storeNo,
                 @Param("menuName") String menuName,
                 @Param("salesStatus") String salesStatus,
