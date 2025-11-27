@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/manager/item")
+@RequestMapping("/item")
 public class ItemControllerTest {
 
     /** 재고 품목 목록 조회 */
