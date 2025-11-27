@@ -20,6 +20,8 @@ public class SalesService {
 
     private final StoreSalesRepository storeSalesRepository;
 
+
+
     @Transactional
     public List<TotalStoreSalesDTO> getTotalStoreSales() {
 
