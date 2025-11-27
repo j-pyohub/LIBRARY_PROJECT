@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDetail, Long> {
     @Query("""
-    SELECT new com.erp.repository.dto.SalesOrderDTO(
+    SELECT new com.erp.dto.SalesOrderDTO(
        o.salesOrderNo,
        SUM(d.menuCount),
        SUM(d.menuCount * d.menuPrice)
@@ -27,7 +27,7 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
     SalesOrderDTO countSalesOrder(@Param("salesOrderNo") Long salesOrderNo);
 
     @Query("""
-        select new com.erp.repository.dto.StoreDailyMenuSalesDTO(
+        select new com.erp.dto.StoreDailyMenuSalesDTO(
             so.store.storeName,
             m.menuCategory,
             m.menuName,
@@ -47,7 +47,7 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
     List<StoreDailyMenuSalesDTO> findDailyMenuSales(@Param("startDate") LocalDateTime startDate, @Param("endDate")  LocalDateTime endDate);
 
     @Query("""
-    select new com.erp.repository.dto.StoreDailyMenuSalesDTO(
+    select new com.erp.dto.StoreDailyMenuSalesDTO(
         so.store.storeName,
         m.menuCategory,
         m.menuName,

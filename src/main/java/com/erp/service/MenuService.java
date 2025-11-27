@@ -15,7 +15,7 @@ public class MenuService {
     private MenuDAO menuDAO;
 
     //메뉴 조회
-    public List<MenuDTO.MenuDTO> getAllMenu() {
+    public List<MenuDTO> getAllMenu() {
         return menuDAO.getAllMenu();
     }
 
