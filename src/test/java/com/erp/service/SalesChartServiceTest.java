@@ -7,9 +7,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 
 @SpringBootTest
-public class SalesServiceTest {
+public class SalesChartServiceTest {
     @Autowired
-    private SalesService salesService;
+    private SalesChartService salesChartService;
+
+    @Test
+    void getMenuRatio() {
+        System.out.println(salesChartService.getMenuRatio());
+    }
+
+    @Test
+    void getTotalStoreSalesTest(){
+        System.out.println(salesChartService.getTotalStoreSales());
+    }
 
     @Test
     void getSalesChartTest(){
@@ -18,7 +28,7 @@ public class SalesServiceTest {
         LocalDate end   = LocalDate.of(2025, 11, 25);
         String type     = "day";
 
-        System.out.println(salesService.getSalesChart(start,end, type));
+        System.out.println(salesChartService.getSalesChart(start,end, type));
 
     }
 }

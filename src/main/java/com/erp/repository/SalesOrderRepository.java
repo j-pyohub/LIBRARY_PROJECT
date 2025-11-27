@@ -8,11 +8,21 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
+
+
+    @Query("""
+    SELECT SUM(sod.menuCount)
+    FROM StoreOrderDetail sod
+    JOIN sod.salesOrder so
+    WHERE so.salesOrderDatetime BETWEEN :start AND :end
+""")
+    Integer getTotalMenuCount(LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("""
            SELECT COUNT(o)
