@@ -1,10 +1,7 @@
 package com.erp.repository;
 
 import com.erp.repository.dto.SalesOrderDTO;
-import com.erp.repository.entity.SalesOrder;
-import com.erp.repository.entity.Store;
-import com.erp.repository.entity.StoreMenu;
-import com.erp.repository.entity.StoreOrderDetail;
+import com.erp.repository.entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +27,15 @@ public class StoreOrderDetailRepositoryTest {
 
     @Autowired
     private StoreMenuRepository storeMenuRepository;
+
+    @Autowired
+    private StoreStockRepository storeStockRepository;
+
+    @Autowired
+    private StoreItemRepository storeItemRepository;
+
+    @Autowired
+    private MenuIngredientRepository menuIngredientRepository;
 
     @Test
     void findDailyMenuSalesTest(){
@@ -111,5 +117,115 @@ public class StoreOrderDetailRepositoryTest {
             System.out.println("총금액   : " + detail.getMenuPrice() * detail.getMenuCount());
             System.out.println("--------------------------------------");
         }
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void addStoreOrderTest() {
+        Store store = storeRepository.findById(1L).orElseThrow(() -> new RuntimeException("Store not found"));
+        StoreMenu menu1 = storeMenuRepository.findById(5L).orElseThrow(() -> new RuntimeException("Menu 13 not found"));
+        StoreMenu menu2 = storeMenuRepository.findById(6L).orElseThrow(() -> new RuntimeException("Menu 12 not found"));
+
+        SalesOrder salesOrder = SalesOrder.builder()
+                .store(store)
+                .salesOrderDatetime(LocalDateTime.now())
+                .salesOrderAmount(30000)
+                .build();
+
+        salesOrderRepository.save(salesOrder);
+
+        // 메뉴1 - 2개 주문
+        StoreOrderDetail detail1 = StoreOrderDetail.builder()
+                .salesOrder(salesOrder)
+                .storeMenu(menu1)
+                .menuCount(2)
+                .menuPrice(Integer.parseInt(menu1.getMenu().getMenuPrice()))  // menu entity 안에 price 필드라고 가정
+                .build();
+        storeOrderDetailRepository.save(detail1);
+
+        // 메뉴2 - 1개 주문
+        StoreOrderDetail detail2 = StoreOrderDetail.builder()
+                .salesOrder(salesOrder)
+                .storeMenu(menu2)
+                .menuCount(1)
+                .menuPrice(Integer.parseInt(menu2.getMenu().getMenuPrice()))
+                .build();
+        storeOrderDetailRepository.save(detail2);
+
+        List<StoreOrderDetail> details =
+                storeOrderDetailRepository.findBySalesOrder(salesOrder);
+
+
+        for (StoreOrderDetail d : details) {
+
+            StoreMenu orderedMenu = d.getStoreMenu();
+            int menuCount = d.getMenuCount();
+
+
+            // 메뉴 → 재료 목록 조회(menu_ingredient)
+            List<MenuIngredient> ingredientList =
+                    menuIngredientRepository.findByMenu_MenuNo(
+                            orderedMenu.getMenu().getMenuNo()
+                    );
+
+            for (MenuIngredient ing : ingredientList) {
+
+                Long itemNo = ing.getItem().getItemNo();
+                int needQty = ing.getIngredientQuantity();
+                int totalConsume = needQty * menuCount;
+
+
+                // 🚨 너가 준 코드: 매장 품목 정보 획득
+                StoreItem storeItem = storeItemRepository
+                        .findByStoreNoAndItemNo(store.getStoreNo(), itemNo)
+                        .stream()
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new RuntimeException("매장 보유 품목 없음: itemNo=" + itemNo));
+
+
+                // 🚨 너가 준 코드: 현재 매장 품목 재고 최신값 획득
+                StoreStock latestStock = storeStockRepository
+                        .findFirstByStoreItemNoOrderByStoreStockNoDesc(
+                                storeItem.getStoreItemNo()
+                        );
+
+                int previousQty = (latestStock == null) ? 0 : latestStock.getCurrentQuantity();
+                int updatedQty = previousQty - totalConsume;
+
+
+                // 재고 차감 로그 INSERT
+                StoreStock newStock = StoreStock.builder()
+                        .storeItemNo(storeItem.getStoreItemNo())
+                        .changeQuantity(-totalConsume)
+                        .currentQuantity(updatedQty)
+                        .changeReason("판매")
+                        .build();
+
+                storeStockRepository.save(newStock);
+            }
+        }
+
+
+        // =====================================================
+        // 6) 로그 출력(검증)
+        // =====================================================
+        System.out.println("\n===== [주문 상세 확인] =====");
+        storeOrderDetailRepository.findBySalesOrder(salesOrder)
+                .forEach(d -> System.out.println(
+                        d.getStoreMenu().getMenu().getMenuName() +
+                                ", 수량=" + d.getMenuCount() +
+                                ", 가격=" + d.getMenuPrice()
+                ));
+
+        System.out.println("\n===== [재고 변경 로그] =====");
+        storeStockRepository.findAll()
+                .forEach(s -> System.out.println(
+                        "[storeItemNo=" + s.getStoreItemNo() +
+                                "] change=" + s.getChangeQuantity() +
+                                ", current=" + s.getCurrentQuantity() +
+                                ", time=" + s.getChangeDatetime()
+                ));
     }
 }
