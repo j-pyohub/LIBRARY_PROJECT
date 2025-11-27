@@ -1,10 +1,12 @@
 package com.erp.service;
 
 import com.erp.dto.SalesChartDTO;
+import com.erp.dto.TotalStoreSalesDTO;
 import com.erp.repository.StoreSalesRepository;
 import com.erp.repository.entity.StoreSales;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -18,11 +20,34 @@ public class SalesService {
 
     private final StoreSalesRepository storeSalesRepository;
 
+    @Transactional
+    public List<TotalStoreSalesDTO> getTotalStoreSales() {
+
+        LocalDate endDate = LocalDate.now().minusDays(1);
+        LocalDate startDate = endDate.minusDays(30);
+
+        List<StoreSales> salesList = storeSalesRepository.findBySalesDateBetween(startDate, endDate);
+
+        Map<String, Integer> grouped =
+                salesList.stream()
+                        .collect(Collectors.groupingBy(
+                                s -> s.getStore().getStoreName(),
+                                Collectors.summingInt(StoreSales::getSalesPrice)
+                        ));
+
+        return grouped.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(5)
+                .map(e -> new TotalStoreSalesDTO(e.getKey(), e.getValue()))
+                .toList();
+    }
+
     public SalesChartDTO getSalesChart(LocalDate startDate, LocalDate endDate, String type) {
 
-
         List<StoreSales> list = storeSalesRepository.findBySalesDateBetween(startDate, endDate);
+
         Map<String, Integer> grouped;
+
         switch (type) {
             case "day":
                 grouped = groupByDay(list);
