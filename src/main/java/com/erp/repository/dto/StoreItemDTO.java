@@ -24,8 +24,9 @@ public class StoreItemDTO {
     private String itemName;
     private String itemCategory;
 
-    // 하한선 (managerLimit / storeLimit 중 최종 적용값)
+    // 하한선
     private Integer finalLimit;
+    private String limitOwner;
 
     // 현재 재고 (STORE_STOCK 최신 로그의 current_quantity)
     private Integer currentQuantity;
