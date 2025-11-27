@@ -1,4 +1,4 @@
-package com.erp.repository.dto;
+package com.erp.dto;
 
 import com.erp.repository.entity.ItemOrder;
 import lombok.AllArgsConstructor;

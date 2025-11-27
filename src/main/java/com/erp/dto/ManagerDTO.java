@@ -1,4 +1,4 @@
-package com.erp.dao.dto;
+package com.erp.dto;
 
 import lombok.*;
 

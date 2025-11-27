@@ -2,7 +2,7 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.erp.dao.MenuDAO">
-    <update id="setMenu" parameterType="com.erp.dao.dto.MenuDTO">
+    <update id="setMenu" parameterType="com.erp.dto.MenuDTO">
         UPDATE menu
         SET
             menu_code = #{menuCode},
@@ -15,7 +15,7 @@
         WHERE menu_no = #{menuNo}
     </update>
 
-    <insert id="addMenu" parameterType="com.erp.dao.dto.MenuDTO">
+    <insert id="addMenu" parameterType="com.erp.dto.MenuDTO">
         INSERT INTO menu (
             menu_name,
             menu_code,
@@ -43,18 +43,18 @@
         SET del_date = NOW()
         WHERE menu_no = #{menuNo}
     </update>
-    <select id="getAllMenu" resultType="com.erp.dao.dto.MenuDTO">
+    <select id="getAllMenu" resultType="com.erp.dto.MenuDTO">
         SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
         FROM menu
         WHERE del_date IS NULL;
     </select>
-    <select id="getMenuByCategory" resultType="com.erp.dao.dto.MenuDTO">
+    <select id="getMenuByCategory" resultType="com.erp.dto.MenuDTO">
         SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
         FROM menu
         WHERE menu_category = #{menuCategory}
           AND del_date IS NULL;
     </select>
-    <select id="getMenuByReleaseStatus" resultType="com.erp.dao.dto.MenuDTO">
+    <select id="getMenuByReleaseStatus" resultType="com.erp.dto.MenuDTO">
         SELECT menu_no, menu_code, menu_name, size, menu_price, release_status, menu_image
         FROM menu
         WHERE release_status = #{releaseStatus}

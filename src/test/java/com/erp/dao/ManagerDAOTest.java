@@ -1,6 +1,6 @@
 package com.erp.dao;
 
-import com.erp.dao.dto.ManagerDTO;
+import com.erp.dto.ManagerDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

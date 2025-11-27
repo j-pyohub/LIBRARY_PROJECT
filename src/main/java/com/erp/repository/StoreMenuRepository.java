@@ -1,6 +1,6 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.StoreSellingMenuDTO;
+import com.erp.dto.StoreSellingMenuDTO;
 import com.erp.repository.entity.StoreMenu;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

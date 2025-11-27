@@ -1,6 +1,6 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.SalesOrderDTO;
+import com.erp.dto.SalesOrderDTO;
 import com.erp.repository.entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

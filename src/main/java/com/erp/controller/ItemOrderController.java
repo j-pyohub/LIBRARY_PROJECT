@@ -1,6 +1,6 @@
 package com.erp.controller;
 
-import com.erp.repository.dto.ItemOrderDTO;
+import com.erp.dto.ItemOrderDTO;
 import com.erp.service.ItemOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

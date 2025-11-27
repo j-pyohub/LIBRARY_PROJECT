@@ -1,8 +1,7 @@
 package com.erp.service;
 
 import com.erp.repository.ItemOrderRepository;
-import com.erp.repository.dto.ItemOrderDTO;
-import com.erp.repository.entity.ItemOrder;
+import com.erp.dto.ItemOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

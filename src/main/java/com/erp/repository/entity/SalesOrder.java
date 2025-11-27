@@ -1,12 +1,10 @@
 package com.erp.repository.entity;
 
-import com.erp.dao.dto.StoreDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor

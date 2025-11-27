@@ -2,7 +2,7 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.erp.dao.ManagerDAO">
-    <insert id="addManager" parameterType="com.erp.dao.dto.ManagerDTO">
+    <insert id="addManager" parameterType="com.erp.dto.ManagerDTO">
         insert into manager (manager_id,
                              pw,
                              email,
@@ -19,7 +19,7 @@
                 #{role})
     </insert>
 
-        <update id="setManager" parameterType="com.erp.dao.dto.ManagerDTO">
+        <update id="setManager" parameterType="com.erp.dto.ManagerDTO">
             update manager
             set
                 pw=#{pw},
@@ -29,14 +29,14 @@
             where manager_id = #{managerId}
         </update>
 
-        <update id="removeManager" parameterType="com.erp.dao.dto.ManagerDTO">
+        <update id="removeManager" parameterType="com.erp.dto.ManagerDTO">
             update manager
             set
                 del_date = now()
             where manager_id = #{managerId}
         </update>
 
-    <select id="getManagers" resultType="com.erp.dao.dto.ManagerDTO">
+    <select id="getManagers" resultType="com.erp.dto.ManagerDTO">
         select
             manager_id,
             email,
@@ -46,7 +46,7 @@
         WHERE ROLE = 'ROLE_MANAGER' AND del_date IS null
     </select>
 
-    <select id="getManagerDetail" resultType="com.erp.dao.dto.ManagerDTO">
+    <select id="getManagerDetail" resultType="com.erp.dto.ManagerDTO">
         select
             manager_id,
             email,
