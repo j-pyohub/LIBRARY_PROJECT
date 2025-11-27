@@ -12,6 +12,11 @@ public class SalesServiceTest {
     private SalesService salesService;
 
     @Test
+    void getTotalStoreSalesTest(){
+        System.out.println(salesService.getTotalStoreSales());
+    }
+
+    @Test
     void getSalesChartTest(){
 
         LocalDate start = LocalDate.of(2025, 11, 1);
