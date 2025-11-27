@@ -2,7 +2,7 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.erp.dao.StoreDAO">
-    <select id="getStores" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStores" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.address,
@@ -13,7 +13,7 @@
         join manager m
         on s.store_manager_id = m.manager_id
     </select>
-    <select id="getStoresByAddress" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresByAddress" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.address,
@@ -25,7 +25,7 @@
         on s.store_manager_id = m.manager_id
         WHERE s.address LIKE CONCAT('%', #{address}, '%')
     </select>
-    <select id="getStoresByStoreName" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresByStoreName" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.address,
@@ -37,7 +37,7 @@
         on s.store_manager_id = m.manager_id
         WHERE s.store_name LIKE CONCAT('%', #{store_name}, '%')
     </select>
-    <select id="getStoresByManagerName" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresByManagerName" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.address,
@@ -49,7 +49,7 @@
         on s.store_manager_id = m.manager_id
         WHERE m.manager_name LIKE CONCAT('%', #{manager_name}, '%')
     </select>
-    <select id="getStoresByStoreStatus" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresByStoreStatus" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.address,
@@ -61,7 +61,7 @@
                       on s.store_manager_id = m.manager_id
         WHERE s.store_status = #{store_status}
     </select>
-    <select id="getStoreDetail" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoreDetail" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.store_name,
@@ -86,7 +86,7 @@
         WHERE s.store_no = #{store_no}
     </select>
 
-    <insert id="addStore" parameterType="com.erp.dao.dto.StoreDTO">
+    <insert id="addStore" parameterType="com.erp.dto.StoreDTO">
         INSERT INTO store (
             store_manager_id,
             store_status,
@@ -118,7 +118,7 @@
                  )
     </insert>
 
-    <update id="setStore" parameterType="com.erp.dao.dto.StoreDTO">
+    <update id="setStore" parameterType="com.erp.dto.StoreDTO">
         update store
         set store_status=#{storeStatus},
             address=#{address},
@@ -133,13 +133,13 @@
         where store_no = #{storeNo};
     </update>
 
-    <update id="setStoreRole" parameterType="com.erp.dao.dto.StoreDTO">
+    <update id="setStoreRole" parameterType="com.erp.dto.StoreDTO">
         update store
         set menu_stop_role = #{menuStopRole}
         where store_no = #{storeNo};
     </update>
 
-    <select id="getStoresByAdmin" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresByAdmin" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.store_manager_id,
@@ -153,7 +153,7 @@
         where m.role = 'ROLE_STORE'
     </select>
 
-    <select id="getStoresDetailByAdmin" resultType="com.erp.dao.dto.StoreDTO">
+    <select id="getStoresDetailByAdmin" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,
             s.store_manager_id,

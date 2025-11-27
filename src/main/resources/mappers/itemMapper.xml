@@ -5,7 +5,7 @@
 <mapper namespace="com.erp.dao.ItemDAO">
 
     <!-- 공통 ResultMap -->
-    <resultMap id="ItemMap" type="com.erp.dao.dto.ItemDTO">
+    <resultMap id="ItemMap" type="com.erp.dto.ItemDTO">
         <id     property="itemNo"         column="item_no"/>
         <result property="itemCode"       column="item_code"/>
         <result property="itemCategory"   column="item_category"/>
@@ -33,7 +33,7 @@
 
     <!-- 1) 등록 -->
     <insert id="addItem"
-            parameterType="com.erp.dao.dto.ItemDTO"
+            parameterType="com.erp.dto.ItemDTO"
             useGeneratedKeys="true" keyProperty="itemNo">
         INSERT INTO ITEM (
             item_category,
@@ -72,7 +72,7 @@
     </insert>
 
     <!-- 2) 수정 -->
-    <update id="setItem" parameterType="com.erp.dao.dto.ItemDTO">
+    <update id="setItem" parameterType="com.erp.dto.ItemDTO">
         UPDATE ITEM
         SET
             item_category   = #{itemCategory},

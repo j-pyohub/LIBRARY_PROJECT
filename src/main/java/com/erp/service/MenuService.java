@@ -1,12 +1,11 @@
 package com.erp.service;
 
 import com.erp.dao.MenuDAO;
+import com.erp.dto.MenuDTO;
 import com.erp.repository.MenuRepository;
-import com.erp.service.dto.MenuDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,7 +15,7 @@ public class MenuService {
     private MenuDAO menuDAO;
 
     //메뉴 조회
-    public List<MenuDTO> getAllMenu() {
+    public List<MenuDTO.MenuDTO> getAllMenu() {
         return menuDAO.getAllMenu();
     }
 

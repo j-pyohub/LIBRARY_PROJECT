@@ -1,6 +1,6 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.StoreItemDTO;
+import com.erp.dto.StoreItemDTO;
 import com.erp.repository.entity.StoreItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
