@@ -61,7 +61,7 @@ public class MenuRepositoryTest {
                         })
                         .toList();
 
-        com.erp.dto.MenuDTO.MenuDTO dto = MenuDTO.MenuDTO.builder()
+        MenuDTO dto = MenuDTO.builder()
                 .menuNo(menu.getMenuNo())
                 .menuName(menu.getMenuName())
                 .menuCode(menu.getMenuCode())
@@ -70,7 +70,7 @@ public class MenuRepositoryTest {
                 .releaseStatus(menu.getReleaseStatus())
                 .menuExplain(menu.getMenuExplain())
                 .menuImage(menu.getMenuImage())
-                .menuPrice(Integer.valueOf(menu.getMenuPrice()))
+                .menuPrice(menu.getMenuPrice())
                 .ingredients(ingredientDTOList)
                 .build();
 
