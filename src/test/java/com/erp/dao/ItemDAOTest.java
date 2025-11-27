@@ -83,7 +83,7 @@ public class ItemDAOTest {
 
     // 3) 전체 목록 조회
     @Test
-    void 전체_품목_목록_조회() {
+    void getItemList() {
         List<ItemDTO> list = itemDAO.getItemList();
 
         System.out.println("▶ getItemList size = " + list.size());
@@ -95,7 +95,7 @@ public class ItemDAOTest {
 
     // 4) 카테고리 검색
     @Test
-    void 카테고리_검색() {
+    void getByCategory() {
         List<ItemDTO> list = itemDAO.getByCategory("도우");
 
         System.out.println("▶ getByCategory(도우) size = " + list.size());

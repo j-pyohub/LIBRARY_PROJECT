@@ -25,6 +25,22 @@ class StoreStockRepositoryTest {
     }
 
 
+    private StoreStock dispose(Long storeItemNo, int quantity, String reason) {
+
+        int latest = getLatestQuantity(storeItemNo);
+
+        StoreStock newLog = StoreStock.builder()
+                .storeItemNo(storeItemNo)
+                .changeQuantity(-quantity)         // -수량
+                .changeReason("폐기")
+                .currentQuantity(latest - quantity)
+                .disposalReason(reason)
+                .build();
+
+        return storeStockRepository.save(newLog);   // INSERT
+    }
+
+
     @Test
     void getlatestQuantity() {
 
@@ -82,25 +98,22 @@ class StoreStockRepositoryTest {
     @Test
     void addDisposalStockLogWithReason() {
 
-        int latest = getLatestQuantity(1L);
+        Long storeItemNo = 1L;
+        int latest = getLatestQuantity(storeItemNo);
         int 폐기수량 = 2;
+        String reason = "유통기한 경과";
 
-        StoreStock newLog = StoreStock.builder()
-                .storeItemNo(1L)
-                .changeQuantity(-폐기수량)
-                .changeReason("폐기")
-                .currentQuantity(latest - 폐기수량)
-                .disposalReason("유통기한 경과")
-                .build();
-
-        StoreStock saved = storeStockRepository.save(newLog);
+        // ★ 나중에 Service에서 쓸 메서드 이름/형태로 호출
+        StoreStock saved = dispose(storeItemNo, 폐기수량, reason);
 
         System.out.println("=== 폐기 기록 추가 ===");
         System.out.println(saved);
         System.out.println("======================");
 
-        assertThat(saved.getDisposalReason()).isEqualTo("유통기한 경과");
+        assertThat(saved.getDisposalReason()).isEqualTo(reason);
         assertThat(saved.getCurrentQuantity()).isEqualTo(latest - 폐기수량);
+        assertThat(saved.getChangeReason()).isEqualTo("폐기");
+        assertThat(saved.getChangeQuantity()).isEqualTo(-폐기수량);
     }
 
     @Test
