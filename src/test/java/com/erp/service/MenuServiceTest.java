@@ -29,4 +29,10 @@ public class MenuServiceTest {
     public void getMenuByCategoryAndReleaseStatusTest(){
         System.out.println(menuService.getMenuByCategoryAndReleaseStatus("피자", "출시 중단"));
     }
+
+    @Test
+    public void getMenuDetailTest(){
+        Long menuNo = 1L;
+        System.out.println(menuService.getMenuDetail(menuNo));
+    }
 }

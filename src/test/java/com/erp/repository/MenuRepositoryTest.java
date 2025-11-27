@@ -61,7 +61,7 @@ public class MenuRepositoryTest {
                         })
                         .toList();
 
-        MenuDTO dto = MenuDTO.builder()
+        com.erp.dto.MenuDTO dto = MenuDTO.builder()
                 .menuNo(menu.getMenuNo())
                 .menuName(menu.getMenuName())
                 .menuCode(menu.getMenuCode())
