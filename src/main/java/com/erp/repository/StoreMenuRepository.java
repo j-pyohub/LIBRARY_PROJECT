@@ -24,7 +24,7 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
 
 
         @Query("""
-        SELECT new com.erp.repository.dto.StoreSellingMenuDTO(
+        SELECT new com.erp.dto.StoreSellingMenuDTO(
             sm.storeMenuNo,
             s.storeName,
             m.menuCode,
@@ -52,7 +52,7 @@ public interface StoreMenuRepository extends JpaRepository<StoreMenu, Long> {
         );
 
         @Query("""
-    SELECT new com.erp.repository.dto.StoreSellingMenuDTO(
+    SELECT new com.erp.dto.StoreSellingMenuDTO(
         sm.storeMenuNo,
         s.storeName,
         m.menuCode,

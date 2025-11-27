@@ -20,7 +20,7 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, Long> {
      * 1) 매장 전체 재고 현황 조회
      */
     @Query("""
-        SELECT new com.erp.repository.dto.StoreItemDTO(
+        SELECT new com.erp.dto.StoreItemDTO(
             si.storeItemNo,
             s.storeNo,
             s.storeName,
@@ -56,7 +56,7 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, Long> {
      * 2) 카테고리 필터
      */
     @Query("""
-        SELECT new com.erp.repository.dto.StoreItemDTO(
+        SELECT new com.erp.dto.StoreItemDTO(
             si.storeItemNo,
             s.storeNo,
             s.storeName,
@@ -94,7 +94,7 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, Long> {
      * 3) 품목명 검색
      */
     @Query("""
-        SELECT new com.erp.repository.dto.StoreItemDTO(
+        SELECT new com.erp.dto.StoreItemDTO(
             si.storeItemNo,
             s.storeNo,
             s.storeName,
@@ -132,7 +132,7 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, Long> {
      * 4) 품목코드 검색
      */
     @Query("""
-        SELECT new com.erp.repository.dto.StoreItemDTO(
+        SELECT new com.erp.dto.StoreItemDTO(
             si.storeItemNo,
             s.storeNo,
             s.storeName,
