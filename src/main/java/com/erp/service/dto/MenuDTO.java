@@ -1,5 +1,6 @@
-package com.erp.repository.dto;
+package com.erp.service.dto;
 
+import com.erp.repository.dto.MenuIngredientDTO;
 import lombok.*;
 
 import java.util.List;

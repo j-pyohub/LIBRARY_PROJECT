@@ -1,6 +1,6 @@
 package com.erp.repository;
 
-import com.erp.repository.dto.MenuDTO;
+import com.erp.service.dto.MenuDTO;
 import com.erp.repository.dto.MenuIngredientDTO;
 import com.erp.repository.entity.Menu;
 import com.erp.repository.entity.MenuIngredient;
