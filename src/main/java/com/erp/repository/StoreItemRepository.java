@@ -151,4 +151,5 @@ public interface StoreItemRepository extends JpaRepository<StoreItem, Long> {
         """)
     List<StoreItemDTO> findStoreItemsByItemCode(@Param("storeNo") Long storeNo,
                                                  @Param("itemCode") String itemCode);
+
 }

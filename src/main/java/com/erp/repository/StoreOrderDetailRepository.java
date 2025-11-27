@@ -2,6 +2,7 @@ package com.erp.repository;
 
 import com.erp.repository.dto.SalesOrderDTO;
 import com.erp.repository.dto.StoreDailyMenuSalesDTO;
+import com.erp.repository.entity.SalesOrder;
 import com.erp.repository.entity.StoreOrderDetail;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -78,4 +79,7 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
         WHERE o.salesOrderNo = :salesOrderNo
 """)
     List<StoreOrderDetail> getStoreOrderDetail(@Param("salesOrderNo") Long salesOrderNo);
+
+    List<StoreOrderDetail> findBySalesOrder(SalesOrder salesOrder);
+
 }
