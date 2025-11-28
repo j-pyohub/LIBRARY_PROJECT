@@ -2,6 +2,12 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.erp.dao.StoreDAO">
+    <select id="countStores" resultType="int">
+        select count(*)
+        from store
+        where store_status = '영업중';
+    </select>
+
     <select id="getStores" resultType="com.erp.dto.StoreDTO">
         select
             s.store_no,

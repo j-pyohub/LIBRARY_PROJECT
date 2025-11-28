@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,18 @@ public class SalesOrderRepositoryTest {
     private StoreRepository storeRepository;
     @Autowired
     StoreOrderDetailRepository storeOrderDetailRepository;
+
+    @Test
+    void getTotalMenuCountTest(){
+        LocalDate start = LocalDate.of(2025, 12, 2);
+        LocalDate end   = LocalDate.of(2025, 12, 4);
+
+        LocalDateTime startDate = start.atStartOfDay();          // 00:00:00
+        LocalDateTime endDate   = end.atTime(23, 59, 59);
+
+        System.out.println(salesOrderRepository.getTotalMenuCount(startDate, endDate));
+    }
+
 
     @Test
     public void countOrdersTest() {

@@ -1,19 +1,30 @@
 package com.erp.service;
 
-import com.erp.repository.ItemOrderRepository;
+import com.erp.repository.*;
 import com.erp.dto.ItemOrderDTO;
+import com.erp.repository.entity.Item;
+import com.erp.repository.entity.ItemOrder;
+import com.erp.repository.entity.ItemOrderDetail;
+import com.erp.repository.entity.Store;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ItemOrderService {
-
-    @Autowired
-    private ItemOrderRepository repoOrder;
+    final private ItemOrderRepository repoOrder;
+    final private ItemOrderDetailRepository orderDetailRepo;
+    final private ItemProposalRepository proposalRepo;
+    final private StoreRepository storeRepo;
 
     @Transactional(readOnly = true)
     public List<ItemOrderDTO> getAllItemOrder() {
@@ -22,4 +33,26 @@ public class ItemOrderService {
 
         return itemOrder;
     }
+
+    public Page<ItemOrderDTO> getItemOrderList(Integer pageNo) {
+        return repoOrder.findOrdersWithReceiveStatus(PageRequest.of(pageNo, 10));
+    }
+
+    public Page<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
+        return repoOrder.findByRequestDatetimeBetween(startDate.atStartOfDay(), endDate.atStartOfDay(), PageRequest.of(pageNo, 10));
+    }
+
+    public Page<ItemOrderDTO> getItemOrderListByDay(Integer pageNo, Integer day){
+        // 일: 1, 월: 2, 화: 3, 수: 4, 목: 5, 금: 6, 토: 7
+        return repoOrder.findByRequestDatetimeDay(day,PageRequest.of(pageNo, 10));
+    }
+
+    public Page<ItemOrderDTO> getItemOrderListByStore(Integer pageNo, Long storeNo){
+        return repoOrder.findByStoreNo(Store.builder().storeNo(storeNo).build(), PageRequest.of(pageNo, 10));
+    }
+
+    public Page<ItemOrderDTO> getItemOrderListByStatus(Integer pageNo, String status){
+        return repoOrder.findByItemOrderStatus(status, PageRequest.of(pageNo, 10));
+    }
+
 }

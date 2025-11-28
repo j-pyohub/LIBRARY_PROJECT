@@ -1,6 +1,7 @@
 package com.erp.repository;
 
 import com.erp.dao.ItemDAO;
+import com.erp.dto.ItemOrderDTO;
 import com.erp.repository.entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -164,8 +164,9 @@ class ItemOrderRepositoryTest {
     // 승인 목록 상세 조회
     @Test
     void getApprovedOrderDetail(){
-        Page<ItemOrder> order = repoOrder.findByItemOrderStatus("승인", PageRequest.of(0, 8)); // itemOrder 번째 선택
+        Page<ItemOrderDTO> order = repoOrder.findByItemOrderStatus("승인", PageRequest.of(0, 8)); // itemOrder 번째 선택
 
-        repoDetail.findByItemOrderNo(order.iterator().next()).forEach(System.out::println);
+        Long itemOrderNo = order.getContent().iterator().next().getItemOrderNo();
+        repoDetail.findByItemOrderNo(ItemOrder.builder().itemOrderNo(itemOrderNo).build()).forEach(System.out::println);
     }
 }

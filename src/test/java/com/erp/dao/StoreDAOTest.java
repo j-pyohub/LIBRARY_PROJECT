@@ -14,6 +14,8 @@ public class StoreDAOTest {
     private ManagerDAO managerDAO;
 
     @Test
+    void countStoresTest() { System.out.println(storeDAO.countStores()); }
+    @Test
     void getStoresTest() {
         System.out.println(storeDAO.getStores());
     }

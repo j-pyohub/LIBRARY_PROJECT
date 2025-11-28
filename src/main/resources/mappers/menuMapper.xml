@@ -60,4 +60,23 @@
         WHERE release_status = #{releaseStatus}
           AND del_date IS NULL;
     </select>
+    <select id="getMenuByCategoryAndReleaseStatus" resultType="com.erp.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, menu_category, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE menu_category = #{menuCategory} and release_status = #{releaseStatus}
+          AND del_date IS NULL;
+    </select>
+    <select id="getMenuByMenuCode" resultType="com.erp.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, menu_category, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE menu_code = #{menuCode}
+          AND del_date IS NULL;
+    </select>
+    <select id="getMenuByMenuNo" resultType="com.erp.dto.MenuDTO">
+        SELECT menu_no, menu_code, menu_name, menu_category, size, menu_price, release_status, menu_image
+        FROM menu
+        WHERE menu_no = #{menuNo}
+          AND del_date IS NULL;
+    </select>
+
 </mapper>
