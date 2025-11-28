@@ -157,7 +157,7 @@
         loadMenuList();
 
         function loadMenuList() {
-            fetch("http://localhost:5432/menuList")
+            fetch("/menuList")
                 .then(res => res.json())
                 .then(menuList => renderMenuList(menuList));
         }
@@ -174,7 +174,7 @@
         }
 
         function renderMenuList(menuList) {
-            const tbody = document.querySelector("#menuListBody");
+            const tbody = $("#menuListBody");
             let html = "";
 
             const grouped = groupByMenuCode(menuList);
@@ -184,36 +184,37 @@
                 const rowspan = group.length;
 
                 html += `
-            <tr>
+        <tr>
+            <td rowspan="${rowspan}">${first.menuCategory}</td>
+            <td rowspan="${rowspan}">${first.menuCode}</td>
+            <td rowspan="${rowspan}">${first.menuName}</td>
 
-                <td rowspan="${rowspan}">${first.menuCategory}</td>
-                <td rowspan="${rowspan}">${first.menuCode}</td>
-                <td rowspan="${rowspan}">${first.menuName}</td>
+            <td>${first.size}</td>
+            <td>${first.menuPrice}</td>
 
-                <td>${first.size}</td>
-                <td>${first.menuPrice}</td>
+            <td rowspan="${rowspan}">${first.releaseStatus}</td>
 
-                <td>${first.releaseStatus}</td>
-                <td rowspan="${rowspan}">
-                    <button type="button" class="btn btn-sm detailBtn" data-menu-no="${first.menuNo}">
-                        <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
-                    </button>
-                </td>
-            </tr>
-            `;
+            <td rowspan="${rowspan}">
+                <button type="button" class="btn btn-sm detailBtn" data-menu-no="${first.menuNo}">
+                    <i class="bi bi-file-earmark-text" style="font-size: 1.6rem;"></i>
+                </button>
+            </td>
+        </tr>
+        `;
+
                 for (let i = 1; i < group.length; i++) {
                     html += `
-                <tr>
-                    <td>${group[i].size}</td>
-                    <td>${group[i].menuPrice}</td>
-                    <td>${group[i].releaseStatus}</td>
-                </tr>
-                `;
+            <tr>
+                <td>${group[i].size}</td>
+                <td>${group[i].menuPrice}</td>
+            </tr>
+            `;
                 }
             });
 
-            tbody.innerHTML = html;
+            tbody.html(html);
         }
+
 
 
         $("[data-tab]").on("click", function () {
@@ -233,10 +234,11 @@
         //지금은 본사 기준. 직영점 로그인 시, storeMenuUI.html로 이동하게 해야 함
         location.href = "storeMenuManagerUI.html"
     });
-    $(".detailBtn").click(() => {
+    $(document).on("click", ".detailBtn", function () {
         const menuNo = $(this).data("menuNo");
-        location.href = `/menu/detail?menuNo=${menuNo}`;
+        location.href = `/menuDetail?menuNo=${menuNo}`;
     });
+
     $(".menuBox").click(() => {
         location.href = "menuDetailUI.html"
     });

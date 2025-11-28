@@ -18,9 +18,4 @@ public class MenuRestController {
     public List<MenuDTO> getAllMenu(){
         return menuService.getAllMenu();
     }
-
-    @GetMapping("menuDetail")
-    public MenuDTO getMenuDetail(@RequestParam Long menuNo){
-        return menuService.getMenuDetail(menuNo);
-    }
 }
