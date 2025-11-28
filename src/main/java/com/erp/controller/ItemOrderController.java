@@ -16,12 +16,8 @@ public class ItemOrderController {
     @Autowired
     private ItemOrderService itemOrderService;
 
-    @GetMapping("/test")
-    public String test(Model model) {
-
-        List<ItemOrderDTO> itemOrder = itemOrderService.getAllItemOrder();
-
-        model.addAttribute("ItemOrder", itemOrder);
-        return "itemOrderHistory";
+    @GetMapping("/itemOrder/itemList")
+    public String test() {
+        return "/itemOrder/itemOrderHistory";
     }
 }
