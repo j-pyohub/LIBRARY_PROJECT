@@ -9,10 +9,9 @@ import com.erp.dto.PageResponseDTO;
 import com.erp.dto.StoreItemDTO;
 import com.erp.repository.StoreItemRepository;
 import com.erp.repository.entity.StoreItem;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 
 import java.util.List;
@@ -27,11 +26,16 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class StoreItemServiceTest {
 
-    @Autowired
-    StoreItemService storeItemService;
+    // 스프링 빈이 아니라, 테스트 안에서 직접 만든 목 객체
+    private StoreItemRepository storeItemRepository;
+    private StoreItemService storeItemService;
 
-    @MockBean
-    StoreItemRepository storeItemRepository;
+    @BeforeEach
+    void setUp() {
+        // @MockBean 대신 직접 목 생성
+        storeItemRepository = mock(StoreItemRepository.class);
+        storeItemService = new StoreItemService(storeItemRepository);
+    }
 
     // ==========================
     // 1) 재고 조회 기본 테스트
@@ -44,7 +48,6 @@ class StoreItemServiceTest {
         req.setStoreNo(1L);
         req.setPage(0);
         req.setSize(10);
-        // category / searchType / keyword 는 null → 전체 조회
 
         StoreItemDTO row = StoreItemDTO.builder()
                 .storeItemNo(1L)
@@ -77,7 +80,7 @@ class StoreItemServiceTest {
         // when
         PageResponseDTO<StoreItemDTO> response = storeItemService.getStoreItems(req);
 
-        // then (결과 출력)
+        // then (콘솔로도 확인)
         System.out.println("=== getStoreItems_basic ===");
         System.out.println("총 건수 = " + response.getTotalElements());
         response.getContent().forEach(item -> System.out.println("row = " + item));
@@ -89,12 +92,11 @@ class StoreItemServiceTest {
         assertThat(response.getTotalPages()).isEqualTo(1);
     }
 
-    // storeNo 누락 시 예외
     @Test
     void getStoreItems_shouldThrow_whenStoreNoIsNull() {
         // given
         StoreItemSearchRequestDTO req = new StoreItemSearchRequestDTO();
-        // storeNo 설정 안 함
+        // storeNo 안 넣음
 
         // when
         StoreNotSelectedException ex = assertThrows(
@@ -124,7 +126,7 @@ class StoreItemServiceTest {
                 .willReturn(Optional.of(item));
 
         // when
-        storeItemService.setStoreItemLimit(1L, 50, true);   // isManagerRole = true
+        storeItemService.setStoreItemLimit(1L, 50, true);
 
         // then
         System.out.println("[setStoreItemLimit_byManager_success] managerLimit = " + item.getManagerLimit());
@@ -139,7 +141,7 @@ class StoreItemServiceTest {
         // given
         StoreItem item = StoreItem.builder()
                 .storeItemNo(2L)
-                .managerLimit(null)   // 본사 하한선 없음
+                .managerLimit(null)
                 .storeLimit(null)
                 .build();
 
@@ -147,7 +149,7 @@ class StoreItemServiceTest {
                 .willReturn(Optional.of(item));
 
         // when
-        storeItemService.setStoreItemLimit(2L, 30, false);  // ROLE_STORE
+        storeItemService.setStoreItemLimit(2L, 30, false);
 
         // then
         System.out.println("[setStoreItemLimit_byStore_success] storeLimit = " + item.getStoreLimit());
@@ -162,7 +164,7 @@ class StoreItemServiceTest {
         // given
         StoreItem item = StoreItem.builder()
                 .storeItemNo(3L)
-                .managerLimit(100)   // 이미 본사 하한선 있음
+                .managerLimit(100)   // 이미 본사 하한선 존재
                 .storeLimit(null)
                 .build();
 
@@ -172,7 +174,7 @@ class StoreItemServiceTest {
         // when
         StoreItemLimitConflictException ex = assertThrows(
                 StoreItemLimitConflictException.class,
-                () -> storeItemService.setStoreItemLimit(3L, 20, false)  // 직영점이 바꾸려고 시도
+                () -> storeItemService.setStoreItemLimit(3L, 20, false)
         );
 
         // then
@@ -206,8 +208,8 @@ class StoreItemServiceTest {
 
     @Test
     void setStoreItemLimit_shouldThrowInvalid_whenLimitIsZeroOrNegative() {
-
         // 0, 음수 → Repository 에는 아예 접근하지 않아야 함
+
         InvalidStoreItemLimitException ex1 = assertThrows(
                 InvalidStoreItemLimitException.class,
                 () -> storeItemService.setStoreItemLimit(1L, 0, true)
@@ -238,7 +240,7 @@ class StoreItemServiceTest {
                 .willReturn(Optional.of(item));
 
         // when
-        storeItemService.setStoreItemLimit(4L, null, true); // null → 본사 하한선 제거
+        storeItemService.setStoreItemLimit(4L, null, true);
 
         // then
         System.out.println("[managerCanClearManagerLimit_withNull] managerLimit = " + item.getManagerLimit());
@@ -261,7 +263,7 @@ class StoreItemServiceTest {
                 .willReturn(Optional.of(item));
 
         // when
-        storeItemService.setStoreItemLimit(5L, null, false); // null → 직영점 하한선 제거
+        storeItemService.setStoreItemLimit(5L, null, false);
 
         // then
         System.out.println("[storeCanClearStoreLimit_withNull_whenNoManagerLimit] storeLimit = " + item.getStoreLimit());
@@ -270,4 +272,150 @@ class StoreItemServiceTest {
 
         verify(storeItemRepository).save(item);
     }
+    /**
+     * 카테고리 + 품목명으로 검색하는 경우
+     *  - category = "도우"
+     *  - searchType = "NAME"
+     *  - keyword   = "도우"
+     */
+    @Test
+    void getStoreItems_withCategoryAndItemName() {
+
+        // given
+        StoreItemSearchRequestDTO req = new StoreItemSearchRequestDTO();
+        req.setStoreNo(1L);
+        req.setCategory("도우");
+        req.setSearchType("NAME");   // 서비스 안에서 toUpperCase() 한 번 더 타지만 이미 대문자
+        req.setKeyword("도우");
+        req.setPage(0);
+        req.setSize(10);
+
+        StoreItemDTO row = StoreItemDTO.builder()
+                .storeItemNo(101L)
+                .storeNo(1L)
+                .storeName("1호점")
+                .itemNo(10L)
+                .itemCode("DOUGH-01")
+                .itemName("도우 M 230g(레귤러)")
+                .itemCategory("도우")
+                .finalLimit(40)
+                .limitOwner("MANAGER")
+                .currentQuantity(26)
+                .stockUnit("EA")
+                .build();
+
+        Page<StoreItemDTO> pageResult = new PageImpl<>(
+                List.of(row),
+                PageRequest.of(0, 10),
+                1
+        );
+
+        // ★ category, searchType, keyword 까지 정확히 들어오는지 확인하려고 eq(...) 사용
+        given(storeItemRepository.searchStoreItems(
+                eq(1L),
+                eq("도우"),     // category
+                eq("NAME"),    // searchType
+                eq("도우"),     // keyword
+                any(Pageable.class)
+        )).willReturn(pageResult);
+
+        // when
+        PageResponseDTO<StoreItemDTO> response = storeItemService.getStoreItems(req);
+
+        // then
+        System.out.println("=== [카테고리+품목명] 검색 결과 ===");
+        response.getContent().forEach(item -> System.out.printf(
+                "store=%s | code=%s | name=%s | category=%s | limit=%d | current=%d %s%n",
+                item.getStoreName(),
+                item.getItemCode(),
+                item.getItemName(),
+                item.getItemCategory(),
+                item.getFinalLimit(),
+                item.getCurrentQuantity(),
+                item.getStockUnit()
+        ));
+
+        assertThat(response.getContent()).hasSize(1);
+        assertThat(response.getPage()).isEqualTo(0);
+        assertThat(response.getTotalPages()).isEqualTo(1);
+
+        // 호출 파라미터가 우리가 기대한대로 들어갔는지 한 번 더 검증 (선택)
+        verify(storeItemRepository, times(1)).searchStoreItems(
+                eq(1L),
+                eq("도우"),
+                eq("NAME"),
+                eq("도우"),
+                any(Pageable.class)
+        );
+    }
+
+    @Test
+    void getStoreItems_withCategoryAndItemCode() {
+
+        // given
+        StoreItemSearchRequestDTO req = new StoreItemSearchRequestDTO();
+        req.setStoreNo(1L);
+        req.setCategory("도우");
+        req.setSearchType("CODE");     // 품목코드 검색
+        req.setKeyword("DOUGH");
+        req.setPage(0);
+        req.setSize(10);
+
+        StoreItemDTO row = StoreItemDTO.builder()
+                .storeItemNo(102L)
+                .storeNo(1L)
+                .storeName("1호점")
+                .itemNo(11L)
+                .itemCode("DOUGH-M-230G")
+                .itemName("도우 M 230g(레귤러)")
+                .itemCategory("도우")
+                .finalLimit(40)
+                .limitOwner("MANAGER")
+                .currentQuantity(55)
+                .stockUnit("EA")
+                .build();
+
+        Page<StoreItemDTO> pageResult = new PageImpl<>(
+                List.of(row),
+                PageRequest.of(0, 10),
+                1
+        );
+
+        given(storeItemRepository.searchStoreItems(
+                eq(1L),
+                eq("도우"),       // category
+                eq("CODE"),      // searchType
+                eq("DOUGH"),     // keyword
+                any(Pageable.class)
+        )).willReturn(pageResult);
+
+        // when
+        PageResponseDTO<StoreItemDTO> response = storeItemService.getStoreItems(req);
+
+        // then
+        System.out.println("=== [카테고리+품목코드] 검색 결과 ===");
+        response.getContent().forEach(item -> System.out.printf(
+                "store=%s | code=%s | name=%s | category=%s | limit=%d | current=%d %s%n",
+                item.getStoreName(),
+                item.getItemCode(),
+                item.getItemName(),
+                item.getItemCategory(),
+                item.getFinalLimit(),
+                item.getCurrentQuantity(),
+                item.getStockUnit()
+        ));
+
+        assertThat(response.getContent()).hasSize(1);
+        assertThat(response.getPage()).isEqualTo(0);
+        assertThat(response.getTotalPages()).isEqualTo(1);
+
+        verify(storeItemRepository, times(1)).searchStoreItems(
+                eq(1L),
+                eq("도우"),
+                eq("CODE"),
+                eq("DOUGH"),
+                any(Pageable.class)
+        );
+    }
+
 }
