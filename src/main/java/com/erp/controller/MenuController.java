@@ -1,25 +1,21 @@
 package com.erp.controller;
 
 import com.erp.dto.MenuDTO;
-import com.erp.dto.MenuIngredientDTO;
 import com.erp.service.MenuService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class MenuController {
     private final MenuService menuService;
 
-    public MenuController(MenuService menuService) {
-        this.menuService = menuService;
-    }
-
     @GetMapping("menu")
-    private String member(Model model){
+    private String member(){
         return "menu/menuUI";
     }
 
