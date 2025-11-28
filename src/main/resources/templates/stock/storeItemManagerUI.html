@@ -292,25 +292,77 @@
         if(v){ $ov.removeClass('d-flex').addClass('d-none'); }
         else { $ov.removeClass('d-none').addClass('d-flex'); }
     }
+    function validateLimitInput(){
+        const val = $('#limitNew').val();
+        const $err = $('#limitErrorText');
+        const $btn = $('#btnSaveLimit');
 
-    /** 하한선 모달 **/
+        // 빈값(null) 허용 → 삭제 의미
+        if (!val) {
+            $err.addClass('d-none');
+            $btn.prop('disabled', false);
+            return;
+        }
+
+        const num = Number(val);
+        if (isNaN(num) || num <= 0) {
+            $err.removeClass('d-none');
+            $btn.prop('disabled', true);
+        } else {
+            $err.addClass('d-none');
+            $btn.prop('disabled', false);
+        }
+    }
+
+    $(document).on('input', '#limitNew', validateLimitInput);
+
+    // 하한선 설정 모달
     function openLimitModal(el){
         const $row = $(el).closest('tr');
         const storeName = $row.data('storename') || '';
-        const itemName  = $row.data('itemname') || '';
-        const limit     = $row.data('limit')     || 0;
+        const itemName  = $row.data('itemname')  || '';
+        const rawLimit  = $row.data('limit');
         const unit      = $row.data('unit')      || 'ea';
+
+        let limit = null;
+        if (rawLimit !== undefined && rawLimit !== null && rawLimit !== '') {
+            const parsed = Number(rawLimit);
+            limit = isNaN(parsed) ? null : parsed;
+        }
+
+        // 서버에서 data-owner="MANAGER"/"STORE"/"NONE" 넘겨줄 예정
+        let owner = $row.data('owner');
+        if (!owner) {
+            owner = 'NONE';
+        }
 
         $('#limitStoreName').text(storeName);
         $('#limitItemName').text(itemName);
-        $('#limitCurrentText').text(limit + ' ' + unit);
-        $('#limitNew').val('');
+
+        if (limit === null) {
+            $('#limitCurrentText').text('설정 없음');
+        } else {
+            $('#limitCurrentText').text(limit.toLocaleString() + ' ' + unit);
+        }
+
+        if (owner === 'MANAGER') {
+            $('#limitOwnerText').text('본사에서 설정한 하한선입니다.');
+        } else if (owner === 'STORE') {
+            $('#limitOwnerText').text('직영점에서 설정한 하한선입니다.');
+        } else {
+            $('#limitOwnerText').text('현재 설정된 하한선이 없습니다.');
+        }
+
+        $('#limitNew').val('').prop('disabled', false);
         $('#limitUnit2').text(unit);
 
-        $('#limitUseSupply').prop('checked', false);
+        $('#limitUseSupply').prop('checked', false).prop('disabled', false);
         $('#limitSupplyCount').prop('disabled', true).val('');
         $('#limitSupplyUnit').text('box');
         $('#limitConvertInfo').text('※ 1 box = ' + CONVERT_STOCK + ' ' + unit);
+
+        $('#limitErrorText').addClass('d-none');
+        $('#btnSaveLimit').prop('disabled', false);
 
         if(!limitModalInstance){
             limitModalInstance = new bootstrap.Modal(document.getElementById('limitModal'));
@@ -318,17 +370,28 @@
         limitModalInstance.show();
     }
 
+
+
+
+
+    // 공급단위 계산 연동
     // 공급단위 계산 연동
     $(document).on('change', '#limitUseSupply', function(){
         const on = this.checked;
         $('#limitSupplyCount').prop('disabled', !on);
-        if(on){ $('#limitSupplyCount').trigger('input'); }
-        else { $('#limitSupplyCount').val(''); $('#limitNew').val(''); }
+        if(on){
+            $('#limitSupplyCount').trigger('input');
+        } else {
+            $('#limitSupplyCount').val('');
+            $('#limitNew').val('').trigger('input');
+        }
     });
+
     $(document).on('input', '#limitSupplyCount', function(){
         const boxes = parseFloat(this.value) || 0;
-        $('#limitNew').val(boxes * CONVERT_STOCK);
+        $('#limitNew').val(boxes * CONVERT_STOCK).trigger('input');
     });
+
 
     /** 상세보기 이동 (공통) **/
     $(document).on('click', '.detail-btn', function(){
