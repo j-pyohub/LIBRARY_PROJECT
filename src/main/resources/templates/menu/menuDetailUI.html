@@ -35,11 +35,6 @@
             height: 160px;
             object-fit: cover;
         }
-
-        /* 설명 박스 높이 (Bootstrap으로 정확한 높이 지정 불가능) */
-        .description-box {
-            height: 100px;
-        }
     </style>
 </head>
 
@@ -60,9 +55,8 @@
     <!-- 기본 정보 -->
     <div class="bg-white rounded p-4 shadow-sm mb-4">
         <h5 class="fw-bold mb-3">기본 정보</h5>
-
         <div class="row g-3">
-
+            <<input type="hidden" id="menuNos" th:value="${menuNos}">
             <div class="col-md-4">
                 <label class="form-label fw-semibold">카테고리</label>
                 <div class="border rounded px-3 py-2 bg-light" th:text="${menu.menuCategory}"></div>
@@ -106,7 +100,7 @@
             </div>
             <div class="col-md-8">
                 <label class="form-label fw-semibold">설명</label>
-                <div class="border rounded px-3 py-2 bg-light description-box" th:text="${menu.menuExplain}"></div>
+                <div class="border rounded px-3 py-2 bg-light overflow-auto" style="height: 100px;" th:text="${menu.menuExplain}"></div>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">출시 상태</label>
@@ -124,7 +118,7 @@
         <!-- 레시피 정보 -->
         <div class="mt-4">
             <h5 class="fw-bold mb-3">레시피 정보</h5>
-            <table class="table text-center" th:if="${hasSize}">
+            <table class="table text-center align-middle" th:if="${hasSize}">
             <thead class="table-light">
             <tr>
                 <th>재료명</th>
@@ -148,7 +142,7 @@
             </tbody>
             </table>
             <!-- 단일 메뉴일 때 테이블 -->
-            <table class="table text-center" th:if="${!hasSize}">
+            <table class="table text-center align-middle" th:if="${!hasSize}">
             <thead class="table-light">
             <tr>
                 <th>재료명</th>
@@ -188,7 +182,7 @@
 
 
     $("#menuSetBtn").click(() => {
-        location.href = "menuSetUI.html"
+        location.href = `/menuSet?menuNo=${menuNo}`;
     })
     $("#menuListBtn").click(() => {
         location.href = `/menu`;
