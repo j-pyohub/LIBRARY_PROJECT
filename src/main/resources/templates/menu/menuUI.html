@@ -159,7 +159,8 @@
         function loadMenuList() {
             fetch("/menuList")
                 .then(res => res.json())
-                .then(menuList => renderMenuList(menuList));
+                .then(menuList => renderMenuList(menuList))
+
         }
 
         function groupByMenuCode(menuList) {

@@ -279,22 +279,97 @@
         });
     }
 
+    function validateLimitInput(){
+        const locked = $('#limitModal').data('lockedByManager');
+        const $err = $('#limitErrorText');
+        const $btn = $('#btnSaveLimit');
+
+        // 본사 설정이면 항상 잠금
+        if (locked) {
+            $err.addClass('d-none');
+            $btn.prop('disabled', true);
+            return;
+        }
+
+        const val = $('#limitNew').val();
+
+        // 빈값(null) 허용 → 삭제 의미
+        if (!val) {
+            $err.addClass('d-none');
+            $btn.prop('disabled', false);
+            return;
+        }
+
+        const num = Number(val);
+        if (isNaN(num) || num <= 0) {
+            $err.removeClass('d-none');
+            $btn.prop('disabled', true);
+        } else {
+            $err.addClass('d-none');
+            $btn.prop('disabled', false);
+        }
+    }
+
+    $(document).on('input', '#limitNew', validateLimitInput);
+
+
     function openLimitModal(el){
         const $row = $(el).closest('tr');
         const itemName  = $row.data('itemname') || '';
-        const limit     = $row.data('limit')     || 0;
+        const rawLimit  = $row.data('limit');
         const unit      = $row.data('unit')      || 'ea';
 
-        $('#limitStoreName').text(''); // 직영점 화면: 점포명 표기 생략/또는 세션명
-        $('#limitItemName').text(itemName);
-        $('#limitCurrentText').text(limit + ' ' + unit);
-        $('#limitNew').val('');
-        $('#limitUnit2').text(unit);
+        let limit = null;
+        if (rawLimit !== undefined && rawLimit !== null && rawLimit !== '') {
+            const parsed = Number(rawLimit);
+            limit = isNaN(parsed) ? null : parsed;
+        }
 
+        // data-owner 없으면 기본값을 'STORE'로 보고, 나중에 서버에서 정확히 내려주면 됨
+        let owner = $row.data('owner');
+        if (!owner) {
+            owner = 'STORE';
+        }
+
+        $('#limitStoreName').text(''); // 직영점 화면: 점포명 표기는 세션/헤더 등에 따로 노출 가능
+        $('#limitItemName').text(itemName);
+
+        if (limit === null) {
+            $('#limitCurrentText').text('설정 없음');
+        } else {
+            $('#limitCurrentText').text(limit.toLocaleString() + ' ' + unit);
+        }
+
+        if (owner === 'MANAGER') {
+            $('#limitOwnerText').text('본사에서 설정한 하한선입니다. (직영점에서 수정할 수 없습니다.)');
+        } else if (owner === 'STORE') {
+            $('#limitOwnerText').text('직영점에서 설정한 하한선입니다.');
+        } else {
+            $('#limitOwnerText').text('현재 설정된 하한선이 없습니다.');
+        }
+
+        $('#limitUnit2').text(unit);
         $('#limitUseSupply').prop('checked', false);
-        $('#limitSupplyCount').prop('disabled', true).val('');
+        $('#limitSupplyCount').val('');
         $('#limitSupplyUnit').text('box');
         $('#limitConvertInfo').text('※ 1 box = ' + CONVERT_STOCK + ' ' + unit);
+        $('#limitErrorText').addClass('d-none');
+
+        const locked = (owner === 'MANAGER');
+        $('#limitModal').data('lockedByManager', locked);
+
+        if (locked) {
+            // 본사 설정 → 직영점에서는 입력/저장 비활성화
+            $('#limitNew').val('').prop('disabled', true);
+            $('#limitUseSupply').prop('disabled', true);
+            $('#limitSupplyCount').prop('disabled', true);
+            $('#btnSaveLimit').prop('disabled', true);
+        } else {
+            $('#limitNew').val('').prop('disabled', false);
+            $('#limitUseSupply').prop('disabled', false);
+            $('#limitSupplyCount').prop('disabled', true);
+            $('#btnSaveLimit').prop('disabled', false);
+        }
 
         if(!limitModalInstance){
             limitModalInstance = new bootstrap.Modal(document.getElementById('limitModal'));
@@ -302,17 +377,34 @@
         limitModalInstance.show();
     }
 
+
     // 공급단위 계산(하한선)
     $(document).on('change', '#limitUseSupply', function(){
+        const locked = $('#limitModal').data('lockedByManager');
+        if (locked) {
+            // 본사 잠금 상태에서는 체크 못 하게
+            $('#limitUseSupply').prop('checked', false);
+            return;
+        }
+
         const on = this.checked;
         $('#limitSupplyCount').prop('disabled', !on);
-        if(on){ $('#limitSupplyCount').trigger('input'); }
-        else { $('#limitSupplyCount').val(''); $('#limitNew').val(''); }
+        if(on){
+            $('#limitSupplyCount').trigger('input');
+        } else {
+            $('#limitSupplyCount').val('');
+            $('#limitNew').val('').trigger('input');
+        }
     });
+
     $(document).on('input', '#limitSupplyCount', function(){
+        const locked = $('#limitModal').data('lockedByManager');
+        if (locked) return;
+
         const boxes = parseFloat(this.value) || 0;
-        $('#limitNew').val(boxes * CONVERT_STOCK);
+        $('#limitNew').val(boxes * CONVERT_STOCK).trigger('input');
     });
+
 
     // 폐기 모달
     function openDisposeModal(el){

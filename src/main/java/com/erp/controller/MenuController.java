@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.stream.Collectors;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +26,11 @@ public class MenuController {
 
         MenuDTO menu = menuService.getMenuDetail(menuNo);
 
+        String menuNos = menu.getSizeList().stream()
+                .map(s -> String.valueOf(s.getMenuNo()))
+                .collect(Collectors.joining(","));
+
+        model.addAttribute("menuNos", menuNos);
         model.addAttribute("menu", menu);
         model.addAttribute("sizeList", menu.getSizeList());
         model.addAttribute("ingredients", menu.getIngredients());

@@ -31,13 +31,13 @@ public class SalesChartService {
         LocalDate end = LocalDate.now();
         LocalDate start = end.minusDays(30);
 
-        LocalDateTime startDt = start.atStartOfDay();
-        LocalDateTime endDt   = end.atTime(23, 59, 59);
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate   = end.atTime(23, 59, 59);
         // LocalDate 거치는 방법말고 바로 LocalDateTime 가능은 하다
         // 그렇게 하려면 UI에서 들어온거 연 월 일 분해해서 넣는 과정필요 더 복잡
 
 
-        List<StoreDailyMenuSalesDTO> list =   storeOrderDetailRepository.findDailyMenuSales(startDt, endDt);
+        List<StoreDailyMenuSalesDTO> list =   storeOrderDetailRepository.findDailyMenuSales(startDate, endDate);
 
         // 메뉴별 매출 합계 계산
         Map<String, Integer> grouped = new HashMap<>();
@@ -113,6 +113,48 @@ public class SalesChartService {
                 .values(values)
                 .build();
     }
+
+    public SalesChartDTO getSalesChartByDate(String start, String end, String type) {
+
+        LocalDate startDate = convert(start, type, false);
+        LocalDate endDate   = convert(end, type, true);
+
+        return getSalesChart(startDate, endDate, type);
+    }
+
+    private LocalDate convert(String value, String type, boolean isEnd) {
+
+        switch (type) {
+
+            case "day":
+                return LocalDate.parse(value);
+
+            case "week":
+                String[] p = value.split("-W");
+                int year = Integer.parseInt(p[0]);
+                int week = Integer.parseInt(p[1]);
+
+                LocalDate startOfWeek = LocalDate.ofYearDay(year, 1)
+                        .with(WeekFields.ISO.weekOfWeekBasedYear(), week)
+                        .with(WeekFields.ISO.dayOfWeek(), 1);
+
+                return isEnd ? startOfWeek.plusDays(6) : startOfWeek;
+
+            case "month":
+                YearMonth ym = YearMonth.parse(value);
+                return isEnd ? ym.atEndOfMonth() : ym.atDay(1);
+
+            case "year":
+                int y = Integer.parseInt(value);
+                return isEnd ? LocalDate.of(y, 12, 31) : LocalDate.of(y, 1, 1);
+
+            default:
+                throw new IllegalArgumentException("Invalid type");
+        }
+    }
+
+
+
 
     private Map<String, Integer> groupByDay(List<StoreSales> list) {
         return list.stream()

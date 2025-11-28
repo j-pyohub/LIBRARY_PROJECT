@@ -1,17 +1,13 @@
 package com.erp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-/**
- * 재고 조회(직영점) 테이블 한 행(row)용 DTO
- */
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class StoreItemDTO {
 
     private Long storeItemNo;

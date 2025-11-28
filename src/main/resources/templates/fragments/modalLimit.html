@@ -26,6 +26,8 @@
                             <div class="border rounded px-2 py-2 bg-light" id="limitCurrentText">
                                 40 ea
                             </div>
+                            <!-- ★ 추가: 누가 설정했는지 표시 -->
+                            <div class="small text-muted mt-1" id="limitOwnerText"><!-- 본사 / 직영점 / 없음 --></div>
                         </div>
 
                         <div class="col-md-6">
@@ -34,8 +36,13 @@
                                 <input type="number" class="form-control" id="limitNew" min="0">
                                 <span class="input-group-text" id="limitUnit2">ea</span>
                             </div>
+                            <!-- ★ 추가: 0/음수 경고 메시지 -->
+                            <div class="form-text small text-danger d-none" id="limitErrorText">
+                                0 또는 음수는 입력할 수 없습니다.
+                            </div>
                         </div>
                     </div>
+
 
                     <hr>
 
