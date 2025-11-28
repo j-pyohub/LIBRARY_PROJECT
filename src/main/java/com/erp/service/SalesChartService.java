@@ -114,6 +114,48 @@ public class SalesChartService {
                 .build();
     }
 
+    public SalesChartDTO getSalesChartByDate(String start, String end, String type) {
+
+        LocalDate startDate = convert(start, type, false);
+        LocalDate endDate   = convert(end, type, true);
+
+        return getSalesChart(startDate, endDate, type);
+    }
+
+    private LocalDate convert(String value, String type, boolean isEnd) {
+
+        switch (type) {
+
+            case "day":
+                return LocalDate.parse(value);
+
+            case "week":
+                String[] p = value.split("-W");
+                int year = Integer.parseInt(p[0]);
+                int week = Integer.parseInt(p[1]);
+
+                LocalDate startOfWeek = LocalDate.ofYearDay(year, 1)
+                        .with(WeekFields.ISO.weekOfWeekBasedYear(), week)
+                        .with(WeekFields.ISO.dayOfWeek(), 1);
+
+                return isEnd ? startOfWeek.plusDays(6) : startOfWeek;
+
+            case "month":
+                YearMonth ym = YearMonth.parse(value);
+                return isEnd ? ym.atEndOfMonth() : ym.atDay(1);
+
+            case "year":
+                int y = Integer.parseInt(value);
+                return isEnd ? LocalDate.of(y, 12, 31) : LocalDate.of(y, 1, 1);
+
+            default:
+                throw new IllegalArgumentException("Invalid type");
+        }
+    }
+
+
+
+
     private Map<String, Integer> groupByDay(List<StoreSales> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(
