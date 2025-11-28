@@ -19,7 +19,7 @@ public class MenuController {
     }
 
     @GetMapping("menu")
-    private String member(Model model){
+    private String member(){
         return "menu/menuUI";
     }
 
