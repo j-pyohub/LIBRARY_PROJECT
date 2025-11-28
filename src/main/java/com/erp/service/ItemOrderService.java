@@ -4,6 +4,8 @@ import com.erp.repository.*;
 import com.erp.dto.ItemOrderDTO;
 import com.erp.repository.entity.Item;
 import com.erp.repository.entity.ItemOrder;
+import com.erp.repository.entity.ItemOrderDetail;
+import com.erp.repository.entity.Store;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,43 +35,24 @@ public class ItemOrderService {
     }
 
     public Page<ItemOrderDTO> getItemOrderList(Integer pageNo) {
-
-        Page<ItemOrder> page = repoOrder.findAll(PageRequest.of(pageNo, 8));
-
-        return page.map(itemOrder -> {
-            ItemOrderDTO itemOrderDTO = ItemOrderDTO.toDTO(itemOrder);
-            boolean isReceive = orderDetailRepo.existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(0L);
-            itemOrderDTO.setReceiveStatus(isReceive ? "입고대기" : "입고완료");
-            return itemOrderDTO;
-        });
+        return repoOrder.findOrdersWithReceiveStatus(PageRequest.of(pageNo, 10));
     }
 
-    public List<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
-        List<ItemOrderDTO> itemOrderList = new ArrayList<>();
-
-        repoOrder.findByRequestDatetimeBetween(startDate.atStartOfDay(), endDate.atStartOfDay(), PageRequest.of(pageNo, 8)).forEach((order) -> {
-            ItemOrderDTO itemOrderDTO = ItemOrderDTO.toDTO(order);
-
-//            boolean isReceive = orderDetailRepo.existsByItemOrderNo_ItemOrderNoAndReceiveDatetimeIsNull(0L);
-//            itemOrderDTO.setReceiveStatus(isReceive ? "입고대기" : "입고완료");
-
-            itemOrderList.add(itemOrderDTO);
-        });
-        return itemOrderList;
+    public Page<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
+        return repoOrder.findByRequestDatetimeBetween(startDate.atStartOfDay(), endDate.atStartOfDay(), PageRequest.of(pageNo, 10));
     }
 
-    public List<ItemOrderDTO> getItemOrderListByDay(Integer pageNo, Integer day){
+    public Page<ItemOrderDTO> getItemOrderListByDay(Integer pageNo, Integer day){
         // 일: 1, 월: 2, 화: 3, 수: 4, 목: 5, 금: 6, 토: 7
-        List<ItemOrderDTO> itemOrderList = new ArrayList<>();
-        repoOrder.findByRequestDatetimeDay(
-                day,
-                PageRequest.of(pageNo, 10, Sort.by("itemOrderNo").descending())
-        ).forEach(itemOrder -> {
-            itemOrderList.add(ItemOrderDTO.toDTO(itemOrder));
-        });
-
-        return itemOrderList;
+        return repoOrder.findByRequestDatetimeDay(day,PageRequest.of(pageNo, 10));
     }
 
+    public Page<ItemOrderDTO> getItemOrderListByStore(Integer pageNo, Long storeNo){
+        return repoOrder.findByStoreNo(Store.builder().storeNo(storeNo).build(), PageRequest.of(pageNo, 10));
+    }
+
+    public Page<ItemOrderDTO> getItemOrderListByStatus(Integer pageNo, String status){
+        return repoOrder.findByItemOrderStatus(status, PageRequest.of(pageNo, 10));
+    }
 
 }

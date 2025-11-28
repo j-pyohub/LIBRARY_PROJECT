@@ -323,29 +323,32 @@
         .catch(err => console.error(err));
   }
 
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
   function loadItemOrderTable(data){
     const tbody = itemOrderTable.find("tbody");
     tbody.empty();
 
-
-
     data.list.forEach(item=>{
       const date = new Date(item.requestDate);
-      const row = `
+      let row = `
                 <tr>
                     <td>${item.itemOrderNo}</td>
-                    <td>${item.storeNo}</td>
+                    <td>${item.storeName}</td>
                     <td>${""+date.getFullYear() +"-"+ (date.getMonth()+1)+"-"+ date.getDate()}</td>
-                    <td></td>
-                    <td></td>
+                    <td>${days[date.getDay()]}</td>
+                    <td>${date.getHours() + ":"+date.getMinutes()+":"+date.getSeconds()}</td>
                     <td>${item.quantity}</td>
                     <td>${item.price.toLocaleString()} 원</td>
                      <td style="color: green;" class="req_status">${item.orderStatus}</td>
                      <td class="receive_status">${item.receiveStatus}</td>
-                     <td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>
-                </tr>
             `;
-      tbody.append(row);
+      if(item.receiveStatus === "입고대기") {
+        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>`;
+      }
+      else if(item.receiveStatus === "입고완료"){
+        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailCancelModal">상세조회</button></td>`;
+      }
+      tbody.append(row+"</tr>");
     });
   }
 

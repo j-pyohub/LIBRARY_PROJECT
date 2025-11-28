@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class ItemOrderDTO {
-    private long itemOrderNo;
+    private Long itemOrderNo;
     private Long storeNo;
     private String storeName;
     private Timestamp requestDate;

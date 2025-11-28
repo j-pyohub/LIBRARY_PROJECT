@@ -4,7 +4,6 @@ import com.erp.repository.entity.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ItemOrderDetailRepositoryTest {
 
     @Test
     void getAlItemOrderDetail(){
-        repoDetail.findByItemOrderNo_ItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
+        repoDetail.findByItemOrderNo(ItemOrder.builder().itemOrderNo(1L).build()).forEach(System.out::println);
     }
 
     // 발주 요청 생성(관리자)
@@ -66,7 +65,7 @@ public class ItemOrderDetailRepositoryTest {
     void receiveItemOrderDetail(){
 
         ItemOrder itemOrder = repoOrder.findByItemOrderNo(24L);
-        List<ItemOrderDetail> orderDetailList = repoDetail.findByItemOrderNo_ItemOrderNo(itemOrder);
+        List<ItemOrderDetail> orderDetailList = repoDetail.findByItemOrderNo(itemOrder);
         ItemOrderDetail orderDetail = orderDetailList.get(0); // 아이템 번호 선택
 
         // 재고 수량 변경
