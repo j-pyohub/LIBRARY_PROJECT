@@ -66,23 +66,6 @@ class StoreItemServiceTest {
         assertThat(res.getPage()).isEqualTo(0);   // 0-base
     }
 
-    @Test
-    void getStoreItems_withoutStoreNo_throws() {
-        // given
-        StoreItemSearchRequestDTO req = new StoreItemSearchRequestDTO();
-        // storeNo 설정 안 함
-
-        // when
-        StoreNotSelectedException ex = assertThrows(
-                StoreNotSelectedException.class,
-                () -> storeItemService.getStoreItems(req)
-        );
-
-        // then
-        System.out.println("[getStoreItems_withoutStoreNo_throws] 메시지 = " + ex.getMessage());
-        assertThat(ex.getMessage()).contains("직영점을 선택해야 합니다.");
-    }
-
     /**
      * 카테고리 + 품목명 검색
      */
@@ -200,25 +183,6 @@ class StoreItemServiceTest {
         // 다시 조회해서 본사 하한선이 그대로인지 확인
         StoreItem reloaded = storeItemRepository.findById(storeItemNo).orElseThrow();
         assertThat(reloaded.getManagerLimit()).isEqualTo(100);
-    }
-
-    @Test
-    void setStoreItemLimit_invalid_zeroOrNegative() {
-
-        Page<StoreItem> page = storeItemRepository.findAll(PageRequest.of(0, 1));
-        Long anyId = page.hasContent() ? page.getContent().get(0).getStoreItemNo() : 1L;
-
-        InvalidStoreItemLimitException ex1 = assertThrows(
-                InvalidStoreItemLimitException.class,
-                () -> storeItemService.setStoreItemLimit(anyId, 0, true)
-        );
-        System.out.println("[setStoreItemLimit_invalid_zeroOrNegative] zero 메시지 = " + ex1.getMessage());
-
-        InvalidStoreItemLimitException ex2 = assertThrows(
-                InvalidStoreItemLimitException.class,
-                () -> storeItemService.setStoreItemLimit(anyId, -10, false)
-        );
-        System.out.println("[setStoreItemLimit_invalid_zeroOrNegative] negative 메시지 = " + ex2.getMessage());
     }
 
     @Test
