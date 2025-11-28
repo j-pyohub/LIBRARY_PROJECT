@@ -1,16 +1,13 @@
 package com.erp.service;
 
+import com.erp.dto.ItemOrderDetailDTO;
 import com.erp.repository.*;
 import com.erp.dto.ItemOrderDTO;
-import com.erp.repository.entity.Item;
 import com.erp.repository.entity.ItemOrder;
-import com.erp.repository.entity.ItemOrderDetail;
 import com.erp.repository.entity.Store;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +32,7 @@ public class ItemOrderService {
     }
 
     public Page<ItemOrderDTO> getItemOrderList(Integer pageNo) {
-        return repoOrder.findOrdersWithReceiveStatus(PageRequest.of(pageNo, 10));
+        return repoOrder.findAllItemOrderList(PageRequest.of(pageNo, 10));
     }
 
     public Page<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
@@ -55,4 +52,7 @@ public class ItemOrderService {
         return repoOrder.findByItemOrderStatus(status, PageRequest.of(pageNo, 10));
     }
 
+    public List<ItemOrderDetailDTO> getItemOrderById(Long itemOrderNo) {
+        return orderDetailRepo.findAllItemOrderDetail(ItemOrder.builder().itemOrderNo(itemOrderNo).build());
+    }
 }

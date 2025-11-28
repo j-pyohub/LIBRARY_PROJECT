@@ -36,7 +36,7 @@ public interface ItemOrderRepository extends JpaRepository<ItemOrder, Long> {
                 io.requestDatetime, io.totalItem,
                 io.totalAmount, io.itemOrderStatus
 """)
-    Page<ItemOrderDTO> findOrdersWithReceiveStatus(Pageable pageable);
+    Page<ItemOrderDTO> findAllItemOrderList(Pageable pageable);
 
     @Query("""
     select new com.erp.dto.ItemOrderDTO(

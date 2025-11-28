@@ -1,8 +1,10 @@
 package com.erp.repository;
 
+import com.erp.dto.ItemOrderDetailDTO;
 import com.erp.repository.entity.ItemOrder;
 import com.erp.repository.entity.ItemOrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -10,4 +12,19 @@ public interface ItemOrderDetailRepository extends JpaRepository<ItemOrderDetail
 
     List<ItemOrderDetail> findByItemOrderNo(ItemOrder itemOrderNo);
 
+    @Query("""
+        select new com.erp.dto.ItemOrderDetailDTO(
+                id.itemOrderNo.itemOrderNo,
+                i.itemCode,
+                i.itemName,
+                i.itemCategory,
+                id.orderDetailQuantity,
+                i.itemPrice,
+                id.orderDetailPrice
+            )
+            from ItemOrderDetail id
+            left join id.itemNo i
+            where id.itemOrderNo=:itemOrder
+    """)
+    List<ItemOrderDetailDTO> findAllItemOrderDetail(ItemOrder itemOrder);
 }
