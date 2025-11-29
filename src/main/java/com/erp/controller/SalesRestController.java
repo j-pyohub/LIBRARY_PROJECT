@@ -4,6 +4,7 @@ import com.erp.dto.MenuRatioDTO;
 import com.erp.dto.SalesChartDTO;
 import com.erp.dto.TotalStoreSalesDTO;
 import com.erp.service.SalesChartService;
+import com.erp.service.SalesKPIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import java.util.List;
 public class SalesRestController {
 
     private final SalesChartService salesChartService;
+    private final SalesKPIService salesKPIService;
 
     @GetMapping("salesChart")
     public SalesChartDTO getSalesChart(
