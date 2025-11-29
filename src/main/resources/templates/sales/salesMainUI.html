@@ -127,6 +127,9 @@
     </div> <!-- chartPage end -->
 
 
+    <!-- ============================
+         LIST PAGE
+    ============================ -->
     <div id="listPage" style="display:none;">
 
         <div class="section-box mx-2 mt-3">
@@ -176,8 +179,6 @@
     </div>
 
 </div>
-
-
 
 
 <!-- ============================
@@ -366,7 +367,7 @@
     }
 
 
-    /* ========= KPI ========= */
+
     function loadKPI(type, start, end){
         const url = `/KPI?type=${type}&startDate=${start}&endDate=${end}`;
 
@@ -378,91 +379,100 @@
         });
     }
 
-    /* ========= LIST PAGE SAMPLE ========= */
-    const sampleData = [
-        {name:"강남직영점", addr:"서울시 강남구 일원동 664-9", diff:"5.3% 상승", order:7000, price:"68,000,000", date:"2025.10.1"},
-        {name:"부산직영점", addr:"부산 서구 쌍용동 1201-1", diff:"3.1% 상승", order:5000, price:"56,000,000", date:"2025.10.1"},
-        {name:"대전직영점", addr:"대전 서구 도산로 335", diff:"2.8% 상승", order:5500, price:"47,500,000", date:"2025.10.1"},
-        {name:"관악직영점", addr:"서울시 관악구 인헌12다길", diff:"10% 상승", order:9500, price:"97,000,000", date:"2025.10.1"},
-        {name:"금천직영점", addr:"서울시 금천구 독산동 331", diff:"5% 하락", order:6500, price:"38,000,000", date:"2025.10.1"},
-        {name:"수원직영점", addr:"경기도 수원시 영통구 55", diff:"1.2% 상승", order:7200, price:"58,000,000", date:"2025.10.1"},
-        {name:"인천직영점", addr:"인천 남동구 논현동 11", diff:"4.1% 상승", order:8200, price:"74,000,000", date:"2025.10.1"},
-        {name:"광주직영점", addr:"광주 북구 일곡동 22", diff:"2.2% 상승", order:4300, price:"39,000,000", date:"2025.10.1"},
-        {name:"대구직영점", addr:"대구 달서구 본리동 88", diff:"7.5% 상승", order:9000, price:"83,000,000", date:"2025.10.1"},
-        {name:"창원직영점", addr:"창원시 성산구 상남동 45", diff:"3.8% 상승", order:6100, price:"49,000,000", date:"2025.10.1"}
-    ];
 
-    let currentPage = 1;
-    const pageSize = 10;   // ← 고정값
 
-    function loadTable(){
+    let listCurrentPage = 1;
+
+    function loadList(page){
+        listCurrentPage = page;
+
+        let start = $("#list-start").val();
+        let end   = $("#list-end").val();
+        const storeName = $("#list-storeName").val();
+
+        if(!start || !end){
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            const yyyy = monthStart.getFullYear();
+            const mm   = String(monthStart.getMonth() + 1).padStart(2,'0');
+            const dd1  = "01";
+
+            const y2 = yesterday.getFullYear();
+            const m2 = String(yesterday.getMonth() + 1).padStart(2,'0');
+            const d2 = String(yesterday.getDate()).padStart(2,'0');
+
+            start = `${yyyy}-${mm}-${dd1}`;
+            end   = `${y2}-${m2}-${d2}`;
+
+            $("#list-start").val(start);
+            $("#list-end").val(end);
+        }
+
+        const url = `/salesList?startDate=${start}&endDate=${end}&storeName=${storeName}&page=${page}`;
+        fetchUtil(url, data => {
+            renderList(data.list);
+            renderPagination(data.totalPages, data.currentPage);
+        });
+    }
+
+    function renderList(list){
         const tbody = $("#storeTable");
         tbody.empty();
 
-        const start = (currentPage - 1) * pageSize;
-        const end   = start + pageSize;
-
-        const pageData = sampleData.slice(start, end);
-
-        pageData.forEach((item, idx) => {
-            const rowNo = start + idx + 1;
-
+        if(!list || list.length === 0){
+            tbody.append(`<tr><td colspan="8" class="text-center">데이터가 없습니다.</td></tr>`);
+            return;
+        }
+        list.forEach((item, index) => {
+            const rowNo = (listCurrentPage - 1) * 10 + (index + 1);
             tbody.append(`
-            <tr class="text-center">
-                <td>${rowNo}</td>
-                <td>${item.name}</td>
-                <td class="text-start">${item.addr}</td>
-                <td>${item.diff}</td>
-                <td>${item.order.toLocaleString()}</td>
-                <td>${item.price}</td>
-                <td>${item.date}</td>
-                <td><img src="/image/detail.png" class="detailBtn detail-icon"></td>
-            </tr>
-        `);
+        <tr class="text-center">
+            <td>${rowNo}</td>
+            <td>${item.storeName}</td>
+            <td class="text-start">${item.address}</td>
+            <td>${item.growthRate || "-"}</td>
+            <td>${item.orderCount.toLocaleString()}</td>
+            <td>${item.salesAmount.toLocaleString()}</td>
+            <td>${item.salesDate}</td>
+            <td><img src="/image/detail.png" class="detailBtn detail-icon"></td>
+        </tr>
+    `);
         });
-
-        createPagination();
     }
 
-    function createPagination(){
-        const totalPages = Math.ceil(sampleData.length / pageSize);
+    function renderPagination(totalPages, currentPage){
         const area = $("#paginationArea");
-
+        area.empty();
+        if(totalPages === 0){
+            return;
+        }
         let html = `<ul class="pagination pagination-sm">`;
-
         html += `
         <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
-            <a class="page-link" href="#" onclick="movePage(${currentPage - 1}); return false;">&lt;</a>
+            <a class="page-link" href="#" onclick="loadList(${currentPage - 1}); return false;">&lt;</a>
         </li>
     `;
-
         for(let i = 1; i <= totalPages; i++){
             html += `
             <li class="page-item ${currentPage === i ? "active" : ""}">
-                <a class="page-link" href="#" onclick="movePage(${i}); return false;">${i}</a>
+                <a class="page-link" href="#" onclick="loadList(${i}); return false;">${i}</a>
             </li>
         `;
         }
-
         html += `
         <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
-            <a class="page-link" href="#" onclick="movePage(${currentPage + 1}); return false;">&gt;</a>
+            <a class="page-link" href="#" onclick="loadList(${currentPage + 1}); return false;">&gt;</a>
         </li>
     `;
-
         html += `</ul>`;
-
         area.html(html);
     }
 
-    function movePage(num){
-        currentPage = num;
-        loadTable();
-    }
-
-    $("#pageSize").on("change", function(){
-        currentPage = 1;
-        loadTable();
+    $("#list-searchBtn").on("click", function(){
+        loadList(1);
     });
 
     $(document).on("click", ".detailBtn", function(){
@@ -470,12 +480,12 @@
     });
 
 
-    /* ========= INIT ========= */
+
     $(document).ready(function(){
 
         showChart();
 
-        // 초기값: 이번달 1일 → 어제
+
         $("#day").prop("checked", true);
         updatePeriodInputs("day");
 
@@ -497,20 +507,20 @@
         $("#startInput").val(s);
         $("#endInput").val(e);
 
-        // 초기 메인차트
+
         fetchUtil(`/salesChart?startDate=${s}&endDate=${e}&type=day`, data => {
             createMainChart(data.labels, data.values);
         });
 
-        // 초기 KPI
         loadKPI("day", s, e);
 
-        // 고정 차트
         loadTop5Chart();
         loadMenuRatio();
 
-        // 리스트 초기 로딩
-        loadTable();
+
+        $("#list-start").val(s);
+        $("#list-end").val(e);
+        loadList(1);
     });
 </script>
 
