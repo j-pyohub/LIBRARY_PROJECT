@@ -1,11 +1,15 @@
 package com.erp.controller;
 
+import com.erp.dto.MenuRatioDTO;
 import com.erp.dto.SalesChartDTO;
+import com.erp.dto.TotalStoreSalesDTO;
 import com.erp.service.SalesChartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,5 +25,15 @@ public class SalesRestController {
 
     ) {
         return salesChartService.getSalesChartByDate(startDate,endDate,type);
+    }
+
+    @GetMapping("/totalStoreSales")
+    public List<TotalStoreSalesDTO> getTop5StoreSales() {
+        return salesChartService.getTotalStoreSales();
+    }
+
+    @GetMapping("/menuRatio")
+    public List<MenuRatioDTO> getMenuRatio() {
+        return salesChartService.getMenuRatio();
     }
 }
