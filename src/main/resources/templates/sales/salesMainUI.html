@@ -429,16 +429,18 @@
         list.forEach((item, index) => {
             const rowNo = (listCurrentPage - 1) * 10 + (index + 1);
             tbody.append(`
-        <tr class="text-center">
-            <td>${rowNo}</td>
-            <td>${item.storeName}</td>
-            <td class="text-start">${item.address}</td>
-            <td>${item.growthRate || "-"}</td>
-            <td>${item.orderCount.toLocaleString()}</td>
-            <td>${item.salesAmount.toLocaleString()}</td>
-            <td>${item.salesDate}</td>
-            <td><img src="/image/detail.png" class="detailBtn detail-icon"></td>
-        </tr>
+                <tr class="text-center">
+                    <td>${rowNo}</td>
+                    <td>${item.storeName}</td>
+                    <td class="text-start">${item.address}</td>
+                    <td>${item.growthRate || "-"}</td>
+                    <td>${item.orderCount.toLocaleString()}</td>
+                    <td>${item.salesAmount.toLocaleString()}</td>
+                    <td>${item.salesDate}</td>
+                    <td>
+                      <img src="/image/detail.png" class="detailBtn detail-icon"  data-storeno="${item.storeNo}">
+                    </td>
+                </tr>
     `);
         });
     }
@@ -476,7 +478,8 @@
     });
 
     $(document).on("click", ".detailBtn", function(){
-        location.href = "salesDetailUI.html";
+        const storeNo = $(this).data("storeno");
+        location.href = `salesDetailUI.html?storeNo=${storeNo}`;
     });
 
 

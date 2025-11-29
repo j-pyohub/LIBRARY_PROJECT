@@ -1,7 +1,8 @@
 package com.erp.service;
 
 import com.erp.dto.SalesListDTO;
-import com.erp.repository.SalesOrderRepository;
+import com.erp.dto.StoreDailyMenuSalesDTO;
+import com.erp.repository.StoreOrderDetailRepository;
 import com.erp.repository.StoreSalesRepository;
 import com.erp.repository.entity.StoreSales;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,19 @@ import java.util.List;
 public class SalesListService {
 
     private final StoreSalesRepository storeSalesRepository;
+
+
+    private final StoreOrderDetailRepository storeOrderDetailRepository;
+
+
+    public List<StoreDailyMenuSalesDTO> getSalesDetail(Long storeNo, LocalDate salesDate){
+
+        LocalDateTime start = salesDate.atStartOfDay();
+        LocalDateTime end   = salesDate.plusDays(1).atStartOfDay();
+
+        return storeOrderDetailRepository.findDailyMenuSalesByStore(storeNo, start, end);
+    }
+
 
     public Page<SalesListDTO> getSalesList(String startDateStr,
                                            String endDateStr,
