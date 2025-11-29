@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,14 @@ public class SalesRestController {
     private final SalesChartService salesChartService;
     private final SalesKPIService salesKPIService;
     private final SalesListService salesListService;
+
+    @GetMapping("/salesDetail")
+    public List<StoreDailyMenuSalesDTO> getSalesDetail(
+            @RequestParam Long storeNo,
+            @RequestParam String salesDate
+    ) {
+        return salesListService.getSalesDetail(storeNo, LocalDate.parse(salesDate));
+    }
 
     @GetMapping("/salesList")
     public Map<String, Object> getSalesList(

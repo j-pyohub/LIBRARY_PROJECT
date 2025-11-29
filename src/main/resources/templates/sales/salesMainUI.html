@@ -438,7 +438,8 @@
                     <td>${item.salesAmount.toLocaleString()}</td>
                     <td>${item.salesDate}</td>
                     <td>
-                      <img src="/image/detail.png" class="detailBtn detail-icon"  data-storeno="${item.storeNo}">
+                      <img src="/image/detail.png"  class="detailBtn detail-icon" data-store-no="${item.storeNo}"
+                      data-sales-date="${item.salesDate}" >
                     </td>
                 </tr>
     `);
@@ -478,8 +479,11 @@
     });
 
     $(document).on("click", ".detailBtn", function(){
-        const storeNo = $(this).data("storeno");
-        location.href = `salesDetailUI.html?storeNo=${storeNo}`;
+        const storeNo   = $(this).data("store-no");
+        const salesDate = $(this).data("sales-date");
+
+
+        location.href = `/salesDetailUI?storeNo=${storeNo}&salesDate=${salesDate}`;
     });
 
 
