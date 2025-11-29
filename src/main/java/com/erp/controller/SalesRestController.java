@@ -1,5 +1,6 @@
 package com.erp.controller;
 
+import com.erp.dto.KPIDTO;
 import com.erp.dto.MenuRatioDTO;
 import com.erp.dto.SalesChartDTO;
 import com.erp.dto.TotalStoreSalesDTO;
@@ -18,6 +19,15 @@ public class SalesRestController {
 
     private final SalesChartService salesChartService;
     private final SalesKPIService salesKPIService;
+
+    @GetMapping("/KPI")
+    public KPIDTO getKPI(
+            @RequestParam String type,
+            @RequestParam String startDate,
+            @RequestParam String endDate
+    ) {
+        return salesKPIService.getKPIByDate(type, startDate, endDate);
+    }
 
     @GetMapping("salesChart")
     public SalesChartDTO getSalesChart(
