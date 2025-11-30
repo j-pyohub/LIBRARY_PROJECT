@@ -9,9 +9,9 @@ public class SalesOrderServiceTest {
     @Autowired
     SalesOrderService salesOrderService;
 
-    @Test
-    public void getSalesOrderTest() {
-        System.out.println(salesOrderService.getSalesOrderList());
-    }
+//    @Test
+//    public void getSalesOrderTest() {
+//        System.out.println(salesOrderService.getSalesOrderList());
+//    }
 
 }

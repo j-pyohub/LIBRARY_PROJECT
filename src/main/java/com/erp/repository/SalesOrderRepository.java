@@ -1,10 +1,12 @@
 package com.erp.repository;
 
+import com.erp.dto.SalesOrderDTO;
 import com.erp.repository.entity.SalesOrder;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -15,6 +17,26 @@ import java.util.List;
 @Repository
 public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
 
+    @Query(value="""
+        SELECT new com.erp.dto.SalesOrderDTO(
+            o.salesOrderNo,
+            o.store.storeNo,
+            o.salesOrderDatetime,
+            o.store.storeName,
+            COUNT(d),
+            SUM(d.menuPrice * d.menuCount)
+        )
+        FROM SalesOrder o
+        LEFT JOIN StoreOrderDetail d
+               ON d.salesOrder.salesOrderNo = o.salesOrderNo
+        GROUP BY o.salesOrderNo, o.store.storeNo, o.salesOrderDatetime, o.store.storeName
+        ORDER BY o.salesOrderNo DESC
+    """,
+            countQuery = """
+        SELECT COUNT(o)
+        FROM SalesOrder o
+    """)
+    Page<SalesOrderDTO> getSalesOrderList(Pageable pageable);
 
     @Query("""
     SELECT SUM(sod.menuCount)
