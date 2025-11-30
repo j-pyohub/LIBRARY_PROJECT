@@ -1,18 +1,15 @@
 package com.erp.controller;
 
-import com.erp.dto.ItemOrderDTO;
 import com.erp.dto.SalesOrderDTO;
 import com.erp.service.SalesOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,5 +34,12 @@ public class SalesOrderRestController {
                 "totalElements", page.getTotalElements()
         );
     }
+    @GetMapping("/salesOrder/salesOrderDetail/{salesOrderNo}")
+    public Map<String, Object> getSalesOrderDetail(
+            @PathVariable Long salesOrderNo
+    ){
+        return salesOrderService.getSalesOrderDetail(salesOrderNo);
+    }
+
 
 }
