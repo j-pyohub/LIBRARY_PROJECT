@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>주문 조회 (본사)</title>
@@ -12,15 +12,21 @@
     <script src="/js/util.js"></script>
 
     <style>
-        body {
-            background-color: #e5e5e5;
-        }
 
-        .wrapper {
-            max-width: 1500px;
-            margin: 0 auto;
-            background: #fff;
-        }
+      .custom-btn {
+        background-color: #FFEEAA !important;
+        border-color: #FFEEAA !important;
+        color: #000;
+      }
+
+      .custom-btn:hover {
+        background-color: #f2da84 !important;
+        border-color: #f2da84 !important;
+      }
+
+      .custom-container {
+        max-width: 1500px;
+      }
 
         .section-box {
             background: #fff;
@@ -54,10 +60,10 @@
     </style>
 </head>
 
-<body class="p-3">
-
-<div class="wrapper border border-secondary">
-
+<body class="bg-light py-3">
+<header th:replace="fragments/toolBarManager :: toolBarManager"></header>
+<div class="container custom-container mt-5">
+    <div class="bg-white border rounded p-4">
     <div class="p-3">
         <div class="fs-3 fw-bold mb-3">주문 조회</div>
     </div>
@@ -71,8 +77,8 @@
         <span class="fw-semibold ms-3">직영점</span>
         <input id="storeInput" type="text" class="form-control form-control-sm w-180">
 
-        <button id="searchBtn" class="btn btn-warning btn-sm">검색</button>
-        <button id="resetBtn" class="btn btn-outline-secondary btn-sm">초기화</button>
+        <button id="searchBtn" class="btn custom-btn">검색</button>
+        <button id="resetBtn" class="btn btn-outline-secondary">초기화</button>
     </div>
 
     <!-- 리스트 -->
@@ -106,7 +112,7 @@
     </div>
 
 </div>
-
+</div>
 <!-- ============================
      상세 모달
 ============================ -->
@@ -150,7 +156,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-warning" data-bs-dismiss="modal">닫기</button>
+                <button class="btn custom-btn" data-bs-dismiss="modal">닫기</button>
             </div>
         </div>
     </div>
