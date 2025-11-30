@@ -5,6 +5,7 @@ import com.erp.dto.StoreDailyMenuSalesDTO;
 import com.erp.repository.entity.SalesOrder;
 import com.erp.repository.entity.StoreOrderDetail;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDetail, Long> {
+public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDetail, Long>, Specification<StoreOrderDetail> {
     @Query("""
     SELECT new com.erp.dto.SalesOrderDTO(
        o.salesOrderNo,
