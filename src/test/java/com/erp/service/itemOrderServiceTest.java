@@ -37,6 +37,6 @@ public class itemOrderServiceTest {
 
     @Test
     public void getItemOrderDetailListTestByItemOrderNoTest() {
-        System.out.println(orderService.getItemOrderById(1L));
+        System.out.println(orderService.getItemOrderDetailByOrderNo(1L));
     }
 }

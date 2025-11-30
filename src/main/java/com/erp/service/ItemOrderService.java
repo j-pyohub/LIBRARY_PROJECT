@@ -52,7 +52,7 @@ public class ItemOrderService {
         return repoOrder.findByItemOrderStatus(status, PageRequest.of(pageNo, 10));
     }
 
-    public List<ItemOrderDetailDTO> getItemOrderById(Long itemOrderNo) {
+    public List<ItemOrderDetailDTO> getItemOrderDetailByOrderNo(Long itemOrderNo) {
         return orderDetailRepo.findAllItemOrderDetail(ItemOrder.builder().itemOrderNo(itemOrderNo).build());
     }
 }
