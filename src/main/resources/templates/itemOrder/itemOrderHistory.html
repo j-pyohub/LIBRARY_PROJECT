@@ -96,12 +96,6 @@
         <a class="page-link" data-page="1">1</a>
       </li>
       <li class="page-item">
-        <a class="page-link" data-page="2">2</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" data-page="3">3</a>
-      </li>
-      <li class="page-item">
         <a class="page-link" data-page="next">다음</a>
       </li>
     </ul>
@@ -252,110 +246,94 @@
     </div>
   </div>
 </div>
+<script type="application/javascript" src="/js/util.js"></script>
 <script>
-  $(document).on("click", "#pagination .page-link", function () {
-    const page = $(this).data("page");  // data-page 값 가져오기
+  const itemOrderTable = $("#item_order_list");
 
-    // 숫자일 경우
-    if (!isNaN(page)) {
-      loadPage(page);
-    }
+  function loadPage(pageNo) {
+    fetchUtil(`/itemOrder/itemOrderList/${pageNo - 1}`, data => {
+      loadItemOrderTable(data);
+      updatePaginationUI(data.pageNo, data.totalPages);
+    });
+  }
 
-    // 이전/다음
-    if (page === "prev") {
-      const current = $("#pagination .active a").data("page");
-      if (current > 1) loadPage(current - 1);
-    }
+  function loadItemOrderDetail(data) {
+    const tbody = $("#orderDetailModal tbody");
+    tbody.empty();
 
-    if (page === "next") {
-      const current = $("#pagination .active a").data("page");
-      loadPage(current + 1);
-    }
+    data.list.forEach(item => {
+
+      let row = `
+          <tr>
+            <td>${item.itemCode}</td>
+            <td class="fw-bold">${item.itemName}</td>
+            <td>${item.itemCategoryName}</td>
+            <td><a href="#" class="text-primary fw-bold">2</a> ${item.itemOrderQuantity}</td>
+            <td>${item.itemPrice}</td>
+            <td>${item.itemOrderPrice}</td>
+            <td><button class="btn btn-outline-warning btn-sm">입고</button></td>
+          </tr>
+    `;
+    })
+  }
+
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  function loadItemOrderTable(data) {
+    const tbody = itemOrderTable.find("tbody");
+    tbody.empty();
+
+    data.list.forEach(item => {
+      const date = new Date(item.requestDate);
+      let row = `
+              <tr>
+                  <td data-orderno="${item.itemOrderNo}">${item.itemOrderNo}</td>
+                  <td>${item.storeName}</td>
+                  <td>${"" + date.getFullYear() + "-" + (date.getMonth() + 1)}</td>
+                  <td>${days[date.getDay()]}</td>
+                  <td>${date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.price.toLocaleString()} 원</td>
+                   <td style="color: green;" class="req_status">${item.orderStatus}</td>
+                   <td class="receive_status">${item.receiveStatus}</td>
+          `;
+      if (item.receiveStatus === "입고대기") {
+        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>`;
+      } else if (item.receiveStatus === "입고완료") {
+        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailCancelModal">상세조회</button></td>`;
+      }
+      tbody.append(row + "</tr>");
+    });
+  }
+
+  $(window).on("load", function () {
+    loadPage(1);
   });
 
-  function updatePaginationUI(page, totalPages) {
-    const pag = $("#pagination");
-    pag.find(".page-item").removeClass("active");
-
-    // 현재 페이지 활성화
-    pag.find(`a[data-page='${page}']`).closest(".page-item").addClass("active");
-
-    // 이전 버튼 비활성화
-    if (page == 1) {
-      pag.find("a[data-page='prev']").closest(".page-item").addClass("disabled");
-    } else {
-      pag.find("a[data-page='prev']").closest(".page-item").removeClass("disabled");
-    }
-
-    // 다음 버튼 비활성화
-    if (page == totalPages) {
-      pag.find("a[data-page='next']").closest(".page-item").addClass("disabled");
-    } else {
-      pag.find("a[data-page='next']").closest(".page-item").removeClass("disabled");
-    }
+  function getItemOrderDetail(itemOrderNo){
+    fetchUtil(`/itemOrder/itemOrderDetail/${itemOrderNo}`, (data)=>{
+      loadItemOrderDetail(data);
+    });
   }
 
   let selectedRow = null;
-  $(".detail_btn").on("click", function(){
+  $(document).on("click", ".detail_btn", function(){
     selectedRow = $(this).closest("tr");
-  })
+    console.log("tt");
+    getItemOrderDetail(selectedRow.find("td").data("orderno"));
+  });
 
+  // 클릭 시 주문 상태 상태 변경
   $("#orderDetailCancelModal").on("click", "#req_cancel_btn", function(){
     selectedRow.find(".req_status").text("취소");
     $("#orderDetailCancelModal").modal("hide");
 
   });
 
+  // 클릭 시 주문 입고 상태 변경
   $("#receive_all_btn").on("click", function(){
     selectedRow.find(".receive_status").text("입고완료");
     $("#orderDetailModal").modal("hide");
   });
-
-  const itemOrderTable = $("#item_order_list");
-
-  function loadPage(pageNo){
-    fetch(`http://127.0.0.1:5432/itemOrder/itemOrderList/${pageNo-1}`)
-        .then(response => response.json())
-        .then(data => {
-          loadItemOrderTable(data);
-          updatePaginationUI(data.pageNo, data.totalPages);
-        })
-        .catch(err => console.error(err));
-  }
-
-  const days = ["일", "월", "화", "수", "목", "금", "토"];
-  function loadItemOrderTable(data){
-    const tbody = itemOrderTable.find("tbody");
-    tbody.empty();
-
-    data.list.forEach(item=>{
-      const date = new Date(item.requestDate);
-      let row = `
-                <tr>
-                    <td>${item.itemOrderNo}</td>
-                    <td>${item.storeName}</td>
-                    <td>${""+date.getFullYear() +"-"+ (date.getMonth()+1)+"-"+ date.getDate()}</td>
-                    <td>${days[date.getDay()]}</td>
-                    <td>${date.getHours() + ":"+date.getMinutes()+":"+date.getSeconds()}</td>
-                    <td>${item.quantity}</td>
-                    <td>${item.price.toLocaleString()} 원</td>
-                     <td style="color: green;" class="req_status">${item.orderStatus}</td>
-                     <td class="receive_status">${item.receiveStatus}</td>
-            `;
-      if(item.receiveStatus === "입고대기") {
-        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailModal">상세조회</button></td>`;
-      }
-      else if(item.receiveStatus === "입고완료"){
-        row += `<td><button class="btn btn-outline-secondary btn-sm detail_btn" data-bs-toggle="modal" data-bs-target="#orderDetailCancelModal">상세조회</button></td>`;
-      }
-      tbody.append(row+"</tr>");
-    });
-  }
-
-  $(window).on("load", function(){
-    loadPage(1);
-  });
-
 </script>
 </body>
 </html>

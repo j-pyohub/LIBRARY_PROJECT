@@ -1,6 +1,7 @@
 package com.erp.controller;
 
 import com.erp.dto.ItemOrderDTO;
+import com.erp.dto.ItemOrderDetailDTO;
 import com.erp.service.ItemOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,5 +27,9 @@ public class ItemOrderRestController {
                 "pageNo", page.getNumber() + 1,
                 "totalElement", page.getTotalElements()
         );
+    }
+    @GetMapping("/itemOrder/itemOrderDetail/{itemOrderNo}")
+    public List<ItemOrderDetailDTO> itemOrderDetail(@PathVariable Long itemOrderNo) {
+        return itemOrderService.getItemOrderDetailByOrderNo(itemOrderNo);
     }
 }
