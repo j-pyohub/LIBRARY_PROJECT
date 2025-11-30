@@ -30,4 +30,7 @@ public class SalesController {
     }
     @GetMapping("salesMain")
     private String salesMain(){ return "sales/salesMainUI"; }
+
+    @GetMapping("storeSalesMain")
+    private String storeSalesMain(){ return "sales/storeSalesMainUI"; }
 }

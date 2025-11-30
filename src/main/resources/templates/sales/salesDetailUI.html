@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>직영점 판매상품 목록</title>
@@ -9,15 +8,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    /* 공용 fetch 유틸 */
-    function fetchUtil(url, action) {
-      fetch(url)
-              .then(res => res.json())
-              .then(action)
-              .catch(err => console.error("에러:", err));
-    }
-  </script>
+  <!-- fetchUtil만 사용 (pagination util 제거) -->
+  <script src="/js/util.js"></script>
 
   <style>
     .page-wrapper {
@@ -25,7 +17,6 @@
       margin:auto;
     }
     .w-240 { width:240px; }
-    .w-80 { width:80px; }
   </style>
 </head>
 
@@ -33,28 +24,21 @@
 
 <div class="page-wrapper">
 
-  <!-- 매장명 -->
   <h4 class="text-center mb-4 mt-3" th:text="${storeName}"></h4>
 
-  <!-- 뒤로가기 + 검색창 -->
   <div class="d-flex justify-content-between align-items-center mb-3">
-
-    <!-- 왼쪽 : 뒤로가기 -->
     <button id="btnBack" class="btn btn-warning btn-sm">뒤로가기</button>
 
-    <!-- 오른쪽 : 검색 -->
     <div class="d-flex gap-2">
       <input id="searchInput" type="text" class="form-control w-240" placeholder="판매상품 검색">
       <button id="searchBtn" class="btn btn-primary">검색</button>
     </div>
-
   </div>
 
-  <!-- 테이블 -->
   <div class="card">
     <div class="card-body p-0">
 
-      <table class="table table-hover mb-0 text-center align-middle" id="dataTable">
+      <table class="table table-hover mb-0 text-center align-middle">
         <thead class="table-light">
         <tr>
           <th>번호</th>
@@ -71,7 +55,7 @@
     </div>
   </div>
 
-  <!-- 페이지네이션 -->
+  <!-- ⭐ onclick 페이징 적용 영역 -->
   <div class="d-flex justify-content-center mt-3">
     <nav>
       <ul class="pagination mb-0" id="pagination"></ul>
@@ -85,36 +69,32 @@
 ============================ -->
 <script>
 
-  /* URL 파라미터 가져오기 */
+  /* URL 파라미터 */
   const params = new URLSearchParams(location.search);
   const storeNo = params.get("storeNo");
   const salesDate = params.get("salesDate");
 
-  /* 뒤로가기 버튼 */
-  $("#btnBack").on("click", function () {
-    history.back();
-  });
+  $("#btnBack").on("click", () => history.back());
 
-  /* 상세 데이터 저장용 */
   let detailData = [];
   let filteredData = [];
   let currentPage = 1;
-  const rowsPerPage = 10;   // 고정 10개씩
+  const rowsPerPage = 10;
 
-  /* -----------------------------
-        테이블 렌더링
-  ----------------------------- */
+  /* -----------------------------------
+          테이블 렌더링
+  ----------------------------------- */
   function renderTable() {
     const startIdx = (currentPage - 1) * rowsPerPage;
     const endIdx = startIdx + rowsPerPage;
 
-    const $tbody = $("#tableBody");
-    $tbody.empty();
+    const tbody = $("#tableBody");
+    tbody.empty();
 
-    filteredData.slice(startIdx, endIdx).forEach((row, index) => {
-      const rowNo = startIdx + index + 1;
+    filteredData.slice(startIdx, endIdx).forEach((row, idx) => {
+      const rowNo = startIdx + idx + 1;
 
-      $tbody.append(`
+      tbody.append(`
         <tr>
           <td>${rowNo}</td>
           <td>${row.menuCategory}</td>
@@ -129,75 +109,77 @@
     renderPagination();
   }
 
-  /* -----------------------------
-        페이지네이션 렌더링
-  ----------------------------- */
+
+  /* -----------------------------------
+         ⭐ onclick 방식 페이징
+  ----------------------------------- */
   function renderPagination() {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
     const $pagination = $("#pagination");
-
     $pagination.empty();
 
-    // 이전
+    if (totalPages === 0) return;
+
+    /* prev */
     $pagination.append(`
-      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="movePage(${currentPage - 1})">&lt;</a>
+      <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+        <a class="page-link" href="#" onclick="loadPage(${currentPage - 1}); return false;">&lt;</a>
       </li>
     `);
 
-    // 번호
+    /* 번호 */
     for (let i = 1; i <= totalPages; i++) {
       $pagination.append(`
-        <li class="page-item ${i === currentPage ? 'active' : ''}">
-          <a class="page-link" href="#" onclick="movePage(${i})">${i}</a>
+        <li class="page-item ${i === currentPage ? "active" : ""}">
+          <a class="page-link" href="#" onclick="loadPage(${i}); return false;">${i}</a>
         </li>
       `);
     }
 
-    // 다음
+    /* next */
     $pagination.append(`
-      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-        <a class="page-link" href="#" onclick="movePage(${currentPage + 1})">&gt;</a>
+      <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+        <a class="page-link" href="#" onclick="loadPage(${currentPage + 1}); return false;">&gt;</a>
       </li>
     `);
   }
 
-  function movePage(page) {
+  /* 실제 페이지 로드 */
+  function loadPage(page) {
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+
     if (page < 1 || page > totalPages) return;
 
     currentPage = page;
     renderTable();
   }
 
-  /* -----------------------------
-        검색 기능
-  ----------------------------- */
+
+  /* -----------------------------------
+            검색
+  ----------------------------------- */
   function applySearch() {
     const keyword = $("#searchInput").val().trim();
 
-    if (keyword === "") {
-      filteredData = detailData;
-    } else {
-      filteredData = detailData.filter(d =>
-              d.menuName.includes(keyword)
-      );
-    }
+    filteredData =
+            keyword === ""
+                    ? detailData
+                    : detailData.filter(d => d.menuName.includes(keyword));
 
     currentPage = 1;
     renderTable();
   }
 
   $("#searchBtn").on("click", applySearch);
-  $("#searchInput").on("keyup", function (e) {
+  $("#searchInput").on("keyup", e => {
     if (e.key === "Enter") applySearch();
   });
 
-  /* -----------------------------
-        초기 데이터 로딩
-  ----------------------------- */
-  $(document).ready(function() {
 
+  /* -----------------------------------
+        초기 데이터 로딩
+  ----------------------------------- */
+  $(document).ready(function() {
     const url = `/salesDetail?storeNo=${storeNo}&salesDate=${salesDate}`;
 
     fetchUtil(url, data => {
@@ -205,7 +187,6 @@
       filteredData = detailData;
       renderTable();
     });
-
   });
 
 </script>

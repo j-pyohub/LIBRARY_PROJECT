@@ -9,15 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <!-- fetchUtil -->
-    <script>
-        function fetchUtil(url, action){
-            fetch(url)
-                .then(res => res.json())
-                .then(action)
-                .catch(err => console.error("에러:", err));
-        }
-    </script>
+    <!-- 공통 util.js -->
+    <script src="/js/util.js"></script>
 
     <style>
         body { background-color:#fdfdfd; }
@@ -32,7 +25,6 @@
 
         .section-box { background:#fff; border:1px solid #ddd; border-radius:10px; padding:20px; }
 
-        /* LIST */
         .detail-icon { width:24px; cursor:pointer; }
         #listPage { display:none; }
     </style>
@@ -58,8 +50,8 @@
     ============================ -->
     <div id="chartPage">
 
-        <!-- 기간/조회 -->
         <div class="d-flex align-items-center flex-wrap gap-3 mb-3 px-2">
+
             <!-- 라디오 -->
             <div>
                 <label class="form-check form-check-inline">
@@ -94,7 +86,7 @@
             </div>
         </div>
 
-        <!-- KPI  -->
+        <!-- KPI -->
         <div class="row g-3 mb-3 px-2">
             <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">전체 매출</div><div class="kpi-value" id="kpi-totalSales"></div></div></div>
             <div class="col-md-3"><div class="kpi-card"><div class="kpi-title">총 판매 수량</div><div class="kpi-value" id="kpi-totalMenu"></div></div></div>
@@ -108,7 +100,7 @@
             <canvas id="mainChart" height="90"></canvas>
         </div>
 
-        <!-- TOP5 & 메뉴 비중 -->
+        <!-- TOP5 & 메뉴비중 -->
         <div class="row g-3 mb-3 px-2">
             <div class="col-md-6">
                 <div class="section-box">
@@ -124,8 +116,7 @@
                 </div>
             </div>
         </div>
-    </div> <!-- chartPage end -->
-
+    </div>
 
     <!-- ============================
          LIST PAGE
@@ -135,26 +126,20 @@
         <div class="section-box mx-2 mt-3">
             <h6 class="fw-bold mb-3">직영점별 매출 리스트</h6>
 
-            <!-- 검색 영역 -->
             <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-
-                <!-- 조회기간 -->
                 <span class="fw-semibold">조회기간</span>
                 <input type="date" id="list-start" class="form-control form-control-sm w-150">
                 <span>~</span>
                 <input type="date" id="list-end" class="form-control form-control-sm w-150">
 
-                <!-- 직영점명 + 검색창 한줄로 -->
                 <span class="fw-semibold ms-3">직영점명</span>
 
                 <div class="input-group input-group-sm" style="width: 220px;">
                     <input type="text" id="list-storeName" class="form-control" placeholder="지점명 검색">
-                    <button class="btn btn-outline-secondary" type="button" id="list-searchBtn">검색</button>
+                    <button class="btn btn-outline-secondary" id="list-searchBtn">검색</button>
                 </div>
-
             </div>
 
-            <!-- 리스트 테이블 -->
             <table class="table table-hover align-middle mb-3">
                 <thead>
                 <tr class="text-center">
@@ -172,7 +157,9 @@
             </table>
 
             <!-- 페이지네이션 -->
-            <div class="d-flex justify-content-center mb-3" id="paginationArea"></div>
+            <div class="d-flex justify-content-center mb-3">
+                <ul class="pagination pagination-sm" id="pagination"></ul>
+            </div>
 
         </div>
 
@@ -180,26 +167,24 @@
 
 </div>
 
-
-<!-- ============================
-      SCRIPT
-============================ -->
 <script>
 
     /* 보기 버튼 */
     function updateModeButtons(mode){
+        $("#chartPage").toggle(mode === "chart");
+        $("#listPage").toggle(mode === "list");
+
         $("#chartBtn").toggleClass("btn-warning", mode === "chart")
             .toggleClass("btn-outline-secondary", mode !== "chart");
+
         $("#listBtn").toggleClass("btn-warning", mode === "list")
             .toggleClass("btn-outline-secondary", mode !== "list");
     }
-    function showChart(){ $("#chartPage").show(); $("#listPage").hide(); updateModeButtons("chart"); }
-    function showList(){ $("#chartPage").hide(); $("#listPage").show(); updateModeButtons("list"); }
-    $("#chartBtn").on("click", showChart);
-    $("#listBtn").on("click", showList);
 
+    $("#chartBtn").on("click", () => updateModeButtons("chart"));
+    $("#listBtn").on("click", () => updateModeButtons("list"));
 
-    /* 조회 input 변경 */
+    /* 조회기간 타입 변경 */
     function updatePeriodInputs(type){
         const box = $("#periodInputs");
 
@@ -237,8 +222,7 @@
         updatePeriodInputs($(this).attr("id"));
     });
 
-
-    /* ========= MAIN CHART ========= */
+    /* --- CHART PAGE --- */
     let mainChart;
 
     function createMainChart(labels, values){
@@ -249,7 +233,7 @@
         mainChart = new Chart(ctx, {
             type: "line",
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     label: "매출액",
                     data: values,
@@ -272,16 +256,13 @@
             return;
         }
 
-        const url = `/salesChart?startDate=${s}&endDate=${e}&type=${type}`;
-
-        fetchUtil(url, data => {
+        fetchUtil(`/salesChart?startDate=${s}&endDate=${e}&type=${type}`, data => {
             createMainChart(data.labels, data.values);
             loadKPI(type, s, e);
         });
     });
 
-
-    /* ========= TOP 5 ========= */
+    /* TOP5 */
     let top5Chart;
 
     function createTop5Chart(labels, values){
@@ -292,28 +273,20 @@
         top5Chart = new Chart(ctx, {
             type: "bar",
             data: {
-                labels: labels,
-                datasets: [{
-                    label: "매출금액",
-                    data: values,
-                    backgroundColor: ["#0d6efd","#6f42c1","#d63384","#fd7e14","#198754"]
-                }]
+                labels,
+                datasets: [{ label: "매출금액", data: values, backgroundColor: ["#0d6efd","#6f42c1","#d63384","#fd7e14","#198754"] }]
             },
-            options:{ indexAxis:"y" }
+            options: { indexAxis:"y" }
         });
     }
 
     function loadTop5Chart(){
         fetchUtil("/totalStoreSales", data => {
-            createTop5Chart(
-                data.map(x => x.storeName),
-                data.map(x => x.totalSales)
-            );
+            createTop5Chart(data.map(x => x.storeName), data.map(x => x.totalSales));
         });
     }
 
-
-    /* ========= 메뉴비중 ========= */
+    /* 메뉴비중 */
     let menuChart;
 
     function createMenuRatioChart(labels, values){
@@ -322,23 +295,20 @@
         if(menuChart){ menuChart.destroy(); }
 
         const baseColors = ["#ff6384","#36a2eb","#ffcd56","#4bc0c0","#9966ff"];
-        const colors = labels.map((_, i) => i < 5 ? baseColors[i] : "#999999");
+        const colors = labels.map((_, i) => baseColors[i % baseColors.length]);
 
         menuChart = new Chart(ctx, {
             type: "doughnut",
-            data: { labels, datasets:[{ data:values, backgroundColor: colors }] },
-            plugins: [ChartDataLabels],
-            options: {
-                plugins: {
-                    legend: { display:false },
-                    datalabels: {
+            data: { labels, datasets:[{ data: values, backgroundColor: colors }] },
+            plugins:[ChartDataLabels],
+            options:{
+                plugins:{
+                    legend:{ display:false },
+                    datalabels:{
                         color:"#000",
-                        font:{ size:12, weight:"bold" },
-                        formatter: (value, context) => {
-                            const label = context.chart.data.labels[context.dataIndex];
-                            const total = context.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
-                            const percent = (value/total*100).toFixed(1);
-                            return label + "\n" + percent + "%";
+                        formatter:(value, ctx)=>{
+                            const total = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+                            return (value / total * 100).toFixed(1) + "%";
                         }
                     }
                 }
@@ -349,13 +319,14 @@
     function loadMenuRatio(){
         fetchUtil("/menuRatio", data => {
 
-            data.sort((a, b) => b.salesAmount - a.salesAmount);
-            const top5 = data.slice(0, 5);
-            const etc = data.slice(5);
-            const etcTotal = etc.reduce((sum, x) => sum + x.salesAmount, 0);
+            data.sort((a,b)=>b.salesAmount - a.salesAmount);
 
-            const labels = top5.map(x => x.menuName);
-            const values = top5.map(x => x.salesAmount);
+            const top5 = data.slice(0,5);
+            const etc = data.slice(5);
+            const etcTotal = etc.reduce((s,x)=>s+x.salesAmount,0);
+
+            const labels = top5.map(x=>x.menuName);
+            const values = top5.map(x=>x.salesAmount);
 
             if(etcTotal > 0){
                 labels.push("기타");
@@ -366,12 +337,9 @@
         });
     }
 
-
-
+    /* KPI */
     function loadKPI(type, start, end){
-        const url = `/KPI?type=${type}&startDate=${start}&endDate=${end}`;
-
-        fetchUtil(url, data => {
+        fetchUtil(`/KPI?type=${type}&startDate=${start}&endDate=${end}`, data => {
             $("#kpi-totalSales").text(data.totalSales.toLocaleString());
             $("#kpi-totalMenu").text(data.totalMenuCount.toLocaleString());
             $("#kpi-avgStore").text(data.avgStoreSales.toLocaleString());
@@ -380,7 +348,7 @@
     }
 
 
-
+    /* --- LIST PAGE --- */
     let listCurrentPage = 1;
 
     function loadList(page){
@@ -396,23 +364,16 @@
             const yesterday = new Date(now);
             yesterday.setDate(yesterday.getDate() - 1);
 
-            const yyyy = monthStart.getFullYear();
-            const mm   = String(monthStart.getMonth() + 1).padStart(2,'0');
-            const dd1  = "01";
+            const toDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
-            const y2 = yesterday.getFullYear();
-            const m2 = String(yesterday.getMonth() + 1).padStart(2,'0');
-            const d2 = String(yesterday.getDate()).padStart(2,'0');
-
-            start = `${yyyy}-${mm}-${dd1}`;
-            end   = `${y2}-${m2}-${d2}`;
+            start = toDate(monthStart);
+            end   = toDate(yesterday);
 
             $("#list-start").val(start);
             $("#list-end").val(end);
         }
 
-        const url = `/salesList?startDate=${start}&endDate=${end}&storeName=${storeName}&page=${page}`;
-        fetchUtil(url, data => {
+        fetchUtil(`/salesList?startDate=${start}&endDate=${end}&storeName=${storeName}&page=${page}`, data => {
             renderList(data.list);
             renderPagination(data.totalPages, data.currentPage);
         });
@@ -426,87 +387,83 @@
             tbody.append(`<tr><td colspan="8" class="text-center">데이터가 없습니다.</td></tr>`);
             return;
         }
+
         list.forEach((item, index) => {
             const rowNo = (listCurrentPage - 1) * 10 + (index + 1);
+
             tbody.append(`
-                <tr class="text-center">
-                    <td>${rowNo}</td>
-                    <td>${item.storeName}</td>
-                    <td class="text-start">${item.address}</td>
-                    <td>${item.growthRate || "-"}</td>
-                    <td>${item.orderCount.toLocaleString()}</td>
-                    <td>${item.salesAmount.toLocaleString()}</td>
-                    <td>${item.salesDate}</td>
-                    <td>
-                      <img src="/image/detail.png"  class="detailBtn detail-icon" data-store-no="${item.storeNo}"
-                      data-sales-date="${item.salesDate}" >
-                    </td>
-                </tr>
-    `);
+            <tr class="text-center">
+                <td>${rowNo}</td>
+                <td>${item.storeName}</td>
+                <td class="text-start">${item.address}</td>
+                <td>${item.growthRate || "-"}</td>
+                <td>${item.orderCount.toLocaleString()}</td>
+                <td>${item.salesAmount.toLocaleString()}</td>
+                <td>${item.salesDate}</td>
+                <td>
+                    <img src="/image/detail.png" class="detailBtn detail-icon"
+                        data-store-no="${item.storeNo}"
+                        data-sales-date="${item.salesDate}">
+                </td>
+            </tr>
+        `);
         });
     }
 
+    /* ⭐ util.js 방식으로 완전 호환되는 pagination */
     function renderPagination(totalPages, currentPage){
-        const area = $("#paginationArea");
-        area.empty();
-        if(totalPages === 0){
-            return;
-        }
-        let html = `<ul class="pagination pagination-sm">`;
-        html += `
+        const $pag = $("#pagination");
+        $pag.empty();
+
+        // prev
+        $pag.append(`
         <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
             <a class="page-link" href="#" onclick="loadList(${currentPage - 1}); return false;">&lt;</a>
         </li>
-    `;
+    `);
+
+        // numbers
         for(let i = 1; i <= totalPages; i++){
-            html += `
+            $pag.append(`
             <li class="page-item ${currentPage === i ? "active" : ""}">
                 <a class="page-link" href="#" onclick="loadList(${i}); return false;">${i}</a>
             </li>
-        `;
+        `);
         }
-        html += `
+
+        // next
+        $pag.append(`
         <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
             <a class="page-link" href="#" onclick="loadList(${currentPage + 1}); return false;">&gt;</a>
         </li>
-    `;
-        html += `</ul>`;
-        area.html(html);
+    `);
     }
 
-    $("#list-searchBtn").on("click", function(){
-        loadList(1);
-    });
+    /* 검색 */
+    $("#list-searchBtn").on("click", () => loadList(1));
 
+    /* 상세 이동 */
     $(document).on("click", ".detailBtn", function(){
-        const storeNo   = $(this).data("store-no");
-        const salesDate = $(this).data("sales-date");
-
-
-        location.href = `/salesDetailUI?storeNo=${storeNo}&salesDate=${salesDate}`;
+        const storeNo = $(this).data("store-no");
+        const date    = $(this).data("sales-date");
+        location.href = `/salesDetailUI?storeNo=${storeNo}&salesDate=${date}`;
     });
 
-
-
+    /* 초기 로딩 */
     $(document).ready(function(){
 
-        showChart();
-
+        updateModeButtons("chart");
 
         $("#day").prop("checked", true);
         updatePeriodInputs("day");
 
+        // 날짜 계산
         const today = new Date();
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
 
-        function toDate(d){
-            const yyyy = d.getFullYear();
-            const mm = String(d.getMonth()+1).padStart(2,'0');
-            const dd = String(d.getDate()).padStart(2,'0');
-            return `${yyyy}-${mm}-${dd}`;
-        }
+        const toDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
         const s = toDate(monthStart);
         const e = toDate(yesterday);
@@ -514,21 +471,21 @@
         $("#startInput").val(s);
         $("#endInput").val(e);
 
-
+        // chart
         fetchUtil(`/salesChart?startDate=${s}&endDate=${e}&type=day`, data => {
             createMainChart(data.labels, data.values);
         });
 
         loadKPI("day", s, e);
-
         loadTop5Chart();
         loadMenuRatio();
 
-
+        // list page 초기값
         $("#list-start").val(s);
         $("#list-end").val(e);
         loadList(1);
     });
+
 </script>
 
 </body>
