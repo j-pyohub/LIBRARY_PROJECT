@@ -144,11 +144,9 @@
 
 
   <!-- ===================================================================
-       LIST PAGE (변경 없음)
+       LIST PAGE (현재 미사용)
   =================================================================== -->
-  <div id="listPage">
-    <!-- 기존 코드 그대로 유지 -->
-  </div>
+  <div id="listPage"></div>
 
 </div>
 
@@ -158,7 +156,7 @@
 =================================================================== -->
 <script>
 
-  /* 보기 버튼 */
+  /* === 화면 전환 === */
   $("#chartBtn").on("click", ()=>showChart());
   $("#listBtn").on("click", ()=>showList());
 
@@ -173,9 +171,7 @@
   function showList(){ $("#chartPage").hide(); $("#listPage").show(); updateModeButtons("list"); }
 
 
-  /* ==================================================================
-       조회기간 input 변경
-  ================================================================== */
+  /* === 조회기간 input === */
   function updatePeriodInputs(type){
     const box = $("#periodInputs");
     const tpl = {
@@ -200,9 +196,7 @@
   });
 
 
-  /* ==================================================================
-       메인 차트
-  ================================================================== */
+  /* === 메인 차트 === */
   let mainChart;
 
   function createMainChart(labels, values){
@@ -225,32 +219,16 @@
     });
   }
 
-  /* storeNo = 1 하드코딩 */
   function loadTrend(type, start, end){
-    const url = `/store/my/trend?storeNo=1&startDate=${start}&endDate=${end}&type=${type}`;
+    const url = `/store/salesChart?startDate=${start}&endDate=${end}&type=${type}`;
     fetchUtil(url, data => {
+      console.log("메인차트 응답:", data);
       createMainChart(data.labels, data.values);
     });
   }
 
 
-  /* ==================================================================
-       KPI
-  ================================================================== */
-  function loadKpi(type, start, end){
-    const url = `/store/my/kpi?storeNo=1&startDate=${start}&endDate=${end}&type=${type}`;
-    fetchUtil(url, data => {
-      $("#kpi-totalSales").text(data.totalSales.toLocaleString());
-      $("#kpi-totalMenu").text(data.totalMenuCount.toLocaleString());
-      $("#kpi-avgPrice").text(data.avgOrderAmount.toLocaleString());
-      $("#kpi-growth").text(data.growthRate.toFixed(1)+"%");
-    });
-  }
-
-
-  /* ==================================================================
-       조회 버튼
-  ================================================================== */
+  /* === 조회 버튼 === */
   $("#getSalesBtn").on("click", function(){
     const type = $("input[name='period']:checked").attr("id");
     const s = $("#startInput").val();
@@ -262,13 +240,10 @@
     }
 
     loadTrend(type, s, e);
-    loadKpi(type, s, e);
   });
 
 
-  /* ==================================================================
-       TOP5 (본사 그대로)
-  ================================================================== */
+  /* === TOP5 === */
   function loadTop5(){
     fetchUtil("/totalStoreSales", data => {
       const labels = data.map(x=>x.storeName);
@@ -282,12 +257,12 @@
     });
   }
 
-  /* ==================================================================
-       메뉴 비율 (본사 그대로)
-  ================================================================== */
+
+  /* === 메뉴 비중 === */
   function loadMenuRatio(){
     fetchUtil("/menuRatio", data => {
       data.sort((a,b)=>b.salesAmount-a.salesAmount);
+
       const top5 = data.slice(0,5);
       const etc = data.slice(5);
       const etcTotal = etc.reduce((s,x)=>s+x.salesAmount,0);
@@ -314,27 +289,39 @@
           }
         }
       });
-
     });
   }
 
 
-  /* ==================================================================
-       초기 실행
-  ================================================================== */
+  /* === 초기 실행 === */
   $(document).ready(function(){
-    showChart();
-    updatePeriodInputs("month");
 
+    showChart();
+
+    // 기본 선택: 일별(day)
+    $("#day").prop("checked", true);
+    updatePeriodInputs("day");
+
+    // 이번달 1일 ~ 어제
     const today = new Date();
-    const s = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-01`;
-    const e = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    function toDate(d){
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    const s = toDate(monthStart);
+    const e = toDate(yesterday);
 
     $("#startInput").val(s);
     $("#endInput").val(e);
 
-    loadTrend("month", s, e);
-    loadKpi("month", s, e);
+    // 메인 차트 로딩
+    loadTrend("day", s, e);
+
+    // TOP5 + 메뉴비중
     loadTop5();
     loadMenuRatio();
   });
