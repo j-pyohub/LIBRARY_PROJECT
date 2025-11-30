@@ -1,80 +1,90 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+<div th:fragment="toolBarManager">
 
     <style>
+        html, body {
+            margin: 0; !important;
+            padding: 0; !important;
+        }
+        /* 상단바 전체 */
         .top-bar {
             width: 100%;
-            height: 90px;
-            background-color: #c6f8d6;
+            height: 65px; /* ⬆ 더 두껍게 */
+            background-color: #d8f6e4;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 25px;
+            padding: 0 35px; /* ⬆ 좌우 padding 증가 */
+            border-bottom: 1px solid #c8e6d3;
             box-sizing: border-box;
         }
 
+        /* 좌측 메뉴 영역 */
         .left-section {
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
+        /* 우측 영역 */
         .right-section {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            font-size: 15px;
         }
 
+        /* 버튼 공통 */
+        .logo-btn, .company-name-btn, .logout-btn {
+            padding: 6px 14px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #d9d9d9;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        /* 상단 메뉴 텍스트 */
         .menu-item {
             position: relative;
-            font-size: 30px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            padding: 120px;
+            padding: 6px 60px;
         }
 
+        /* 드롭다운 메뉴 */
         .dropdown-menu {
             display: none;
             position: absolute;
-            top: 170px;
-            left: 70px;
-            background: #d4fbdc;
-            padding: 10px 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            top: 40px;
+            left: 0;
+            background: white;
+            padding: 8px 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            min-width: 150px;
+            z-index: 20;
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 6px 15px;
-            white-space: nowrap;
-            color: black;
+            padding: 8px 14px;
+            font-size: 14px;
+            color: #333;
             text-decoration: none;
+            white-space: nowrap;
         }
 
         .dropdown-menu a:hover {
-            background-color: #c0f0c9;
+            background-color: #eef7f0;
         }
 
+        /* hover 시 메뉴 열림 */
         .dropdown:hover .dropdown-menu {
             display: block;
         }
-
-        .logo-btn,
-        .company-name-btn,
-        .logout-btn {
-            padding: 6px 12px;
-            border-radius: 5px;
-            border: none;
-            background-color: #e6e6e6;
-            cursor: pointer;
-        }
     </style>
-</head>
-
-<body>
-<div th:fragment="toolBarFragment">
     <div class="top-bar">
         <div class="left-section">
             <button class="logo-btn">회사 로고</button>
@@ -121,5 +131,3 @@
         </div>
     </div>
 </div>
-</body>
-</html>
