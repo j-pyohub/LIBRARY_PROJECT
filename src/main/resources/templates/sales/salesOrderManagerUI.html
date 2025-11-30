@@ -158,9 +158,13 @@
 <script>
     const salesOrderTable = $("#salesOrderList");
 
-    function loadPage(pageNo) {
-      if (pageNo < 1) pageNo = 1;
-      fetchUtil(`/salesOrder/salesOrderList/${pageNo - 1}`, data => {
+    function loadPage(pageNo, date=null, storeName=null) {
+      const params = new URLSearchParams();
+
+      if (date) params.append("date", date);
+      if (storeName) params.append("storeName", storeName);
+
+      fetchUtil(`/salesOrder/salesOrderList/${pageNo}?${params.toString()}`, data => {
         loadSalesOrderList(data.list);
         updatePaginationUI(data.pageNo, data.totalPages);
       });
@@ -244,10 +248,26 @@
         orderModal.show();
     });
 
+    $("#dateInput").on("change", function () {
+      const date = $(this).val();
+      const storeName = $("#storeInput").val();
+
+      loadPage(1, date, storeName);
+    });
+
+    $("#storeInput").on("input", function () {
+      const date = $("dateInput").val();
+      const storeName = $(this).val();
+
+      loadPage(1, date, storeName);
+    })
+
     /* 검색 / 초기화 */
     $("#resetBtn").on("click", function () {
         $("#dateInput").val("");
         $("#storeInput").val("");
+
+        loadPage(1);
     });
 
     $("#searchBtn").on("click", function () {
