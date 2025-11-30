@@ -28,9 +28,9 @@ public class SalesController {
 
         return "sales/salesDetailUI";
     }
-    @GetMapping("salesMain")
+    @GetMapping("/manager/salesMain")
     private String salesMain(){ return "sales/salesMainUI"; }
 
-    @GetMapping("storeSalesMain")
+    @GetMapping("/store/storeSalesMain")
     private String storeSalesMain(){ return "sales/storeSalesMainUI"; }
 }
