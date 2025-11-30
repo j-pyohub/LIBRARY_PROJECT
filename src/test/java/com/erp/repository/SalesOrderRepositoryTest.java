@@ -121,4 +121,21 @@ public class SalesOrderRepositoryTest {
             System.out.println(dto);
         }
     }
+
+    @Test
+    @Transactional
+    void getSalesOrderTest(){
+        List<SalesOrder> orders = salesOrderRepository.findAll();
+        List<SalesOrderDTO> dtos = new ArrayList<>();
+        for (SalesOrder order : orders) {
+            Long orderNo = order.getSalesOrderNo();
+            SalesOrderDTO countDto = storeOrderDetailRepository.countSalesOrder(orderNo);
+            countDto.setStoreNo(order.getStore().getStoreNo());
+            countDto.setStoreName(order.getStore().getStoreName());
+            dtos.add(countDto);
+        }
+        for (SalesOrderDTO dto : dtos) {
+            System.out.println(dto);
+        }
+    }
 }
