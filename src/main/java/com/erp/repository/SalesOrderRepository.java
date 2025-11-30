@@ -20,7 +20,7 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
     SELECT SUM(sod.menuCount)
     FROM StoreOrderDetail sod
     JOIN sod.salesOrder so
-    WHERE so.salesOrderDatetime BETWEEN :startDate AND :endDate
+    WHERE so.salesOrderDatetime BETWEEN :start AND :end
 """)
     Integer getTotalMenuCount(LocalDateTime startDate, LocalDateTime endDate);
 
