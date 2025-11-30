@@ -83,7 +83,7 @@
         <div class="d-flex align-items-center mb-3">
             <div class="me-4">
                 <label class="fw-semibold me-2">카테고리</label>
-                <select class="form-select d-inline-block w-auto" name="category">
+                <select class="form-select d-inline-block w-auto" id="category">
                     <option value="">전체</option>
                     <option value="pizza">피자</option>
                     <option value="side">사이드디시</option>
@@ -94,7 +94,7 @@
 
             <div class="me-4">
                 <label class="fw-semibold me-2">출시 상태</label>
-                <select class="form-select d-inline-block w-auto" name="category">
+                <select class="form-select d-inline-block w-auto" id="releaseStatus">
                     <option value="">전체</option>
                     <option value="commingSoon">출시 예정</option>
                     <option value="now">출시 중</option>
@@ -155,36 +155,50 @@
 <script>
     $(document).ready(function () {
         loadMenuList();
+        renderMenuList(menuList);
 
-        function loadMenuList() {
-            fetch("/menuList")
-                .then(res => res.json())
-                .then(menuList => renderMenuList(menuList))
+        $("[data-tab]").on("click", function () {
+            const tabName = $(this).data("tab");
 
-        }
+            // 콘텐츠 탭 활성화 전환
+            $(".tab-content-area").removeClass("tab-active");
+            $("." + tabName).addClass("tab-active");
 
-        function groupByMenuCode(menuList) {
-            const groups = {};
-            menuList.forEach(menu => {
-                if (!groups[menu.menuCode]) {
-                    groups[menu.menuCode] = [];
-                }
-                groups[menu.menuCode].push(menu);
-            });
-            return groups;
-        }
+            // 탭 버튼 스타일 전환
+            $("[data-tab]").removeClass("btn-dark").addClass("btn-outline-dark");
+            $(this).removeClass("btn-outline-dark").addClass("btn-dark");
+        });
+    });
 
-        function renderMenuList(menuList) {
-            const tbody = $("#menuListBody");
-            let html = "";
+    function loadMenuList() {
+        fetch("/menuList")
+            .then(res => res.json())
+            .then(menuList => renderMenuList(menuList))
 
-            const grouped = groupByMenuCode(menuList);
+    }
 
-            Object.values(grouped).forEach(group => {
-                const first = group[0];
-                const rowspan = group.length;
+    function groupByMenuCode(menuList) {
+        const groups = {};
+        menuList.forEach(menu => {
+            if (!groups[menu.menuCode]) {
+                groups[menu.menuCode] = [];
+            }
+            groups[menu.menuCode].push(menu);
+        });
+        return groups;
+    }
 
-                html += `
+    function renderMenuList(menuList) {
+        const tbody = $("#menuListBody");
+        let html = "";
+
+        const grouped = groupByMenuCode(menuList);
+
+        Object.values(grouped).forEach(group => {
+            const first = group[0];
+            const rowspan = group.length;
+
+            html += `
         <tr>
             <td rowspan="${rowspan}">${first.menuCategory}</td>
             <td rowspan="${rowspan}">${first.menuCode}</td>
@@ -203,33 +217,18 @@
         </tr>
         `;
 
-                for (let i = 1; i < group.length; i++) {
-                    html += `
+            for (let i = 1; i < group.length; i++) {
+                html += `
             <tr>
                 <td>${group[i].size}</td>
                 <td>${group[i].menuPrice}</td>
             </tr>
             `;
-                }
-            });
-
-            tbody.html(html);
-        }
-
-
-
-        $("[data-tab]").on("click", function () {
-            const tabName = $(this).data("tab");
-
-            // 콘텐츠 탭 활성화 전환
-            $(".tab-content-area").removeClass("tab-active");
-            $("." + tabName).addClass("tab-active");
-
-            // 탭 버튼 스타일 전환
-            $("[data-tab]").removeClass("btn-dark").addClass("btn-outline-dark");
-            $(this).removeClass("btn-outline-dark").addClass("btn-dark");
+            }
         });
-    });
+
+        tbody.html(html);
+    }
 
     $("#storeMenuBtn").click(() => {
         //지금은 본사 기준. 직영점 로그인 시, storeMenuUI.html로 이동하게 해야 함
